@@ -148,20 +148,20 @@
                     <a href="" id="dir-artist-link">
                         <p id="dir-artist" class="d-none">Artist name</p>
                     </a>
-                    <p id="dir-phone" class=""><i class="fal fa-phone"></i> Phone</p>
-                    <p id="dir-email" class=""><i class="fal fa-envelope"></i> Email</p>
-                    <p id="dir-website" class=""><i class="fal fa-globe"></i> Website</p>
+                    <p id="dir-phone" class="d-none"><i class="fal fa-phone"></i> Phone</p>
+                    <p id="dir-email" class="d-none"><i class="fal fa-envelope"></i> Email</p>
+                    <p id="dir-website" class="d-none"><i class="fal fa-globe"></i> Website</p>
                     <p>
-                        <a id="dir-fb" class="mr-2 my-2" href="" target="_blank">
+                        <a id="dir-fb" class="mr-2 my-2 d-none" href="" target="_blank">
                             <i class="fab fa-facebook"></i>
                         </a>
-                        <a id="dir-tw" class="m-2" href="" target="_blank">
+                        <a id="dir-tw" class="m-2 d-none" href="" target="_blank">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a id="dir-fb" class="m-2" href="" target="_blank">
+                        <a id="dir-ig" class="m-2 d-none" href="" target="_blank">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a id="dir-fb" class="m-2" href="" target="_blank">
+                        <a id="dir-yt" class="m-2 d-none" href="" target="_blank">
                             <i class="fab fa-youtube"></i>
                         </a>
                     </p>
@@ -439,22 +439,22 @@
                     $('#dir-phone').html('<i class="fal fa-phone"></i> ' + dirInfo2.Phone).removeClass('d-none');
                 }
                 if (dirInfo2.Email) {
-                    $('#dir-email').html('<i class="fal fa-envelope"></i> ' + dirInfo2.Email).removeClass('d-none');
+                    $('#dir-email').html('<i class="fal fa-envelope"></i> <a href="mailto:' + dirInfo2.Email + '">' + dirInfo2.Email + '</a>').removeClass('d-none');
                 }
                 if (dirInfo2.Website) {
-                    $('#dir-website').html('<i class="fal fa-globe"></i> ' + dirInfo2.Website.toString().split(',')[0]).removeClass('d-none');
+                    $('#dir-website').html('<i class="fal fa-globe"></i> <a href="' + dirInfo2.Website.toString().split(',')[0] + '" target="_blank">' + dirInfo2.Website.toString().split(',')[0] + '</a>').removeClass('d-none');
                 }
                 if (dirInfo2.Facebook) {
-
+                    $('#dir-fb').attr('href', dirInfo2.Facebook.toString().split(',')[0]).removeClass('d-none');
                 }
                 if (dirInfo2.Twitter) {
-
+                    $('#dir-tw').attr('href', dirInfo2.Twitter.toString().split(',')[0]).removeClass('d-none');
                 }
                 if (dirInfo2.Instagram) {
-
+                    $('#dir-ig').attr('href', dirInfo2.Instagram.toString().split(',')[0]).removeClass('d-none');
                 }
                 if (dirInfo2.Youtube) {
-
+                    $('#dir-yt').attr('href', dirInfo2.Youtube.toString().split(',')[0]).removeClass('d-none');
                 }
 
                 // show it all...
