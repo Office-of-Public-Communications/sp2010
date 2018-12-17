@@ -119,11 +119,9 @@
                     <p id="dir-description" class="d-none">&para;</p>
                     <strong id="dir-statement-title" class="d-none">Statement</strong>
                     <p id="dir-statement" class="d-none">&para;</p>
+                    <strong id="dir-programs-title" class="d-none">Programs</strong>
+                    <section id="dir-tags" class="mb-4"></section>
                 </section>
-                <!-- <strong class="d-block">
-                    <i class="fal fa-image"></i> Public Artwork</strong>
-                <section id="dir-tags" class="mb-4">
-                </section> -->
                 <!-- <p>Contact <span id="artistName"><a href="/">the artist</a></span> for more information.</p> -->
             </div>
             <div id="dir-map" class="col-md-4 my-3">
@@ -214,8 +212,7 @@
                 webURL: "/Arts/ArtsEducation/",
                 listName: "Services",
                 viewName: "",
-                CAMLQuery: "<Query><Where><Eq><FieldRef Name='ID'/><Value Type='Text'>" +
-                    newID + "</Value></Eq></Where></Query>",
+                CAMLQuery: "",
                 CAMLViewFields: "",
                 CAMLRowLimit: "",
                 CAMLQueryOptions: "",
@@ -278,16 +275,16 @@
             // build page elements from data
             f1 = $.when(newData).done(function () {
                 dirInfo = this.data[0];
-                console.log(dirInfo)
-                // build title & description
+                //console.log(dirInfo)
+                // build related programs
 
-                // if (dirInfo.Disciplines) {
-                //     for (i = 0; i < dirInfo.Disciplines.length; i++) {
-                //         $('#dir-disciplines').html(dirInfo.Disciplines[i].lookupValue).removeClass('d-none');
-                //         $('#dir-disciplines-title').removeClass('d-none').addClass('dirT');
-                //     }
-                // }
-
+                for (i = 0; i < dirInfo.length; i++) {
+                    if (dirInfo.Artist.lookupId == newID) {
+                        console.log(dirInfo.Title)
+                        $('#dir-tags').html(dirInfo.Title)
+                    }
+                }
+                $('#dir-programs-title').removeClass('d-none').addClass('dirT')
             });
 
             f2 = $.when(f1).done(function () {
@@ -376,7 +373,7 @@
 
                 dirInfo2 = this.data[0];
 
-                console.log(dirInfo2)
+                //console.log(dirInfo2)
 
                 // build artist info
                 if (dirInfo2.Description) {
