@@ -28,7 +28,6 @@
         }
 
         section#description {
-            border-bottom: 1px solid #eaeaea;
             padding-bottom: 20px;
         }
 
@@ -36,7 +35,6 @@
             font-size: 2.5rem;
             font-weight: 700;
             line-height: 110%;
-            border-bottom: 3px solid #039BE5;
         }
 
         #dir-description {
@@ -434,6 +432,7 @@
                 // build contact
                 if (dirInfo2.Title) {
                     $('#dir-artist').html(dirInfo2.Title).removeClass('d-none');
+                    $('#dir-artist-link').attr('href', 'AIEArtist.aspx?=' + dirInfo2.ID)
                 }
                 if (dirInfo2.Phone) {
                     $('#dir-phone').html('<i class="fal fa-phone"></i> ' + dirInfo2.Phone).removeClass('d-none');
