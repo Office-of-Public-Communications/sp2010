@@ -85,7 +85,7 @@
             color: #039BE5;
             font-weight: 500;
         }
-
+        /*
         a#dirListTitleLink::after {
             display: inline-block;
             font-style: normal;
@@ -93,10 +93,10 @@
             text-rendering: auto;
             -webkit-font-smoothing: antialiased;
             font-family: "FontAwesomeSolid";
-            content: " \f105";
+            content: "\f105";
             font-size: .8rem;
             padding-left: 6px;
-        }
+        }*/
 
         a#dirListTitleLink:hover {
             text-decoration: underline;
@@ -216,11 +216,11 @@
                             .append(
                                 '<td><a id="dirListTitleLink" href="../Pages/AIE.aspx?=' +
                                 dirItems.ID + '">' + dirItems.Title +
-                                '</a></td>')
+                                ' <i class="ml-2 fal fa-angle-right"></i></a></td>')
                             .append(dirItems.Artist ? $(
                                 '<td><a id="dirListTitleLink" href="../Pages/AIEArtist.aspx?=' +
                                 dirItems.Artist.lookupId + '">' + dirItems.Artist.lookupValue +
-                                '</td>') : '<td></td>')
+                                ' <i class="ml-2 fal fa-angle-right"></i></a></td>') : '<td></td>')
                         )
                 }
 
