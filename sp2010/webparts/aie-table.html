@@ -196,7 +196,7 @@
                 dirResultsTitles = this.data[0];
                 dirKeys = Object.keys(dirResultsTitles);
 
-                for (i = 0; i < 2; i++) {
+                for (i = 0; i < 3; i++) {
                     dirTitles = dirKeys[i];
                     tHeaderRow = $("#headerRow");
                     tFooterRow = $("#footerRow")
@@ -204,7 +204,7 @@
                     /*tFooterRow.append($('<th>' + dirTitles + '</th>'));*/
                 }
                 tHeaderRow.append($(
-                    '<th>Title</th><th>Artist</th>'
+                    '<th>Title</th><th>Artist</th><th>Disciplines</th>'
                 ));
 
                 //Main Data
@@ -221,7 +221,7 @@
                                 '<td><a id="dirListTitleLink" href="../Pages/AIEArtist.aspx?=' +
                                 dirItems.Artist.lookupId + '">' + dirItems.Artist.lookupValue +
                                 ' <i class="ml-2 fal fa-angle-right"></i></a></td>') : '<td></td>')
-                        )
+                            .append(dirItems.Disciplines.length > -1 && dirItems.Disciplines != null ? ('<td>' + $.each(dirItems.Disciplines, function(j, val) { dirItems.Disciplines[j].lookupValue}) + '</td>') : '<td></td>'))
                 }
 
                 $('#dirTable').dataTable({
@@ -229,6 +229,7 @@
                         "search": dTSearchVar
                     },
                     "columns": [null,
+                        null,
                         null
                     ]
                 });
