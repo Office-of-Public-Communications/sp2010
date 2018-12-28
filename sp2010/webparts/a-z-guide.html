@@ -58,6 +58,24 @@
             -webkit-transform: rotate(135deg);
             transform: rotate(135deg);
         }
+        .before-event {
+            display: block;
+            width: 100%;
+            background: #FFF176;
+            padding: 10px;
+        }
+        .during-event {
+            display: block;
+            width: 100%;
+            background: #FFCC80;
+            padding: 10px;
+        }
+        .after-event {
+            display: block;
+            width: 100%;
+            background: #B3E5FC;
+            padding: 10px;
+        }
     </style>
 </head>
 
@@ -75,7 +93,7 @@
                         </div>
                     </div>
                     <div class="col-md-8 col-12">
-                        <div class="row justify-content-center justify-content-md-end my-2">
+                        <!-- <div class="row justify-content-center justify-content-md-end my-2">
                             <div class="col-md-7 col-10 pr-1">
                                 <div class="z-depth-1 bg-white pr-3" style="border-radius:4px;">
                                     <input class="form-control pl-3" id="faqSearch" style="border-radius:4px;" type="text"
@@ -86,9 +104,9 @@
                                 <button class="btn btn-sm px-4 d-flex justify-content-center" style="background-color:#039BE5; margin-top:4px; margin-bottom:16px"
                                     type="button" data-search-button><i class="fal fa-search" style="font-size:24px"></i></button>
                             </div>
-                        </div>
+                        </div> -->
 
-                        <h2 id="faqTopicTitle" class="pb-3 font-weight-bold text-center text-md-left">A-Z Planner</h2>
+                        <h2 id="faqTopicTitle" class="pb-3 font-weight-bold text-center text-md-left">Airport</h2>
                         <!-- Grid row -->
                         <div class="row d-flex justify-content-center">
 
@@ -109,7 +127,7 @@
     <script type="text/javascript">
         //Webpart Scripts
 
-        var accID = 'Americans with Disabilities Act';
+        var accID = 'test';
         var searchVal = '';
         $(document).ready(function () {
 
@@ -125,15 +143,15 @@
                 contains: "",
                 mapping: {
                     ows_LinkTitle: {
-                        mappedName: "question",
+                        mappedName: "topic",
                         objectType: "Text"
                     },
-                    ows_Info: {
+                    ows_Question: {
                         mappedName: "answer",
                         objectType: "Text"
                     },
                     ows_Topics: {
-                        mappedName: "topic",
+                        mappedName: "question",
                         objectType: "Text"
                     },
                     ows_ID: {
@@ -205,8 +223,8 @@
                         });
                     } else {
                         var filterTopic = faqItems.filter(function (e) {
-                            var questions = e.question.toLowerCase();
-                            return questions.includes(searchVal);
+                            var topics = e.topic.toLowerCase();
+                            return topics.includes(searchVal);
                         });
                     }
                     var buildAcc = function () {
@@ -223,8 +241,8 @@
                                 var faqItems = filterTopic[i]
                                 var headerID = "heading" + faqItems.ID
                                 var cardBodyID = "collapse" + faqItems.ID
-                                var cardTitle = faqItems.question
-                                var cardBody = faqItems.answer
+                                var cardTitle = faqItems.question // [0,1,2,3]
+                                var cardBody = faqItems.answer //"airport-before"
 
                                 var cardBuild = '<div class="card">' +
                                     '<div class="card-header pb-1 pl-0" role="tab" id="' + headerID +
@@ -246,7 +264,7 @@
                                 $(".accordion").append(cardBuild);
                             };
                         } else {
-                            var cardBuild = '<h4>There are no results matching your search.</div>'
+                            var cardBuild = '<h4>Browse by letter or search for a topic to get started.</h4>'
                             $(".accordion").append(cardBuild);
                         }
                         //Accordion Icon Animation
@@ -266,7 +284,7 @@
                 $("#topicOptions > li > a").on("click", function () {
                     event.returnValue = false;
                     accID = this.innerHTML
-                    $("[data-search]")[0].value = '';
+                    // $("[data-search]")[0].value = '';
                     $("#topicOptions > li").css({
                         borderLeft: "none",
                         marginLeft: "0px"
@@ -319,50 +337,50 @@
                 topicNav();
 
                 //Search Function
-                $('[data-search]').keypress(function (event) {
-                    if (event.which == 13) {
-                        event.preventDefault();
-                        event.returnValue = false;
-                        accID = 'Search Results';
-                        console.log($(this));
+                // $('[data-search]').keypress(function (event) {
+                //     if (event.which == 13) {
+                //         event.preventDefault();
+                //         event.returnValue = false;
+                //         accID = 'Search Results';
+                //         console.log($(this));
 
-                        searchVal = $(this).val().toLowerCase();
-                        $.when(effectOut()).done(function () {
-                            $("#topicOptions > li").css({
-                                borderLeft: "none",
-                                marginLeft: "0px"
-                            });
+                //         searchVal = $(this).val().toLowerCase();
+                //         $.when(effectOut()).done(function () {
+                //             $("#topicOptions > li").css({
+                //                 borderLeft: "none",
+                //                 marginLeft: "0px"
+                //             });
 
-                            $(".accordion").remove();
-                            createAccordion();
-                            effectIn();
-                        });
-                        console.log(searchVal);
-                    }
-                });
-                $('[data-search-button]').on('click', function (event) {
-                    event.preventDefault();
-                    event.returnValue = false;
-                    accID = 'Search Results';
+                //             $(".accordion").remove();
+                //             createAccordion();
+                //             effectIn();
+                //         });
+                //         console.log(searchVal);
+                //     }
+                // });
+                // $('[data-search-button]').on('click', function (event) {
+                //     event.preventDefault();
+                //     event.returnValue = false;
+                //     accID = 'Search Results';
 
-                    $("#topicOptions > li").css({
-                        borderLeft: "none",
-                        marginLeft: "0px"
-                    });
+                //     $("#topicOptions > li").css({
+                //         borderLeft: "none",
+                //         marginLeft: "0px"
+                //     });
 
-                    searchVal = $('#faqSearch').val().toLowerCase();
-                    $.when(effectOut()).done(function () {
-                        $("#topicOptions > li").css({
-                            borderLeft: "none",
-                            marginLeft: "0px"
-                        });
+                //     searchVal = $('#faqSearch').val().toLowerCase();
+                //     $.when(effectOut()).done(function () {
+                //         $("#topicOptions > li").css({
+                //             borderLeft: "none",
+                //             marginLeft: "0px"
+                //         });
 
-                        $(".accordion").remove();
-                        createAccordion();
-                        effectIn();
-                    });
-                    console.log(searchVal);
-                });
+                //         $(".accordion").remove();
+                //         createAccordion();
+                //         effectIn();
+                //     });
+                //     console.log(searchVal);
+                // });
             });
         });
 
