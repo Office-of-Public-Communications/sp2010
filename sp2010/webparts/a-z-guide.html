@@ -106,7 +106,7 @@
                             </div>
                         </div> -->
 
-                        <h2 id="faqTopicTitle" class="pb-3 font-weight-bold text-center text-md-left">Airport</h2>
+                        <h2 id="faqTopicTitle" class="pb-3 font-weight-bold text-center text-md-left">Select a Topic</h2>
                         <!-- Grid row -->
                         <div class="row d-flex justify-content-center">
 
@@ -127,7 +127,7 @@
     <script type="text/javascript">
         //Webpart Scripts
 
-        var accID = 'test';
+        var accID = '';
         var searchVal = '';
         $(document).ready(function () {
 
@@ -187,6 +187,10 @@
                     $('#topicOptions').append('<li class="py-1 pl-3"><a href="#" class="text-dark">' +
                         topicName + '</a></li>');
                 }
+
+                var accID = $("#topicOptions > li > a:first-child").html()
+                $('#faqTopicTitle').html(accID)
+
                 var effectIn = function () {
                     $('#faqTopicTitle').html(accID).fadeTo(500, 1);
                     return $("#accordionColumn").fadeTo(500, 1);
@@ -264,7 +268,7 @@
                                 $(".accordion").append(cardBuild);
                             };
                         } else {
-                            var cardBuild = '<h4>Browse by letter or search for a topic to get started.</h4>'
+                            var cardBuild = '<h4>...</h4>'
                             $(".accordion").append(cardBuild);
                         }
                         //Accordion Icon Animation
@@ -335,6 +339,15 @@
 
                 };
                 topicNav();
+
+                // firstEffect = function () {
+                // var accID = $("#topicOptions > li > a:first-child").html()
+                // console.log(accID)
+                // $('#faqTopicTitle').html(accID).fadeTo(500, 1);
+                // return $("#accordionColumn").fadeTo(500, 1);
+
+                // };
+                // firstEffect();
 
                 //Search Function
                 // $('[data-search]').keypress(function (event) {
