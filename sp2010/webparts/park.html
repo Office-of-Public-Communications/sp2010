@@ -963,6 +963,8 @@
                     //Header & Footer Titles
                     var thisEventResults = this.data;
 
+                    console.log(thisEventResults)
+
                     resultTitles = this.data[0];
                     resultKeys = Object.keys(resultTitles);
 
@@ -989,12 +991,13 @@
                         today.setHours(0, 0, 0, 0);
 
                         //console.log('date check:' + (thisEventResults[ind].Date >= today))
+                        console.log('event:' + thisEventResults[ind].Title + ', park id: ' + thisEventResults[ind].Park.lookupId + ', id:' + thisEventResults[ind].ID)
 
-                        if (thisEventResults[ind].Date >= today && thisEventResults[ind].Park.lookupId ==
-                            window.location.search.split('=')[1].toString()) {
+                        if ((thisEventResults[ind].Date >= today) && (thisEventResults[ind].Park.lookupId ==
+                            window.location.search.split('=')[1].toString())) {
                             var date = moment(thisEventResults[ind].Date).format('LL');
-
                             console.log('info: ' + thisEventResults[ind].Email)
+                            //console.log('info: ' + thisEventResults[ind].Email)
                             $('#eventItems')
                                 .append($('<tr>')
                                     .append($(
