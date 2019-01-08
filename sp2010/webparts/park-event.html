@@ -306,7 +306,14 @@
                     $('#dir-statement-title').removeClass('d-none').addClass('d-block mt-3');
                 }
                 //if (dirInfo2.Link == undefined) { $('#dir-statement-title').removeClass('d-block').addClass('d-none'); }
-                $('#date').html(moment(dirInfo2.Date).format('LL'));
+                if (!dirItems.Recurring) {
+                    var date = moment(dirInfo2.Date).format('LL');
+                }
+                // if date, add date
+                if (dirItems.Recurring) {
+                    var date = dirInfo2.Recurring[0].lookupValue;
+                }
+                $('#date').html(date);
                 $('#time').html(dirInfo2.Time);
                 $('#park').html(dirInfo2.Park.lookupValue).wrap('<a href="/Parks/Pages/Park.aspx?=' +
                     dirInfo2.Park.lookupId + '"></a>');
