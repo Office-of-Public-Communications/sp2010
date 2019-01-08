@@ -128,6 +128,7 @@
     <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js" integrity="sha512-2fA79E27MOeBgLjmBrtAgM/20clVSV8vJERaW/EcnnWCVGwQRazzKtQS1kIusCZv1PtaQxosDZZ0F1Oastl55w=="
         crossorigin=""></script>
 </head>
+
 <body>
 
     <!-- Directory Web Part - Item View -->
@@ -304,14 +305,8 @@
                         '" target="_blank"></a>');
                     $('#dir-statement-title').removeClass('d-none').addClass('d-block mt-3');
                 }
-                // if recurring info, add recurring info to date section here
-                if (dirInfo2.Recurring.lookupValue != 'undefined' && dirInfo2.Date) {
-                    $('#date').html(dirInfo2.Recurring.lookupValue);
-                }
-                // else if recurring == 'undefined', add date to date section here
-                if (dirInfo2.Recurring.lookupValue == 'undefined' && dirInfo2.Date){
-                    $('#date').html(moment(dirInfo2.Date).format('LL'));
-                }
+                //if (dirInfo2.Link == undefined) { $('#dir-statement-title').removeClass('d-block').addClass('d-none'); }
+                $('#date').html(moment(dirInfo2.Date).format('LL'));
                 $('#time').html(dirInfo2.Time);
                 $('#park').html(dirInfo2.Park.lookupValue).wrap('<a href="/Parks/Pages/Park.aspx?=' +
                     dirInfo2.Park.lookupId + '"></a>');
@@ -329,4 +324,5 @@
     <!-- Google Maps -->
     <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVF9fnqaUvGIJY-HmXtOCpWV5Yu798fXQ"></script>
 </body>
+
 </html>
