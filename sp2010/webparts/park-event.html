@@ -304,8 +304,14 @@
                         '" target="_blank"></a>');
                     $('#dir-statement-title').removeClass('d-none').addClass('d-block mt-3');
                 }
-                //if (dirInfo2.Link == undefined) { $('#dir-statement-title').removeClass('d-block').addClass('d-none'); }
-                $('#date').html(moment(dirInfo2.Date).format('LL'));
+                // if recurring info, add recurring info to date section here
+                if (dirInfo2.Recurring.lookupValue != 'undefined' && dirInfo2.Date) {
+                    $('#date').html(dirInfo2.Recurring.lookupValue);
+                }
+                // else if recurring == 'undefined', add date to date section here
+                if (dirInfo2.Recurring.lookupValue == 'undefined' && dirInfo2.Date){
+                    $('#date').html(moment(dirInfo2.Date).format('LL'));
+                }
                 $('#time').html(dirInfo2.Time);
                 $('#park').html(dirInfo2.Park.lookupValue).wrap('<a href="/Parks/Pages/Park.aspx?=' +
                     dirInfo2.Park.lookupId + '"></a>');
@@ -313,6 +319,9 @@
                 $('#dir-statement').removeClass('d-none');
                 $('#directoryItem').removeClass('d-none');
             })
+            webpartMove = $("#directoryItem")
+            webpartMove.detach();
+            webpartMove.appendTo("#fullPageContent");
         });
     </script>
     <!-- Init map -->
