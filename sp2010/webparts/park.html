@@ -930,7 +930,10 @@
                         mappedName: "Date",
                         objectType: "DateTime"
                     },
-
+                    ows_EndDate: {
+                        mappedName: "EndDate",
+                        objectType: "DateTime"
+                    },
                     ows_Park: {
                         mappedName: "Park",
                         objectType: "Lookup"
@@ -972,7 +975,7 @@
                     //     rTitles = resultKeys[i];
                     // }
 
-                    $('#eventHeader').append('<tr><th>Upcoming Events</th><th>Date & Time</th></tr>');
+                    $('#eventHeader').append('<tr><th>Upcoming Events</th><th>Date</th></tr>');
 
                     // if no events, append empty cells
                     // if ($('tbody#eventItems').children().length == 0) {
@@ -990,11 +993,12 @@
                         var today = new Date();
                         today.setHours(0, 0, 0, 0);
 
+                        console.log('end date: ' + thisEventResults[ind].EndDate)
+
                         //console.log('date check:' + (thisEventResults[ind].Date >= today))
                         console.log('event:' + thisEventResults[ind].Title + ', park id: ' + thisEventResults[ind].Park.lookupId + ', id:' + thisEventResults[ind].ID)
 
-                        if ((thisEventResults[ind].Date >= today) && (thisEventResults[ind].Park.lookupId ==
-                            window.location.search.split('=')[1].toString())) {
+                        if ((thisEventResults[ind].Date >= today) && ((thisEventResults[ind].EndDate > today) || (thisEventResults[ind].EndDate == 'undefined')) && (thisEventResults[ind].Park.lookupId == window.location.search.split('=')[1].toString())) {
                             var date = moment(thisEventResults[ind].Date).format('LL');
                             console.log('info: ' + thisEventResults[ind].Email)
                             //console.log('info: ' + thisEventResults[ind].Email)
