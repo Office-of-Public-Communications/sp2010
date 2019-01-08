@@ -856,16 +856,17 @@
         });
     </script>
     <script>
-    URL = location.href.toLowerCase();
-    newID = URL.split('=')[1].replace("#", "");
+        URL = location.href.toLowerCase();
+        newID = URL.split('=')[1].replace("#", "");
 
-    $(document).ready(function () {
+        $(document).ready(function () {
 
             newData3 = $().SPServices.SPGetListItemsJson({
                 webURL: "/Parks/",
                 listName: "Parks",
                 viewName: "",
-                CAMLQuery: "<Query><Where><Eq><FieldRef Name='ID' /><Value Type='Text'>" + newID + "</Value></Eq></Where></Query>",
+                CAMLQuery: "<Query><Where><Eq><FieldRef Name='ID' /><Value Type='Text'>" + newID +
+                    "</Value></Eq></Where></Query>",
                 CAMLViewFields: "",
                 CAMLRowLimit: "",
                 CAMLQueryOptions: "",
@@ -927,7 +928,7 @@
                         objectType: "Text"
                     },
                     ows_Date: {
-                        mappedName: "Date",
+                        mappedName: "StartDate",
                         objectType: "DateTime"
                     },
                     ows_EndDate: {
@@ -941,6 +942,10 @@
                     ows_Link: {
                         mappedName: "Link",
                         objectType: "URL"
+                    },
+                    ows_Recurring: {
+                        mappedName: "Recurring",
+                        objectType: "LookupMulti"
                     },
                     ows_Description: {
                         mappedName: "Description",
@@ -996,42 +1001,55 @@
                         console.log('end date: ' + thisEventResults[ind].EndDate)
 
                         //console.log('date check:' + (thisEventResults[ind].Date >= today))
-                        console.log('event:' + thisEventResults[ind].Title + ', park id: ' + thisEventResults[ind].Park.lookupId + ', id:' + thisEventResults[ind].ID)
+                        console.log('event:' + thisEventResults[ind].Title + ', park id: ' +
+                            thisEventResults[ind].Park.lookupId + ', id:' +
+                            thisEventResults[ind].ID)
 
-                        if ((thisEventResults[ind].Date >= today) && ((thisEventResults[ind].EndDate > today) || (thisEventResults[ind].EndDate == 'undefined')) && (thisEventResults[ind].Park.lookupId == window.location.search.split('=')[1].toString())) {
-                            var date = moment(thisEventResults[ind].Date).format('LL');
+                        if ((thisEventResults[ind].StartDate >= today) /*&& ((thisEventResults[ind].EndDate >
+                                today) || (thisEventResults[ind].EndDate == 'undefined'))*/&& (
+                                thisEventResults[ind].Park.lookupId == window.location.search.split('=')[1].toString())) {
+                            // if recurring, add recurring text
+                            if (!thisEventResults[ind].Recurring) {
+                                var date = moment(thisEventResults[ind].StartDate).format('LL');
+                            }
+                            // if date, add date
+                            if (thisEventResults[ind].Recurring) {
+                                var date = thisEventResults[ind].Recurring[0].lookupValue;
+                            }
+                            //var date = moment(thisEventResults[ind].Date).format('LL');
                             console.log('info: ' + thisEventResults[ind].Email)
                             //console.log('info: ' + thisEventResults[ind].Email)
                             $('#eventItems')
                                 .append($('<tr>')
                                     .append($(
                                         '<td><a id="dirListTitleLink" href="../Pages/Event.aspx?=' +
-                                        thisEventResults[ind].ID + '"><strong>' + thisEventResults[ind].Title + '</strong>'))
-                                        .after($(
+                                        thisEventResults[ind].ID + '"><strong>' +
+                                        thisEventResults[ind].Title + '</strong>'))
+                                    .after($(
                                         // only show description if there is one in list
                                         thisEventResults[ind].Description ?
                                         '</strong></a><br/><p class="eventDetails my-3">' +
                                         thisEventResults[ind].Description : false
-                                        ))
-                                        // only show phone if there is one in list
-                                        .after($(
+                                    ))
+                                    // only show phone if there is one in list
+                                    .after($(
                                         thisEventResults[ind].Phone ?
                                         '</p><p><strong>More Info</strong></p><p class="my-2"><a href="tel:1-' +
                                         thisEventResults[ind].Phone + '">Call ' +
                                         thisEventResults[ind].Phone : false
-                                        ))
-                                        // only show email if there is one in list
-                                        .after($(
+                                    ))
+                                    // only show email if there is one in list
+                                    .after($(
                                         thisEventResults[ind].Email ?
                                         '</a></p><p class="mt-2"><a href="' +
                                         thisEventResults[ind].Email.split(',')[1].split(':')[
                                             1] + '">Email ' + thisEventResults[ind].Email.split(
                                             ',')[1].split(':')[1] + '</a></p></td>' : false
-                                        ))
+                                    ))
 
                                     .append($('<td>' + date + '</td>'))
                                 );
-                                console.log('append ran')
+                            console.log('append ran')
                         }
                         // if (thisEventResults[ind].Park.lookupId != window.location.search.split(
                         //         '=')[1].toString()) {
