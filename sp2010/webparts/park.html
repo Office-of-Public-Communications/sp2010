@@ -802,7 +802,7 @@
                 $('#directoryItem').removeClass('d-none');
 
                 if (dirInfo2.Rentals) {
-                    console.log(dirInfo2.Rentals);
+                    //console.log(dirInfo2.Rentals);
                 }
             });
 
@@ -891,7 +891,7 @@
 
                 dirInfo3 = this.data[0];
 
-                console.log(dirInfo3)
+                //console.log(dirInfo3)
                 // build title & description
                 if (dirInfo3.Alert) {
                     $('#alertText').html(dirInfo3.Alert);
@@ -971,7 +971,7 @@
                     //Header & Footer Titles
                     var thisEventResults = this.data;
 
-                    console.log(thisEventResults)
+                    //console.log(thisEventResults)
 
                     resultTitles = this.data[0];
                     resultKeys = Object.keys(resultTitles);
@@ -998,12 +998,12 @@
                         var today = new Date();
                         today.setHours(0, 0, 0, 0);
 
-                        console.log('end date: ' + thisEventResults[ind].EndDate)
+                        //console.log('end date: ' + thisEventResults[ind].EndDate)
 
                         //console.log('date check:' + (thisEventResults[ind].Date >= today))
-                        console.log('event:' + thisEventResults[ind].Title + ', park id: ' +
-                            thisEventResults[ind].Park.lookupId + ', id:' +
-                            thisEventResults[ind].ID)
+                        //console.log('event:' + thisEventResults[ind].Title + ', park id: ' +
+                            //thisEventResults[ind].Park.lookupId + ', id:' +
+                            //thisEventResults[ind].ID);
 
                         if ((thisEventResults[ind].StartDate >= today) /*&& ((thisEventResults[ind].EndDate >
                                 today) || (thisEventResults[ind].EndDate == 'undefined'))*/&& (
@@ -1017,7 +1017,7 @@
                                 var date = thisEventResults[ind].Recurring[0].lookupValue;
                             }
                             //var date = moment(thisEventResults[ind].Date).format('LL');
-                            console.log('info: ' + thisEventResults[ind].Email)
+                            //console.log('info: ' + thisEventResults[ind].Email)
                             //console.log('info: ' + thisEventResults[ind].Email)
                             $('#eventItems')
                                 .append($('<tr>')
@@ -1049,7 +1049,7 @@
 
                                     .append($('<td>' + date + '</td>'))
                                 );
-                            console.log('append ran')
+                            //console.log('append ran')
                         }
                         // if (thisEventResults[ind].Park.lookupId != window.location.search.split(
                         //         '=')[1].toString()) {

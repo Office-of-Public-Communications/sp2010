@@ -250,7 +250,7 @@
                         objectType: "Text"
                     },
                     ows_Date: {
-                        mappedName: "Date",
+                        mappedName: "StartDate",
                         objectType: "DateTime"
                     },
                     ows_Recurring: {
@@ -298,7 +298,7 @@
                     $('#dir-description-title').removeClass('d-none').addClass(
                         'd-block mt-3');
                 }
-                console.log(dirInfo2.Link)
+                //console.log(dirInfo2.Link)
                 if (dirInfo2.Link != undefined) {
                     var link = dirInfo2.Link;
                     $('#dir-statement-title').wrap('<a href="' + link.split(',')[0] +
@@ -306,12 +306,12 @@
                     $('#dir-statement-title').removeClass('d-none').addClass('d-block mt-3');
                 }
                 //if (dirInfo2.Link == undefined) { $('#dir-statement-title').removeClass('d-block').addClass('d-none'); }
-                if (!dirItems.Recurring) {
-                    var date = moment(dirInfo2.Date).format('LL');
+                if (!dirInfo2.Recurring) {
+                    var date = moment(dirInfo2.StartDate).format('LL');
                 }
                 // if date, add date
-                if (dirItems.Recurring) {
-                    var date = dirInfo2.Recurring[0].lookupValue;
+                if (dirInfo2.Recurring) {
+                    var date = dirInfo2.Recurring.lookupValue;
                 }
                 $('#date').html(date);
                 $('#time').html(dirInfo2.Time);

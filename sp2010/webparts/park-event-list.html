@@ -211,9 +211,9 @@
                     var today = new Date();
                     today.setHours(0, 0, 0, 0);
 
-                    if (dirItems.Date >= today) {
-                        console.log(dirItems.Title, dirItems.ID)
-                        console.log(dirItems.Recurring)
+                    if (dirItems.Date >= today || dirItems.Recurring) {
+                        //console.log(dirItems.Title, dirItems.ID)
+                        //console.log(dirItems.Recurring)
                         // if recurring, add recurring text
                         if (!dirItems.Recurring) {
                             var date = moment(dirItems.Date).format('LL');
@@ -222,7 +222,7 @@
                         if (dirItems.Recurring) {
                             var date = dirItems.Recurring[0].lookupValue;
                         }
-                        console.log(date)
+                        //console.log(date)
                         $("#rowItems")
                             .append($('<tr>')
                                 .append('<td><a id="dirListTitleLink" href="../Pages/Event.aspx?=' +
