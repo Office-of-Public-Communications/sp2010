@@ -1021,20 +1021,54 @@
                                 //             return 'Today';
                                 //         default: return;
                                 //     }
-                                //console.log(dirItems.Recurring[j].lookupValue)
-                                //var date = dirItems.Recurring[j].lookupValue;
+                                console.log(dirItems.Recurring[j].lookupValue)
+                                switch (dirItems.Recurring[j].lookupValue) {
+                                    case 'Every Monday':
+                                        return;
+                                    case 'Every First Monday':
+                                    case 'Every Second Monday':
+                                    case 'Every Third Monday':
+                                    case 'Every Fourth Monday':
+                                    case 'Every Last Monday':
+                                    case 'Every Tuesday':
+                                    case 'Every First Tuesday':
+                                    case 'Every Second Tuesday':
+                                    case 'Every Third Tuesday':
+                                    case 'Every Fourth Tuesday':
+                                    case 'Every Last Tuesday':
+                                    case 'Every Wednesday':
+                                    case 'Every First Wednesday':
+                                    case 'Every Second Wednesday':
+                                    case 'Every Third Wednesday':
+                                    case 'Every Fourth Wednesday':
+                                    case 'Every Last Wednesday':
+                                    case 'Every Thursday':
+                                    case 'Every First Thursday':
+                                    case 'Every Second Thursday':
+                                    case 'Every Third Thursday':
+                                    case 'Every Fourth Thursday':
+                                    case 'Every Last Thursday':
+                                    case 'Every Friday':
+                                    case 'Every First Friday':
+                                    case 'Every Second Friday':
+                                    case 'Every Third Friday':
+                                    case 'Every Fourth Friday':
+                                    case 'Everyday':
+                                        console.log('its alive');
+                                    default:
+                                        console.log('not humpday!');
+                                }
+
                                 var startDate = dirItems.Date;
                                 console.log(startDate)
-                                var upcoming = moment(startDate).recur().every(2).days();
+                                var upcoming = moment(startDate).recur().every('monday').daysOfWeek();
                                 //console.log(upcoming)
                                 var upcomingDates = upcoming.next(10, 'LL');
                                 //console.log(date[j])
                                 for (k = 0; k < upcomingDates.length; k++){
                                     var date = upcomingDates[k];
                                     console.log(upcomingDates[k])
-                                    //console.log('start: ' + startDate + ', recur: ' + date);
-                                    //upcoming.matches('01/18/2019')
-                                //}
+
                                     createRow();
                                 }
                             }
