@@ -140,7 +140,7 @@
 
     <script type="text/javascript" defer src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" defer src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
-    <script type="text/javascript" defer src="/Style%20Library/Haylee-Dev/js/broward/Library/moment.min.js"></script>
+    <script type="text/javascript" src="/Style%20Library/Haylee-Dev/js/broward/Library/moment.min.js"></script>
     <script type="text/javascript" defer src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
     <!--recurring moment.js plugin script inlined here only until conversion to sp2013 is complete and this can be made external-->
     <script type="text/javascript">
@@ -997,9 +997,29 @@
                         if (!dirItems.Recurring) {
                             var date = moment(dirItems.Date).format('LL');
                         }
-                        // if date, add date
                         if (dirItems.Recurring) {
-                            var date = dirItems.Recurring[0].lookupValue;
+                        // if date, add date
+                            //console.log(dirItems.Recurring)
+                            for (j = 0; j < dirItems.Recurring.length; j++){
+                                // if (dirItems.Recurring[j].lookupValue) {
+                                //     switch (dirItems.Recurring) {
+                                //         case 'Every Monday':
+                                //             return 'Monday';
+                                //         case 'By Reservation':
+                                //             return 'Today';
+                                //         default: return;
+                                //     }
+                                //console.log(dirItems.Recurring[j].lookupValue)
+                                //var date = dirItems.Recurring[j].lookupValue;
+                                var startDate = dirItems.Date;
+                                console.log(startDate)
+                                var upcoming = moment(startDate).recur().every(2).days();
+                                console.log(upcoming)
+                                var date = upcoming.next(10, 'LL');
+                                console.log('start: ' + startDate + ', recur: ' + date);
+                                //upcoming.matches('01/18/2019')
+                                //}
+                            }
                         }
                         //console.log(date)
                         $("#rowItems")
