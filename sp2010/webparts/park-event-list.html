@@ -977,6 +977,17 @@
                     '<th>Title</th><th>Park</th><th>Date</th>'
                 ));
 
+                var createRow = function () {
+                    $("#rowItems")
+                    .append($('<tr>')
+                        .append('<td><a id="dirListTitleLink" href="../Pages/Event.aspx?=' +
+                            dirItems.ID + '">' + dirItems.Title + '</a></td>')
+                        .append($('<td>' + (dirItems.Park != undefined ? dirItems.Park.lookupValue :
+                            ' ') + '</td>'))
+                        .append($('<td>' + date + '</td>'))
+                    )
+                }
+
                 //Main Data
                 for (i = 0; i < thisDirResults.length; i++) {
                     dirItems = thisDirResults[i]
@@ -990,12 +1001,13 @@
                     // nextDates = recurrence.next(3, 'LL')
                     // console.log(nextDates)
 
-                    if (dirItems.Date >= today || dirItems.Recurring) {
+                    if (dirItems.Date >= today || (dirItems.Recurring && dirItems.Date >= today)) {
                         //console.log(dirItems.Title, dirItems.ID)
                         //console.log(dirItems.Recurring)
                         // if recurring, add recurring text
                         if (!dirItems.Recurring) {
                             var date = moment(dirItems.Date).format('LL');
+                            createRow();
                         }
                         if (dirItems.Recurring) {
                         // if date, add date
@@ -1014,22 +1026,20 @@
                                 var startDate = dirItems.Date;
                                 console.log(startDate)
                                 var upcoming = moment(startDate).recur().every(2).days();
-                                console.log(upcoming)
-                                var date = upcoming.next(10, 'LL');
-                                console.log('start: ' + startDate + ', recur: ' + date);
-                                //upcoming.matches('01/18/2019')
+                                //console.log(upcoming)
+                                var upcomingDates = upcoming.next(10, 'LL');
+                                //console.log(date[j])
+                                for (k = 0; k < upcomingDates.length; k++){
+                                    var date = upcomingDates[k];
+                                    console.log(upcomingDates[k])
+                                    //console.log('start: ' + startDate + ', recur: ' + date);
+                                    //upcoming.matches('01/18/2019')
                                 //}
+                                    createRow();
+                                }
                             }
                         }
                         //console.log(date)
-                        $("#rowItems")
-                            .append($('<tr>')
-                                .append('<td><a id="dirListTitleLink" href="../Pages/Event.aspx?=' +
-                                    dirItems.ID + '">' + dirItems.Title + '</a></td>')
-                                .append($('<td>' + (dirItems.Park != undefined ? dirItems.Park.lookupValue :
-                                    ' ') + '</td>'))
-                                .append($('<td>' + date + '</td>'))
-                            )
                     }
                 }
             })
