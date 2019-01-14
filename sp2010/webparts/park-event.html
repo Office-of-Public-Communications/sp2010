@@ -311,7 +311,13 @@
                 }
                 // if date, add date
                 if (dirInfo2.Recurring) {
-                    var date = dirInfo2.Recurring.lookupValue;
+                    console.log(dirInfo2.Recurring.length)
+                    for (i = 0; i < dirInfo2.Recurring.length; i++) {
+                        var recurringDates = dirInfo2.Recurring.lookupValue;
+                        var date = recurringDates++;
+                        console.log(date)
+                        return date;
+                    }
                 }
                 $('#date').html(date);
                 $('#time').html(dirInfo2.Time);

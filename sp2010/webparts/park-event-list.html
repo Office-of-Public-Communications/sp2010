@@ -808,6 +808,10 @@
                         mappedName: "Date",
                         objectType: "DateTime"
                     },
+                    ows_EndDate: {
+                        mappedName: "EndDate",
+                        objectType: "DateTime"
+                    },
                     ows_Recurring: {
                         mappedName: "Recurring",
                         objectType: "LookupMulti"
@@ -854,7 +858,7 @@
                     // recurrence = moment(today).recur().every(7).days;
                     // nextDates = recurrence.next(3, 'LL')
                     // console.log(nextDates)
-                    if (dirItems.Date >= today || (dirItems.Recurring && dirItems.Date >= today)) {
+                    if (dirItems.Date >= today || dirItems.Recurring) {
                         //console.log(dirItems.Title, dirItems.ID)
                         //console.log(dirItems.Recurring)
                         // if recurring, add recurring text
@@ -867,202 +871,205 @@
                             //console.log(dirItems.Recurring)
                             for (j = 0; j < dirItems.Recurring.length; j++) {
 
-                                var whatDays = [];
-                                var whatWeeks = [];
+                                if (dirItems.EndDate >= today || !dirItems.EndDate) {
 
-                                if (dirItems.Recurring[j].lookupValue == 'Every Monday') {
-                                    whatDays.push('Monday');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every First Monday') {
-                                    whatDays.push('Monday');
-                                    whatWeeks.push('0');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Second Monday') {
-                                    whatDays.push('Monday');
-                                    whatWeeks.push('1');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Third Monday') {
-                                    whatDays.push('Monday');
-                                    whatWeeks.push('2');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Fourth Monday') {
-                                    whatDays.push('Monday');
-                                    whatWeeks.push('3');
-                                }
-                                // if ('Every Last Monday'){
-                                //     whatDays.push('Monday');
-                                //     whatWeeks.push('0');
-                                // }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Tuesday') {
-                                    whatDays.push('Tuesday');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every First Tuesday') {
-                                    whatDays.push('Tuesday');
-                                    whatWeeks.push('0');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Second Tuesday') {
-                                    whatDays.push('Tuesday');
-                                    whatWeeks.push('1');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Third Tuesday') {
-                                    whatDays.push('Tuesday');
-                                    whatWeeks.push('2');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Fourth Tuesday') {
-                                    whatDays.push('Tuesday');
-                                    whatWeeks.push('3');
-                                }
-                                // if ('Every Last Tuesday'){
-                                //     whatDays.push('Tuesday');
-                                //     whatWeeks.push('3');
-                                // }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Wednesday') {
-                                    whatDays.push('Wednesday');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every First Wednesday') {
-                                    whatDays.push('Wednesday');
-                                    whatWeeks.push('0');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Second Wednesday') {
-                                    whatDays.push('Wednesday');
-                                    whatWeeks.push('1');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Third Wednesday') {
-                                    whatDays.push('Wednesday');
-                                    whatWeeks.push('2');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Fourth Wednesday') {
-                                    whatDays.push('Wednesday');
-                                    whatWeeks.push('3');
-                                }
-                                // if ('Every Last Wednesday'){
-                                //     whatDays.push('Tuesday');
-                                //     whatWeeks.push('3');
-                                // }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Thursday') {
-                                    whatDays.push('Thursday');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every First Thursday') {
-                                    whatDays.push('Thursday');
-                                    whatWeeks.push('1');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Second Thursday') {
-                                    whatDays.push('Thursday');
-                                    whatWeeks.push('2');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Third Thursday') {
-                                    whatDays.push('Thursday');
-                                    whatWeeks.push('3');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Fourth Thursday') {
-                                    whatDays.push('Thursday');
-                                    whatWeeks.push('3');
-                                }
-                                // if ('Every Last Thursday'){
-                                //     whatDays.push('Tuesday');
-                                //     whatWeeks.push('3');
-                                // }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Friday') {
-                                    whatDays.push('Friday');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every First Friday') {
-                                    whatDays.push('Friday');
-                                    whatWeeks.push('0');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Second Friday') {
-                                    whatDays.push('Friday');
-                                    whatWeeks.push('1');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Third Friday') {
-                                    whatDays.push('Friday');
-                                    whatWeeks.push('2');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Fourth Friday') {
-                                    whatDays.push('Friday');
-                                    whatWeeks.push('3');
-                                }
-                                // if ('Every Last Friday'){
-                                //     whatDays.push('Friday');
-                                //     whatWeeks.push('3');
-                                // }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Saturday') {
-                                    whatDays.push('Saturday');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every First Saturday') {
-                                    whatDays.push('Saturday');
-                                    whatWeeks.push('0');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Second Saturday') {
-                                    whatDays.push('Saturday');
-                                    whatWeeks.push('1');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Third Saturday') {
-                                    whatDays.push('Saturday');
-                                    whatWeeks.push('2');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Fourth Saturday') {
-                                    whatDays.push('Saturday');
-                                    whatWeeks.push('3');
-                                }
-                                // if ('Every Last Saturday'){
-                                //     whatDays.push('Saturday');
-                                //     whatWeeks.push('3');
-                                // }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Sunday') {
-                                    whatDays.push('Sunday');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every First Sunday') {
-                                    whatDays.push('Sunday');
-                                    whatWeeks.push('0');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Second Sunday') {
-                                    whatDays.push('Sunday');
-                                    whatWeeks.push('1');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Third Sunday') {
-                                    whatDays.push('Sunday');
-                                    whatWeeks.push('2');
-                                }
-                                if (dirItems.Recurring[j].lookupValue == 'Every Fourth Sunday') {
-                                    whatDays.push('Sunday');
-                                    whatWeeks.push('3');
-                                }
-                                // if ('Every Last Sunday'){
-                                //     whatDays.push('Sunday');
-                                //     whatWeeks.push('3');
-                                // }
-                                if (dirItems.Recurring[j].lookupValue == 'Everyday') {
-                                    whatDays.push('');
-                                    whatWeeks.push('');
-                                }
+                                    var whatDays = [];
+                                    var whatWeeks = [];
 
-                                console.log(whatDays)
-                                console.log(whatWeeks)
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Monday') {
+                                        whatDays.push('Monday');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every First Monday') {
+                                        whatDays.push('Monday');
+                                        whatWeeks.push('0');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Second Monday') {
+                                        whatDays.push('Monday');
+                                        whatWeeks.push('1');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Third Monday') {
+                                        whatDays.push('Monday');
+                                        whatWeeks.push('2');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Fourth Monday') {
+                                        whatDays.push('Monday');
+                                        whatWeeks.push('3');
+                                    }
+                                    // if ('Every Last Monday'){
+                                    //     whatDays.push('Monday');
+                                    //     whatWeeks.push('0');
+                                    // }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Tuesday') {
+                                        whatDays.push('Tuesday');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every First Tuesday') {
+                                        whatDays.push('Tuesday');
+                                        whatWeeks.push('0');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Second Tuesday') {
+                                        whatDays.push('Tuesday');
+                                        whatWeeks.push('1');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Third Tuesday') {
+                                        whatDays.push('Tuesday');
+                                        whatWeeks.push('2');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Fourth Tuesday') {
+                                        whatDays.push('Tuesday');
+                                        whatWeeks.push('3');
+                                    }
+                                    // if ('Every Last Tuesday'){
+                                    //     whatDays.push('Tuesday');
+                                    //     whatWeeks.push('3');
+                                    // }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Wednesday') {
+                                        whatDays.push('Wednesday');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every First Wednesday') {
+                                        whatDays.push('Wednesday');
+                                        whatWeeks.push('0');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Second Wednesday') {
+                                        whatDays.push('Wednesday');
+                                        whatWeeks.push('1');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Third Wednesday') {
+                                        whatDays.push('Wednesday');
+                                        whatWeeks.push('2');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Fourth Wednesday') {
+                                        whatDays.push('Wednesday');
+                                        whatWeeks.push('3');
+                                    }
+                                    // if ('Every Last Wednesday'){
+                                    //     whatDays.push('Tuesday');
+                                    //     whatWeeks.push('3');
+                                    // }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Thursday') {
+                                        whatDays.push('Thursday');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every First Thursday') {
+                                        whatDays.push('Thursday');
+                                        whatWeeks.push('1');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Second Thursday') {
+                                        whatDays.push('Thursday');
+                                        whatWeeks.push('2');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Third Thursday') {
+                                        whatDays.push('Thursday');
+                                        whatWeeks.push('3');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Fourth Thursday') {
+                                        whatDays.push('Thursday');
+                                        whatWeeks.push('3');
+                                    }
+                                    // if ('Every Last Thursday'){
+                                    //     whatDays.push('Tuesday');
+                                    //     whatWeeks.push('3');
+                                    // }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Friday') {
+                                        whatDays.push('Friday');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every First Friday') {
+                                        whatDays.push('Friday');
+                                        whatWeeks.push('0');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Second Friday') {
+                                        whatDays.push('Friday');
+                                        whatWeeks.push('1');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Third Friday') {
+                                        whatDays.push('Friday');
+                                        whatWeeks.push('2');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Fourth Friday') {
+                                        whatDays.push('Friday');
+                                        whatWeeks.push('3');
+                                    }
+                                    // if ('Every Last Friday'){
+                                    //     whatDays.push('Friday');
+                                    //     whatWeeks.push('3');
+                                    // }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Saturday') {
+                                        whatDays.push('Saturday');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every First Saturday') {
+                                        whatDays.push('Saturday');
+                                        whatWeeks.push('0');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Second Saturday') {
+                                        whatDays.push('Saturday');
+                                        whatWeeks.push('1');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Third Saturday') {
+                                        whatDays.push('Saturday');
+                                        whatWeeks.push('2');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Fourth Saturday') {
+                                        whatDays.push('Saturday');
+                                        whatWeeks.push('3');
+                                    }
+                                    // if ('Every Last Saturday'){
+                                    //     whatDays.push('Saturday');
+                                    //     whatWeeks.push('3');
+                                    // }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Sunday') {
+                                        whatDays.push('Sunday');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every First Sunday') {
+                                        whatDays.push('Sunday');
+                                        whatWeeks.push('0');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Second Sunday') {
+                                        whatDays.push('Sunday');
+                                        whatWeeks.push('1');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Third Sunday') {
+                                        whatDays.push('Sunday');
+                                        whatWeeks.push('2');
+                                    }
+                                    if (dirItems.Recurring[j].lookupValue == 'Every Fourth Sunday') {
+                                        whatDays.push('Sunday');
+                                        whatWeeks.push('3');
+                                    }
+                                    // if ('Every Last Sunday'){
+                                    //     whatDays.push('Sunday');
+                                    //     whatWeeks.push('3');
+                                    // }
+                                    // if (dirItems.Recurring[j].lookupValue == 'Everyday') {
+                                    //     whatDays.push('');
+                                    //     whatWeeks.push('');
+                                    // }
 
-                                var startDate = dirItems.Date;
-                                var upcoming = moment(startDate).recur().every('monday').daysOfWeek();
-                                var upcomingDates = upcoming.next(10, 'LL');
+                                    console.log(whatDays)
+                                    console.log(whatWeeks)
 
-                                console.log(startDate)
+                                    var startDate = dirItems.Date;
+                                    var upcoming;//moment(startDate).recur().every('monday').daysOfWeek();
 
-                                // if length of recurring day array is greater than 0, add days
-                                if (whatDays.length < 1 && whatWeeks.length > 0) {
-                                    console.log('whatWeeks: ' + whatWeeks)
-                                }
-                                // if length of recurring week array is greater than 0, add weeks
-                                if (whatDays.length > 0 && whatWeeks.length < 1) {
-                                    console.log('whatDays: ' + whatDays)
-                                }
-                                // if length of recurring is 0, build recur
-                                if (whatDays.length > 0 && whatWeeks.length > 0) {
-                                    console.log('whatDays: ' + whatDays)
-                                    console.log('whatWeeks: ' + whatWeeks)
-                                }
+                                    console.log(startDate)
 
-                                for (k = 0; k < upcomingDates.length; k++) {
-                                    var date = upcomingDates[k];
-                                    console.log(upcomingDates[k])
-                                    createRow();
+                                    // if length of recurring week array is greater than 0, add weeks
+                                    if (whatDays.length > 0 && whatWeeks.length < 1) {
+                                        var upcoming = moment(today).recur().every(whatDays).daysOfWeek();
+                                        console.log('whatDays: ' + whatDays)
+                                    }
+
+                                    // if length of recurring is 0, build recur
+                                    if (whatDays.length > 0 && whatWeeks.length > 0) {
+                                        var upcoming = moment(today).recur().every(whatDays).daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
+                                        console.log('whatDays: ' + whatDays)
+                                        console.log('whatWeeks: ' + whatWeeks)
+                                    }
+
+                                    var upcomingDates = upcoming.next(10, 'LL');
+
+                                    for (k = 0; k < upcomingDates.length; k++) {
+                                        var date = upcomingDates[k];
+                                        console.log(upcomingDates[k])
+                                        createRow();
+                                    }
                                 }
                             }
                         }
