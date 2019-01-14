@@ -1040,11 +1040,25 @@
                                 console.log(whatWeeks)
 
                                 var startDate = dirItems.Date;
-                                console.log(startDate)
                                 var upcoming = moment(startDate).recur().every('monday').daysOfWeek();
-                                //console.log(upcoming)
                                 var upcomingDates = upcoming.next(10, 'LL');
-                                //console.log(date[j])
+
+                                console.log(startDate)
+
+                                // if length of recurring day array is greater than 0, add days
+                                if (whatDays.length < 1 && whatWeeks.length > 0) {
+                                    console.log('whatWeeks: ' + whatWeeks)
+                                }
+                                // if length of recurring week array is greater than 0, add weeks
+                                if (whatDays.length > 0 && whatWeeks.length < 1) {
+                                    console.log('whatDays: ' + whatDays)
+                                }
+                                // if length of recurring is 0, build recur
+                                if (whatDays.length > 0 && whatWeeks.length > 0) {
+                                    console.log('whatDays: ' + whatDays)
+                                    console.log('whatWeeks: ' + whatWeeks)
+                                }
+
                                 for (k = 0; k < upcomingDates.length; k++) {
                                     var date = upcomingDates[k];
                                     console.log(upcomingDates[k])
