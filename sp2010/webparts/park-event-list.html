@@ -1046,21 +1046,37 @@
                                     console.log(whatWeeks)
 
                                     var startDate = dirItems.Date;
+                                    var endDate = dirItems.EndDate;
                                     var upcoming;//moment(startDate).recur().every('monday').daysOfWeek();
 
                                     console.log(startDate)
 
                                     // if length of recurring week array is greater than 0, add weeks
-                                    if (whatDays.length > 0 && whatWeeks.length < 1) {
-                                        var upcoming = moment(today).recur().every(whatDays).daysOfWeek();
-                                        console.log('whatDays: ' + whatDays)
-                                    }
+                                    if (startDate >= today) {
+                                        if (whatDays.length > 0 && whatWeeks.length < 1) {
+                                            var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek();
+                                            console.log('whatDays: ' + whatDays)
+                                        }
 
-                                    // if length of recurring is 0, build recur
-                                    if (whatDays.length > 0 && whatWeeks.length > 0) {
-                                        var upcoming = moment(today).recur().every(whatDays).daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
-                                        console.log('whatDays: ' + whatDays)
-                                        console.log('whatWeeks: ' + whatWeeks)
+                                        // if length of recurring is 0, build recur
+                                        if (whatDays.length > 0 && whatWeeks.length > 0) {
+                                            var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
+                                            console.log('whatDays: ' + whatDays)
+                                            console.log('whatWeeks: ' + whatWeeks)
+                                        }
+                                    }
+                                    if (startDate < today) {
+                                        if (whatDays.length > 0 && whatWeeks.length < 1) {
+                                            var upcoming = moment(today).recur().every(whatDays).daysOfWeek();
+                                            console.log('whatDays: ' + whatDays)
+                                        }
+
+                                        // if length of recurring is 0, build recur
+                                        if (whatDays.length > 0 && whatWeeks.length > 0) {
+                                            var upcoming = moment(today).recur().every(whatDays).daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
+                                            console.log('whatDays: ' + whatDays)
+                                            console.log('whatWeeks: ' + whatWeeks)
+                                        }
                                     }
 
                                     var upcomingDates = upcoming.next(10, 'LL');
