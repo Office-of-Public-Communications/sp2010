@@ -1591,6 +1591,10 @@
                         mappedName: "Email",
                         objectType: "URL"
                     },
+                    ows_Recurring: {
+                        mappedName: "Recurring",
+                        objectType: "LookupMulti"
+                    }
                 },
                 mappingOverrides: null,
                 debug: false
@@ -1643,10 +1647,13 @@
                         var today = new Date();
                         today.setHours(0, 0, 0, 0);
 
-                        if (((thisEventResults[ind].Date >= today) || (thisEventResults[ind].Recurring)) && ((thisEventResults[ind].EndDate >=
+                        if (((thisEventResults[ind].Date >= today) || (thisEventResults[ind].Recurring)) &&
+                            ((thisEventResults[ind].EndDate >=
                                 today) || (thisEventResults[ind].EndDate == undefined)) && (
                                 thisEventResults[ind].Park.lookupId == window.location.search.split(
                                     '=')[1].toString())) {
+
+                            //console.log(thisEventResults[ind])
 
                             if (!thisEventResults[ind].Recurring) {
                                 var date = moment(thisEventResults[ind].Date).format('LL');
@@ -1658,7 +1665,7 @@
                                 //console.log(thisEventResults[ind].Recurring)
                                 for (j = 0; j < thisEventResults[ind].Recurring.length; j++) {
 
-                                    console.log(thisEventResults[ind].Recurring[j].lookupValue)
+                                    //console.log(thisEventResults[ind].Recurring[j].lookupValue)
 
                                     if (thisEventResults[ind].EndDate >= today || !thisEventResults[ind].EndDate) {
 
@@ -1877,21 +1884,19 @@
                                         var endDate = thisEventResults[ind].EndDate;
                                         var upcoming; //moment(startDate).recur().every('monday').daysOfWeek();
 
-                                        console.log(startDate)
+                                        console.log(endDate.toString().length)
 
                                         // if length of recurring week array is greater than 0, add weeks
                                         if (startDate >= today) {
                                             if (whatDays.length > 0 && whatWeeks.length < 1) {
-                                                var upcoming = moment(startDate).recur(endDate ?
-                                                    endDate : false).every(whatDays).daysOfWeek();
+                                                console.log('s: ' + startDate + ' ed: ' + endDate)
+                                                var upcoming = moment().recur(startDate + ', ' + endDate ? endDate : false).every(whatDays).daysOfWeek();
                                                 console.log('whatDays: ' + whatDays)
                                             }
 
                                             // if length of recurring is 0, build recur
                                             if (whatDays.length > 0 && whatWeeks.length > 0) {
-                                                var upcoming = moment(startDate).recur(endDate ?
-                                                        endDate : false).every(whatDays).daysOfWeek()
-                                                    .every(whatWeeks).weeksOfMonthByDay();
+                                                var upcoming = moment().recur(startDate + ', ' + endDate ? endDate : false).every(whatDays).daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
                                                 console.log('whatDays: ' + whatDays)
                                                 console.log('whatWeeks: ' + whatWeeks)
                                             }
@@ -1916,8 +1921,14 @@
                                         // if (whatDays == 'Reservation') {
                                         //     var upcoming =
                                         // }
-
-                                        var upcomingDates = upcoming.next(10, 'LL');
+                                        if (endDate.toString().length < 1) {
+                                            var upcomingDates = upcoming.next(10, 'LL');
+                                            console.log('u1: ' + upcomingDates)
+                                        }
+                                        if (endDate.toString().length > 0) {
+                                            var upcomingDates = upcoming.all('LL');
+                                            console.log('u2: ' + upcomingDates)
+                                        }
 
                                         for (k = 0; k < upcomingDates.length; k++) {
                                             var date = upcomingDates[k];
