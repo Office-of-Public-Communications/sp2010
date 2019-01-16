@@ -1527,7 +1527,7 @@
 
                 dirInfo3 = this.data[0];
 
-                console.log(dirInfo3)
+                //console.log(dirInfo3)
                 // build title & description
                 if (dirInfo3.Alert) {
                     $('#alertText').html(dirInfo3.Alert);
@@ -1608,7 +1608,7 @@
                     //Header & Footer Titles
                     var thisEventResults = this.data;
 
-                    console.log(thisEventResults)
+                    //console.log(thisEventResults)
 
                     resultTitles = this.data[0];
                     resultKeys = Object.keys(resultTitles);
@@ -1629,7 +1629,7 @@
                     $.each(thisEventResults, function (ind, eventItems) {
 
                         var createRow = function () {
-                            console.log(date)
+                            //console.log(date)
                             $('#eventItems')
                                 .append($('<tr>')
                                     .append($(
@@ -1877,35 +1877,42 @@
                                         //     whatWeeks.push('');
                                         // }
 
-                                        console.log(whatDays)
-                                        console.log(whatWeeks)
+                                        //console.log(whatDays)
+                                        //console.log(whatWeeks)
 
                                         var startDate = thisEventResults[ind].Date;
                                         var endDate = thisEventResults[ind].EndDate;
                                         var upcoming; //moment(startDate).recur().every('monday').daysOfWeek();
 
-                                        console.log(endDate.toString().length)
+                                        //console.log(endDate.toString().length)
 
                                         // if length of recurring week array is greater than 0, add weeks
                                         if (startDate >= today) {
                                             if (whatDays.length > 0 && whatWeeks.length < 1) {
-                                                console.log('s: ' + startDate + ' ed: ' + endDate)
-                                                var upcoming = moment().recur(startDate + ', ' + endDate ? endDate : false).every(whatDays).daysOfWeek();
-                                                console.log('whatDays: ' + whatDays)
+                                                //console.log('s: ' + startDate + ' ed: ' + endDate)
+                                                var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek();
+                                                upcoming.fromDate(startDate);
+                                                upcoming.endDate(endDate);
+                                                //console.log('whatDays: ' + whatDays)
+                                                allDates = upcoming.all('L')
+                                                console.log(allDates)
                                             }
 
                                             // if length of recurring is 0, build recur
                                             if (whatDays.length > 0 && whatWeeks.length > 0) {
-                                                var upcoming = moment().recur(startDate + ', ' + endDate ? endDate : false).every(whatDays).daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
-                                                console.log('whatDays: ' + whatDays)
-                                                console.log('whatWeeks: ' + whatWeeks)
+                                                var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek().every(moment(whatWeeks).monthWeekByDay()).weeksOfMonthByDay();
+                                                upcoming.fromDate(startDate);
+                                                upcoming.endDate(endDate);
+                                                // console.log('whatDays: ' + whatDays)
+                                                // console.log('whatWeeks: ' + whatWeeks)
+                                                console.log(upcoming.all('LL'))
                                             }
                                         }
                                         if (startDate < today) {
                                             if (whatDays.length > 0 && whatWeeks.length < 1) {
                                                 var upcoming = moment(today).recur().every(
                                                     whatDays).daysOfWeek();
-                                                console.log('whatDays: ' + whatDays)
+                                                // console.log('whatDays: ' + whatDays)
                                             }
 
                                             // if length of recurring is 0, build recur
@@ -1913,22 +1920,24 @@
                                                 var upcoming = moment(today).recur().every(
                                                         whatDays).daysOfWeek().every(whatWeeks)
                                                     .weeksOfMonthByDay();
-                                                console.log('whatDays: ' + whatDays)
-                                                console.log('whatWeeks: ' + whatWeeks)
+                                                // console.log('whatDays: ' + whatDays)
+                                                // console.log('whatWeeks: ' + whatWeeks)
                                             }
                                         }
                                         //by reservation temporary fix
                                         // if (whatDays == 'Reservation') {
                                         //     var upcoming =
                                         // }
-                                        if (endDate.toString().length < 1) {
-                                            var upcomingDates = upcoming.next(10, 'LL');
-                                            console.log('u1: ' + upcomingDates)
-                                        }
-                                        if (endDate.toString().length > 0) {
-                                            var upcomingDates = upcoming.all('LL');
-                                            console.log('u2: ' + upcomingDates)
-                                        }
+                                        // if (endDate.toString().length < 1) {
+                                        //     var upcomingDates = upcoming.next(10, 'LL');
+                                        //     console.log('u1: ' + upcomingDates)
+                                        // }
+                                        // if (endDate.toString().length > 0) {
+                                        //     var upcomingDates = upcoming.all('LL');
+                                        //     console.log('u2: ' + upcomingDates)
+                                        // }
+
+                                        var upcomingDates = upcoming.next(10, 'LL');
 
                                         for (k = 0; k < upcomingDates.length; k++) {
                                             var date = upcomingDates[k];
