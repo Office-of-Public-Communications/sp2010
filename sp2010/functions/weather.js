@@ -1,5 +1,3 @@
-var nwsUrl;
-var icon;
 $.ajax({
     url: 'https://api.weather.gov/gridpoints/MFL/109,65/forecast',
     data: {},
@@ -7,7 +5,9 @@ $.ajax({
     dataType: 'json',
     success: function(data){
         //alert(data);
-        nwsUrl = JSON.stringify(data.properties.periods[8].icon);
+        nwsUrl = JSON.stringify(data.properties.periods[0].icon);
+        nwsTemp = JSON.stringify(data.properties.periods[0].temperature);
+        nwsForecast = JSON.stringify(data.properties.periods[0].shortForecast);
     }
 }).done(function(){
 
@@ -130,10 +130,13 @@ for (var i = 0; i < nwsIcons.length; i++)  {
 }
 //console.log(icon);
 }).done(function(){
-// build icon url to use in weather widget
-    //html = '<h2>' + weather.city + ', ' + weather.region + '</h2>';
-    html = '<img style="float:left;" width="125px" src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg">';
-    //html += '<p>' + weather.temp + '&deg; ' + weather.units.temp + '<br /><span>' + weather.currently + '</span></p>';
-    //html += '<a href="' + weather.link + '">View Forecast &raquo;</a>';
+    html = '<div class="weather-card"><h2>' + nwsTemp + '&deg;F</h2><img src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg"><p><span>' + nwsForecast.split('"').join('') + '</span></p></div>';
     $("#weather").html(html);
 });
+
+// }).done(function () {
+//     html = '<h2>' + nwsTemp + '&deg; F</h2>';
+//     html += '<img src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg">';
+//     html += '<p><span>' + nwsForecast.split('"').join('') + '</span></p>';
+//     $("#weather").html(html);
+// });

@@ -88,7 +88,7 @@
             font-variant: normal;
             text-rendering: auto;
             -webkit-font-smoothing: antialiased;
-            font-family: "FontAwesomeSolid";
+            font-family: "Font Awesome 5 Pro";
             content: " \f105";
             font-size: .8rem;
             padding-left: 6px;
@@ -462,7 +462,7 @@
                     } else if (units === Object(units)) {
                         list = units;
                     } else if ((Object.prototype.toString.call(units) == '[object Number]') || (Object.prototype
-                            .toString.call(units) == '[object String]')) {
+                        .toString.call(units) == '[object String]')) {
                         list[units] = true;
                     } else {
                         throw Error("Provide an array, object, string or number when passing units!");
@@ -773,7 +773,7 @@
                 } else {
                     return this.hours(0).minutes(0).seconds(0).milliseconds(0).add(this.utcOffset(),
                         "minute").utcOffset(
-                        0);
+                            0);
                 }
             };
             return moment;
@@ -838,8 +838,10 @@
                 tHeaderRow.append($(
                     '<th>Title</th><th>Park</th><th>Date</th>'
                 ));
-                var createRow = function () {
 
+                //Main Data
+                for (i = 0; i < thisDirResults.length; i++) {
+                    var createRow = function () {
                     $("#rowItems")
                         .append($('<tr>')
                             .append('<td><a id="dirListTitleLink" href="../Pages/Event.aspx?=' +
@@ -848,9 +850,7 @@
                                 ' ') + '</td>'))
                             .append($('<td>' + date + '</td>'))
                         )
-                }
-                //Main Data
-                for (i = 0; i < thisDirResults.length; i++) {
+                    }
                     dirItems = thisDirResults[i]
                     //check if date is upcoming or past
                     var today = new Date();
@@ -867,25 +867,15 @@
                             var date = moment(dirItems.Date).format('LL');
                             createRow();
                         }
-                        // if (dirItems.Recurring && dirItems.Recurring[i].lookupValue == 'By Reservation') {
-                        //     var date = 'By Reservation' //moment(today).format('LL');
-                        //     createRow();
-                        // }
                         if (dirItems.Recurring) {
                             // if date, add date
                             //console.log(dirItems.Recurring)
                             for (j = 0; j < dirItems.Recurring.length; j++) {
 
-                                console.log(dirItems.Recurring[j].lookupValue)
-
                                 if (dirItems.EndDate >= today || !dirItems.EndDate) {
 
                                     var whatDays = [];
                                     var whatWeeks = [];
-
-                                    // if (dirItems.Recurring[j].lookupValue == 'By Reservation') {
-                                    //     whatDays.push('Reservation');
-                                    // }
 
                                     if (dirItems.Recurring[j].lookupValue == 'Every Monday') {
                                         whatDays.push('Monday');
@@ -1089,12 +1079,17 @@
                                             console.log('whatWeeks: ' + whatWeeks)
                                         }
                                     }
-                                    //by reservation temporary fix
-                                    // if (whatDays == 'Reservation') { 
-                                    //     var upcoming = 
-                                    // }
-
-                                    var upcomingDates = upcoming.next(10, 'LL');
+                                    // if no end date, get next 10 dates
+                                    //console.log('END DATE: ' + endDate)
+                                    if (endDate == undefined) {
+                                        var upcomingDates = upcoming.next(10, 'LL');
+                                        console.log(upcomingDates)
+                                    }
+                                    if (endDate instanceof Date) {
+                                        console.log('DAAAAAAAAAAAAATE')
+                                        var upcomingDates = upcoming.all('LL');
+                                        console.log(upcomingDates)
+                                    }
 
                                     for (k = 0; k < upcomingDates.length; k++) {
                                         var date = upcomingDates[k];
