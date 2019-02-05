@@ -1888,23 +1888,19 @@
 
                                         // if length of recurring week array is greater than 0, add weeks
                                         if (startDate >= today) {
-                                            if (whatDays.length > 0 && whatWeeks.length < 1) {
-                                                //console.log('s: ' + startDate + ' ed: ' + endDate)
+                                            if (whatDays.length > 0 && whatWeeks.length < 1 && endDate != undefined) {
                                                 var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek();
                                                 upcoming.fromDate(startDate);
                                                 upcoming.endDate(endDate);
-                                                //console.log('whatDays: ' + whatDays)
-                                                allDates = upcoming.all('L')
+                                                allDates = upcoming.all('LL')
                                                 console.log(allDates)
                                             }
 
                                             // if length of recurring is 0, build recur
-                                            if (whatDays.length > 0 && whatWeeks.length > 0) {
+                                            if (whatDays.length > 0 && whatWeeks.length > 0 && endDate != undefined) {
                                                 var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek().every(moment(whatWeeks).monthWeekByDay()).weeksOfMonthByDay();
                                                 upcoming.fromDate(startDate);
                                                 upcoming.endDate(endDate);
-                                                // console.log('whatDays: ' + whatDays)
-                                                // console.log('whatWeeks: ' + whatWeeks)
                                                 console.log(upcoming.all('LL'))
                                             }
                                         }
