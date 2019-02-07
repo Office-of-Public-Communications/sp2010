@@ -45,7 +45,7 @@
             line-height: 32px;
             background: #4FC3F7;
             border-radius: 50%;
-            vertical-align: middle;
+            /* vertical-align: middle; */
             text-align: center;
             -webkit-transition: all .35s;
             -o-transition: all .35s;
@@ -97,7 +97,7 @@
                     </div>
                     <div class="col-md-8 col-12">
 
-                        <h2 id="faqTopicTitle" class="pb-3 font-weight-bold text-center text-md-left">Select a Topic</h2>
+                        <h2 id="faqTopicTitle" class="pb-3 font-weight-bold text-center text-md-left">&larr;</h2>
                         <!-- Grid row -->
                         <div class="row d-flex justify-content-center">
 
@@ -180,7 +180,7 @@
                 }
 
                 var accID = $("#topicOptions > li > a:first-child").html()
-                $('#faqTopicTitle').html(accID)
+                //$('#faqTopicTitle').html(accID)
 
                 var effectIn = function () {
                     $('#faqTopicTitle').html(accID).fadeTo(500, 1);
@@ -270,7 +270,7 @@
                     buildCards();
 
                 };
-                createAccordion();
+                //createAccordion();
                 $("#topicOptions > li:first-child > a").parent().css({
                     borderLeft: "solid medium #039BE5",
                     marginLeft: "-3px"
