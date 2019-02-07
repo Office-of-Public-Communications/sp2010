@@ -33,7 +33,7 @@
 
         #accordionColumn span:after {
             content: "\f067";
-            font-family: FontAwesome;
+            font-family: "Font Awesome 5 Pro";
             position: absolute;
             right: 0;
             top: 0;
@@ -58,18 +58,21 @@
             -webkit-transform: rotate(135deg);
             transform: rotate(135deg);
         }
+
         .before-event {
             display: block;
             width: 100%;
             background: #FFF176;
             padding: 10px;
         }
+
         .during-event {
             display: block;
             width: 100%;
             background: #FFCC80;
             padding: 10px;
         }
+
         .after-event {
             display: block;
             width: 100%;
@@ -93,18 +96,6 @@
                         </div>
                     </div>
                     <div class="col-md-8 col-12">
-                        <!-- <div class="row justify-content-center justify-content-md-end my-2">
-                            <div class="col-md-7 col-10 pr-1">
-                                <div class="z-depth-1 bg-white pr-3" style="border-radius:4px;">
-                                    <input class="form-control pl-3" id="faqSearch" style="border-radius:4px;" type="text"
-                                        placeholder="Search" aria-label="Search" data-search />
-                                </div>
-                            </div>
-                            <div class="col-2 d-flex pl-1 justify-content-end">
-                                <button class="btn btn-sm px-4 d-flex justify-content-center" style="background-color:#039BE5; margin-top:4px; margin-bottom:16px"
-                                    type="button" data-search-button><i class="fal fa-search" style="font-size:24px"></i></button>
-                            </div>
-                        </div> -->
 
                         <h2 id="faqTopicTitle" class="pb-3 font-weight-bold text-center text-md-left">Select a Topic</h2>
                         <!-- Grid row -->
@@ -336,67 +327,11 @@
                         });
                     });
 
-
                 };
                 topicNav();
 
-                // firstEffect = function () {
-                // var accID = $("#topicOptions > li > a:first-child").html()
-                // console.log(accID)
-                // $('#faqTopicTitle').html(accID).fadeTo(500, 1);
-                // return $("#accordionColumn").fadeTo(500, 1);
-
-                // };
-                // firstEffect();
-
-                //Search Function
-                // $('[data-search]').keypress(function (event) {
-                //     if (event.which == 13) {
-                //         event.preventDefault();
-                //         event.returnValue = false;
-                //         accID = 'Search Results';
-                //         console.log($(this));
-
-                //         searchVal = $(this).val().toLowerCase();
-                //         $.when(effectOut()).done(function () {
-                //             $("#topicOptions > li").css({
-                //                 borderLeft: "none",
-                //                 marginLeft: "0px"
-                //             });
-
-                //             $(".accordion").remove();
-                //             createAccordion();
-                //             effectIn();
-                //         });
-                //         console.log(searchVal);
-                //     }
-                // });
-                // $('[data-search-button]').on('click', function (event) {
-                //     event.preventDefault();
-                //     event.returnValue = false;
-                //     accID = 'Search Results';
-
-                //     $("#topicOptions > li").css({
-                //         borderLeft: "none",
-                //         marginLeft: "0px"
-                //     });
-
-                //     searchVal = $('#faqSearch').val().toLowerCase();
-                //     $.when(effectOut()).done(function () {
-                //         $("#topicOptions > li").css({
-                //             borderLeft: "none",
-                //             marginLeft: "0px"
-                //         });
-
-                //         $(".accordion").remove();
-                //         createAccordion();
-                //         effectIn();
-                //     });
-                //     console.log(searchVal);
-                // });
             });
         });
-
 
         webpartMove = $("#faq")
         webpartMove.detach();
