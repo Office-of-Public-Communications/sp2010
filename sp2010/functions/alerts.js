@@ -1,10 +1,9 @@
 $(document).ready(function () {
-    console.log('matt alert working');
     $().SPServices({
         operation: "GetListItems",
         async: false,
         listName: "Alert",
-        webURL: "/Sandbox/v6/MattDEV/",
+        webURL: "/Library/",
         CAMLViewFields: "<ViewFields><FieldRef Name='Title' /><FieldRef Name='More' /></ViewFields>",
         CAMLQuery: "",
         completefunc: function (xData, Status) {
@@ -36,8 +35,8 @@ $(document).ready(function () {
             // alerts on burger & in side nav when banner has been dismissed
             if ($(this).attr("ows_Title")) {
                 if ($(this).attr("ows_Title").length > 0 && sessionStorage.getItem('hidden_alerts')) {
-                    $('div#hamburger').append('<i id="burgerAlert" class="fas fa-exclamation-triangle"></i>')
-                    $('#slide-out > li:nth-child(1) > div').parent().prepend('<nav id="sideAlert"><a href="Alerts.aspx">⚠ View Alerts</a></nav>')
+                    $('div#hamburger').append('<i id="burgerAlert" class="fas fa-exclamation-triangle"></i>');
+                    $('#slide-out > li:nth-child(1) > div').parent().prepend('<nav id="sideAlert"><a href="Alerts.aspx">⚠ View Alerts</a></nav>');
                     // dismiss alert
                     $("#alertsWrap").css("display", "none");
                 }
@@ -83,8 +82,8 @@ $(function () {
     if (sessionStorage.getItem('hidden_alerts')) {
         // add icon & alert link to side nav
         sessionStorage.setItem('hidden_alerts', true);
-        $('div#hamburger').append('<i id="burgerAlert" class="fas fa-exclamation-triangle"></i>')
-        $('#slide-out > li:nth-child(1) > div').parent().prepend('<nav id="sideAlert"><a href="Alerts.aspx">⚠ View Alerts</a></nav>')
+        $('div#hamburger').append('<i id="burgerAlert" class="fas fa-exclamation-triangle"></i>');
+        $('#slide-out > li:nth-child(1) > div').parent().prepend('<nav id="sideAlert"><a href="Alerts.aspx">⚠ View Alerts</a></nav>');
 
         // do the dismissing & resizing things
         $("#alertsWrap").css("display", "none");
