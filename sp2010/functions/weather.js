@@ -11,8 +11,7 @@ $.ajax({
     }
 }).done(function(){
 
-// TODO: need to replace this pathname part with NWS API icon url
-var nwsIconPath = nwsUrl;//.split('land/')[1];
+var nwsIconPath = nwsUrl;
 var nwsIcons = [ "skc", "few", "sct", "bkn", "ovc", "wind_skc", "wind_few", "wind_sct", "wind_bkn", "wind_ovc", "snow", "rain_snow", "rain_sleet", "snow_sleet", "fzra", "rain_fzra", "snow_fzra", "sleet", "rain", "rain_showers", "rain_showers_hi", "tsra", "tsra_sct", "tsra_hi", "tornado", "hurricane", "tropical_storm", "dust", "smoke", "haze", "hot", "cold", "blizzard", "fog" ];
 
 // if nwsIcon is in the pathname, function to find matching Y icon
@@ -130,13 +129,6 @@ for (var i = 0; i < nwsIcons.length; i++)  {
 }
 //console.log(icon);
 }).done(function(){
-    html = '<div class="weather-card"><h2>' + nwsTemp + '&deg;F</h2><img src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg"><p><span>' + nwsForecast.split('"').join('') + '</span></p></div>';
+    html = '<div class="weather-card"><img src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg"><h2>' + nwsTemp + '&deg;F</h2><p><span>' + nwsForecast.split('"').join('') + '</span></p></div>';
     $("#weather").html(html);
 });
-
-// }).done(function () {
-//     html = '<h2>' + nwsTemp + '&deg; F</h2>';
-//     html += '<img src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg">';
-//     html += '<p><span>' + nwsForecast.split('"').join('') + '</span></p>';
-//     $("#weather").html(html);
-// });
