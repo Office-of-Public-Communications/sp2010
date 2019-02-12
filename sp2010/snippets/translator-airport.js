@@ -39,12 +39,12 @@ var toHi = function () {
     Microsoft.Translator.Widget.domTranslator.showTooltips = false;
 };
 var toNe = function () {
-    Microsoft.Translator.Widget.Translate('en', 'ne', onProgress, onError, onComplete, onRestoreOriginal, 8000);
+    Microsoft.Translator.Widget.Translate('en', 'nl', onProgress, onError, onComplete, onRestoreOriginal, 8000);
     Microsoft.Translator.Widget.domTranslator.showHighlight = false;
     Microsoft.Translator.Widget.domTranslator.showTooltips = false;
 };
 var toPe = function () {
-    Microsoft.Translator.Widget.Translate('en', 'pe', onProgress, onError, onComplete, onRestoreOriginal, 8000);
+    Microsoft.Translator.Widget.Translate('en', 'pl', onProgress, onError, onComplete, onRestoreOriginal, 8000);
     Microsoft.Translator.Widget.domTranslator.showHighlight = false;
     Microsoft.Translator.Widget.domTranslator.showTooltips = false;
 };
@@ -84,10 +84,10 @@ if (localStorage.getItem('translation')) {
         case 'hi':
             toHi();
             break;
-        case 'ne':
+        case 'nl':
             toNe();
             break;
-        case 'pe':
+        case 'pl':
             toPe();
             break;
         case 'it':

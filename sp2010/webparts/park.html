@@ -334,6 +334,9 @@
                 display: block;
             }
         }
+    div#mapid {
+        z-index: 1;
+    }
 
 </style>
     <!-- Flickity styles -->
@@ -345,6 +348,8 @@
     <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js" integrity="sha512-2fA79E27MOeBgLjmBrtAgM/20clVSV8vJERaW/EcnnWCVGwQRazzKtQS1kIusCZv1PtaQxosDZZ0F1Oastl55w=="
         crossorigin=""></script>
+    <!-- Mapbox styles -->
+    <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' />
 </head>
 
 <body>
@@ -1438,7 +1443,7 @@
                 $('#directoryItem').removeClass('d-none');
 
                 if (dirInfo2.Rentals) {
-                    console.log(dirInfo2.Rentals);
+                    //console.log(dirInfo2.Rentals);
                 }
             });
 
@@ -1538,9 +1543,12 @@
         });
     </script>
     <!-- Init map -->
-    <script defer type="text/javascript" src="/Style%20Library/V6/js/broward/Parks/parksMap.js"></script>
+    <script defer type="text/javascript" src="/Style%20Library/V7/js/broward/Parks/parksMap.js"></script>
     <!-- Google Maps -->
     <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVF9fnqaUvGIJY-HmXtOCpWV5Yu798fXQ"></script>
+    <!-- Leaflet maps -->
+    <script src='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js'></script>
+
     <!-- Tabbed Datatable -->
     <script type="text/javascript">
         $(document).ready(function () {
@@ -1893,7 +1901,7 @@
                                                 upcoming.fromDate(startDate);
                                                 upcoming.endDate(endDate);
                                                 allDates = upcoming.all('LL')
-                                                console.log(allDates)
+                                                //console.log(allDates)
                                             }
 
                                             // if length of recurring is 0, build recur
@@ -1901,7 +1909,7 @@
                                                 var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek().every(moment(whatWeeks).monthWeekByDay()).weeksOfMonthByDay();
                                                 upcoming.fromDate(startDate);
                                                 upcoming.endDate(endDate);
-                                                console.log(upcoming.all('LL'))
+                                                //console.log(upcoming.all('LL'))
                                             }
                                         }
                                         if (startDate < today) {
@@ -1937,8 +1945,8 @@
 
                                         for (k = 0; k < upcomingDates.length; k++) {
                                             var date = upcomingDates[k];
-                                            console.log(upcomingDates[k]);
-                                            console.log('recurring append')
+                                            //console.log(upcomingDates[k]);
+                                            //console.log('recurring append')
                                             createRow();
                                         }
                                     }

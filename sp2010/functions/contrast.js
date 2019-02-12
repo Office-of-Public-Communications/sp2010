@@ -255,7 +255,7 @@ var accessibilityButtons = function accessibilityButtons(options) {
                         var txtArray = Array.from(descText.prevObject);
                         for (var i = 0, len = txtArray.length; i < len; i++) {
                             //txtArray.map(function (element) {
-                            var element = txtArray[i]
+                            var element = txtArray[i];
                             //console.log(txtArray[i])
                             if (element !== $('.navbar-desktop *') || $('.menu-horizontal *') || $('.vjs-text-track-display') || $('iframe')) {
                                 if (element.hasAttribute('href')) {
