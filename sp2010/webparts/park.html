@@ -451,6 +451,7 @@
                             <li id="saturday" class="desktopDays">Saturday</li>
                             <li id="sunday" class="desktopDays">Sunday</li>
                             <li id="office">Office</li>
+                            <li id="aquatics" class="aquaticsTitle"></li>
                         </ul>
                     </div>
                     <div class="col-8">
@@ -463,6 +464,7 @@
                             <li id="saturday" class="hours"></li>
                             <li id="sunday" class="hours"></li>
                             <li id="office" class="hours"></li>
+                            <li id="aquatics" class="hours"></li>
                         </ul>
                     </div>
                 </div>
@@ -1374,6 +1376,35 @@
                 $('li#saturday.hours').html(dirInfo2.Saturday);
                 $('li#sunday.hours').html(dirInfo2.Sunday);
                 $('li#office.hours').html(dirInfo2.OfficeHours);
+
+                var hasAquatics = ["5", "7", "28", "37"];
+                var parkNum = window.location.search.split('=')[1].toString();
+
+                if ($.inArray(parkNum, hasAquatics) !== -1) {
+                    //add aquatic park hours
+                    //append 'aquatics' & hours
+                    //console.log('show me the waters!!!!!!!!!!!!!!!!!!!!!!!');
+                    $('li#aquatics.aquaticsTitle').html('<a id="aquaticsModal" href="">Aquatics&nbsp;<i class="fal fa-info-circle"></i></a>');
+                    $('li#aquatics.hours').html('10:00AM-5:20PM');
+
+                    switch (parkNum) {
+                        case '5':
+                            // CB Smith
+                            break;
+                        case '7':
+                            // Central Broward
+                            break;
+                        case '28':
+                            // Quiet Waters
+                            break;
+                        case '37':
+                            // TY
+                            break;
+                        default:
+                            console.log('aquatics info not available')
+                    }
+                    //append modal
+                }
 
                 d = new Date();
                 today = d.getDay();
