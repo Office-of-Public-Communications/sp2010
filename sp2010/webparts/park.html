@@ -1384,7 +1384,8 @@
                     //add aquatic park hours
                     //append 'aquatics' & hours
                     //console.log('show me the waters!!!!!!!!!!!!!!!!!!!!!!!');
-                    $('li#aquatics.aquaticsTitle').html('<a id="aquaticsModal" href="">Aquatics&nbsp;<i class="fal fa-info-circle"></i></a>');
+                    $('li#aquatics.aquaticsTitle').html('<a href="#" title="Aquatics Hours Info" id="page-contact" class="" data-toggle="modal" data-target="#aquaticsModal">Aquatics&nbsp;<i class="fal fa-info-circle"></i></a><div class="modal fade" id="aquaticsModal" tabindex="-1" role="dialog" aria-labelledby="aquaticsModal" aria-hidden="true"><div id="aquaticsModal" class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><p class="heading lead" id="ParkName">Aquatic Park Dates of Operation</p><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><div class="container"><div class="row"><div class="col-2"><ul style="list-style: none; padding-inline-start: 0px; padding-left: 0px;"><li>Jan</li><li>Feb</li><li>Mar</li><li>Apr</li><li>May</li><li>Jun</li></ul></div><div class="col-4">2</div><div class="col-2"><ul style="list-style: none; padding-inline-start: 0px; padding-left: 0px;"><li>Jul</li><li>Aug</li><li>Sep</li><li>Oct</li><li>Nov</li><li>Dec</li></ul></div><div class="col-4">4</div></div></div></div></div></div></div>');
+                    //$('#aquaticsModal').modal();
                     $('li#aquatics.hours').html('10:00AM-5:20PM');
 
                     switch (parkNum) {
