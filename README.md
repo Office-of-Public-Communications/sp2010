@@ -15,14 +15,14 @@ This repo contains snippets, functions & SharePoint webpart code. All code here 
 2. **Switch to branch:**   
 `git checkout [your-name-or-feature-name]`   
 
-3. **Push branch**
+3. **Push branch**   
 `git push origin [branch-name]`
 ### Staging, Committing & Pushing
-1. **Stage files**
-Stage all files: `git add .`
-Stage specific files: `git add [specific-file-name]`
-2. **Commit files**
-`git commit "[descriptive message]"`
-3. **Push files**
+1. **Stage files**   
+Stage all files: `git add .`   
+Stage specific files: `git add [specific-file-name]`   
+2. **Commit files**   
+`git commit "[descriptive message]"`   
+3. **Push files**   
 ### Issues
 -
