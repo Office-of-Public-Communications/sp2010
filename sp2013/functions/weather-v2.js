@@ -1,3 +1,5 @@
+var icon;
+
 $.ajax({
     url: 'https://api.weather.gov/gridpoints/MFL/109,65/forecast',
     data: {},
@@ -17,10 +19,13 @@ $.ajax({
             "Accept": "application/json; odata=verbose"
         },
         success: function (data) {
-            console.log(data);
+            console.log('heyo');
+            quote = data.d.results;
+            console.log(data.d.results);
             //var quote = ;
         }
-    }).done(function () {
+    });
+}).done(function () {
 
         var nwsIconPath = nwsUrl;
         var nwsIcons = [ "skc", "few", "sct", "bkn", "ovc", "wind_skc", "wind_few", "wind_sct", "wind_bkn", "wind_ovc", "snow", "rain_snow", "rain_sleet", "snow_sleet", "fzra", "rain_fzra", "snow_fzra", "sleet", "rain", "rain_showers", "rain_showers_hi", "tsra", "tsra_sct", "tsra_hi", "tornado", "hurricane", "tropical_storm", "dust", "smoke", "haze", "hot", "cold", "blizzard", "fog" ];
@@ -138,9 +143,9 @@ $.ajax({
                 }
         }
         }
-    });
+    })
 //console.log(icon);
-})
+
 .done(function(){
     html = '<div class="weather-card"><img src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg"><h2>' + nwsTemp + '&deg;F</h2><p><span>' + nwsForecast.split('"').join('') + '</span></p></div>';
     $("#weather").html(html);
