@@ -4,25 +4,27 @@
 
 This repo contains snippets, functions & SharePoint webpart code. All code here is development only. Production-ready code should be uploaded to the County server.
 
-## Github Flow
+## Github Workflows
 ### Setup
 1. `git init`
 2. `git clone [url]`
 ### Branches
 1. **Create a branch:**   
-`git branch [your-name-or-feature-name]`   
+`git branch [branch-name]`   
 
 2. **Switch to branch:**   
-`git checkout [your-name-or-feature-name]`   
+`git checkout [branch-name]`   
 
 3. **Push branch**   
 `git push origin [branch-name]`
 ### Staging, Committing & Pushing
 1. **Stage files**   
-Stage all files: `git add .`   
-Stage specific files: `git add [specific-file-name]`   
+    - Stage all files: `git add .`   
+    - Stage specific files: `git add [specific-file-name]`   
 2. **Commit files**   
 `git commit "[descriptive message]"`   
 3. **Push files**   
+### Pull Requests
+-
 ### Issues
 -
