@@ -6,8 +6,8 @@ This repo contains snippets, functions & SharePoint webpart code. All code here 
 
 ## Github Workflows
 ### Setup
-1. `git init`
-2. `git clone [url]`
+1. `git init`   
+2. `git clone [url]`   
 ### Branches
 1. **Create a branch:**   
 `git branch [branch-name]`   
@@ -24,7 +24,7 @@ This repo contains snippets, functions & SharePoint webpart code. All code here 
 2. **Commit files**   
 `git commit "[descriptive message]"`   
 3. **Push files**   
-`git push origin [branch-name]`
+`git push origin [branch-name]`   
 ### Pull Requests
 -
 ### Issues
