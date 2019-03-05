@@ -1,14 +1,13 @@
 # Broward County
 [Broward.org](https://broward.org) / [BC-Net](https://bc-net/)
 Maintained by the Office of Public Communications Dev Team   
+This repo contains snippets, functions & SharePoint webpart code. All code here is development only. Production-ready code should be uploaded to the County server.   
 
-This repo contains snippets, functions & SharePoint webpart code. All code here is development only. Production-ready code should be uploaded to the County server.
-
-## Recommended git flows
+## Recommended git workflows
 ### Setup
 1. `git init`   
 2. `git clone [url]`   
-### Branches
+### Branching
 1. **Create a branch:**   
 `git branch [branch-name]`   
 
