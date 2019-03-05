@@ -1,4 +1,4 @@
-# Frontend Development code for Broward County's internet & intranet websites
+# Frontend code for Broward County's websites
 
 [Broward.org](https://broward.org)
 
@@ -19,11 +19,12 @@ This repo contains snippets, functions & SharePoint webpart code. All code here 
 `git push origin [branch-name]`
 ### Staging, Committing & Pushing
 1. **Stage files**   
-    - Stage all files: `git add .`   
-    - Stage specific files: `git add [specific-file-name]`   
+    - Stage *all* files: `git add .`   
+    - Stage *specific* files: `git add [file-name]`   
 2. **Commit files**   
 `git commit "[descriptive message]"`   
 3. **Push files**   
+`git push origin [branch-name]`
 ### Pull Requests
 -
 ### Issues
