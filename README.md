@@ -1,9 +1,7 @@
 # Broward County Government
-## Frontend Development
 [Broward.org](https://broward.org) / [BC-Net](https://bc-net/)
 
-Maintained by the Office of Public Communications Dev Team  
-This repo contains snippets, functions & SharePoint webpart code. All code here is development only. Production-ready code should be uploaded to the County server.  
+This repository is maintained by the Office of Public Communications Dev Team and contains snippets, functions & SharePoint webpart code. All code here is development only. Production-ready code should be uploaded to the County's SharePoint server.  
 
 ## Recommended git workflows
 ### Setup
