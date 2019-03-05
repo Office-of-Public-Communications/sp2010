@@ -4,8 +4,10 @@ This repo contains snippets, functions & SharePoint webpart code. All code here 
 
 ## Github Flow
 ### Branches
-- To create a branch:
+Create a branch:   
 `git branch [your-name-or-feature-name]`
+Switch to branch:   
+`git checkout [your-name-or-feature-name]`
 ### Staging, Committing & Pushing
 -
 ### Issues
