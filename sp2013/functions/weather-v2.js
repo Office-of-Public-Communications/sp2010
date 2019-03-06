@@ -21,9 +21,10 @@ $.ajax({
         success: function (data) {
             quote = data.d.results;
             console.log(data.d.results);
-            condition = quote.
-                rquote = quote[Math.floor(Math.random() * quote.length)];
-            //console.log(rquote.Title)
+            rquote = quote[Math.floor(Math.random() * quote.length)];
+            condition = rquote.Condition.results;
+            console.log(rquote.Title);
+            //console.log(rquote.Condition.results)
         }
     });
 }).done(function () {
@@ -37,119 +38,158 @@ $.ajax({
         if (nwsIconPath.indexOf(nwsIcons[i]) > -1) {
             switch (nwsIcons[i]) {
                 case 'skc':
-                    cond = '';
+                    cond = 'Fair';
                     icon = '30';
                     break;
                 case 'few':
+                    cond = 'Fair';
                     icon = '44';
                     break;
                 case 'sct':
+                    cond = 'Fair';
                     icon = '28';
                     break;
                 case 'bkn':
+                    Fair = 'Fair';
                     icon = '28';
                     break;
                 case 'ovc':
+                    cond = 'Fair';
                     icon = '23';
                     break;
                 case 'wind_skc':
+                    cond = 'Fair';
                     icon = '24';
                     break;
                 case 'wind_few':
+                    cond = 'Fair';
                     icon = '24';
                     break;
                 case 'wind_sct':
+                    cond = 'Fair';
                     icon = '24';
                     break;
                 case 'wind_bkn':
+                    cond = 'Fair';
                     icon = '24';
                     break;
                 case 'wind_ovc':
+                    cond = 'Fair';
                     icon = '24';
                     break;
                 case 'snow':
+                    cond = 'Cold';
                     icon = '41';
                     break;
                 case 'rain_snow':
+                    cond = 'Cold';
                     icon = '5';
                     break;
                 case 'rain_sleet':
+                    cond = 'Stormy';
                     icon = '18';
                     break;
                 case 'snow_sleet':
+                    cond = 'Stormy';
                     icon = '18';
                     break;
                 case 'fzra':
+                    cond = 'Stormy';
                     icon = '10';
                     break;
                 case 'rain_fzra':
+                    cond = 'Stormy';
                     icon = '10';
                     break;
                 case 'snow_fzra':
+                    cond = 'Stormy';
                     icon = '5';
                     break;
                 case 'sleet':
+                    cond = 'Stormy';
                     icon = '18';
                     break;
                 case 'rain':
+                    cond = 'Rain';
                     icon = '11';
                     break;
                 case 'rain_showers':
+                    cond = 'Rain';
                     icon = '11';
                     break;
                 case 'rain_showers_hi':
+                    cond = 'Rain';
                     icon = '11';
                     break;
                 case 'tsra':
+                    cond = 'Stormy';
                     icon = '4';
                     break;
                 case 'tsra_sct':
+                    cond = 'Stormy';
                     icon = '4';
                     break;
                 case 'tsra_hi':
+                    cond = 'Stormy';
                     icon = '4';
                     break;
                 case 'tornado':
+                    cond = 'Stormy';
                     icon = '0';
                     break;
                 case 'hurricane':
+                    cond = 'Hurricane';
                     icon = '2';
                     break;
                 case 'tropical_storm':
+                    cond = 'Stormy';
                     icon = '1';
                     break;
                 case 'dust':
+                    cond = 'Cloudy';
                     icon = '19';
                     break;
                 case 'smoke':
+                    cond = 'Cloudy';
                     icon = '22';
                     break;
                 case 'haze':
+                    cond = 'Cloudy';
                     icon = '21';
                     break;
                 case 'hot':
+                    cond = 'Hot';
                     icon = '36';
                     break;
                 case 'cold':
+                    cond = 'Cold';
                     icon = '25';
                     break;
                 case 'blizzard':
+                    cond = 'Stormy';
                     icon = '43';
                     break;
                 case 'fog':
+                    cond = 'Cloudy';
                     icon = '20';
                     break;
 
-                default: icon = 0;
+                default: icon = 3200;
                     break;
             }
         }
     }
-})
-    //console.log(icon);
-
-
-    .done(function () {
-        html = '<div class="weather-card"><img src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg"><h2>' + nwsTemp + '&deg;F</h2><p><span>' + rquote.Title + '</span></p></div>';
-        $("#weather").html(html);
-    });
+}).done(function () {
+    // console.log(cond);
+    // console.log(rquote.Condition.results);
+    // console.log(quote);
+    for (i = 0; i < quote.length; i++ ) {
+        //console.log(quote[i].Condition.results)
+        if (quote[i].Condition.results.indexOf(cond) > -1) {
+            console.log(cond);
+            // TODO: push results to array to then randomize? is there a more efficient way?
+        }
+    }
+    html = '<div class="weather-card"><img src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg"><h2>' + nwsTemp + '&deg;F</h2><p><span>' + rquote.Title + '</span></p></div>';
+    $("#weather").html(html);
+});

@@ -5,8 +5,9 @@ This repository is maintained by the Office of Public Communications Dev Team an
 
 ## Recommended git workflows
 ### Setup
-1. `git init`  
-2. `git clone [url]`  
+1. `cd [local-repo-folder-path]`
+2. `git init`  
+3. `git clone [url]`  
 ### Branching
 1. **Create a branch:**  
 `git branch [branch-name]`  
