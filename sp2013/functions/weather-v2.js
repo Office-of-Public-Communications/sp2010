@@ -19,12 +19,8 @@ $.ajax({
             "Accept": "application/json; odata=verbose"
         },
         success: function (data) {
-            quote = data.d.results;
+            quotes = data.d.results;
             console.log(data.d.results);
-            rquote = quote[Math.floor(Math.random() * quote.length)];
-            condition = rquote.Condition.results;
-            console.log(rquote.Title);
-            //console.log(rquote.Condition.results)
         }
     });
 }).done(function () {
@@ -174,22 +170,23 @@ $.ajax({
                     icon = '20';
                     break;
 
-                default: icon = 3200;
+                default:
+                    icon = 3200;
                     break;
             }
         }
     }
 }).done(function () {
-    // console.log(cond);
-    // console.log(rquote.Condition.results);
-    // console.log(quote);
-    for (i = 0; i < quote.length; i++ ) {
-        //console.log(quote[i].Condition.results)
-        if (quote[i].Condition.results.indexOf(cond) > -1) {
-            console.log(cond);
-            // TODO: push results to array to then randomize? is there a more efficient way?
-        }
+    // function to return list conditions that match nws conditions
+    function matchConds(conds) {
+        return conds.Condition.results.indexOf(cond) > -1;
     }
-    html = '<div class="weather-card"><img src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg"><h2>' + nwsTemp + '&deg;F</h2><p><span>' + rquote.Title + '</span></p></div>';
+    // loop through array of weather quotes
+    for (i = 0; i < quotes.length; i++) {
+        var filteredConds = quotes.filter(matchConds);
+        // randomize quote to be injected into html
+        rquote = filteredConds[Math.floor(Math.random() * filteredConds.length)].Title;
+    }
+    html = '<div class="weather-card"><img src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg"><h2>' + nwsTemp + '&deg;F</h2><p><span>' + rquote + '</span></p></div>';
     $("#weather").html(html);
 });
