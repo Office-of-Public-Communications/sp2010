@@ -186,7 +186,6 @@ $.ajax({
         var filteredConds = quotes.filter(matchConds);
         // randomize quote to be injected into html
         rquote = filteredConds[Math.floor(Math.random() * filteredConds.length)];
-        //console.log(rquote.Link);
     }
     html = '<div class="weather-card"><img src="https://broward.org/Style%20Library/V7/plugins/weather/SVG/' + icon + '.svg"><h2>' + nwsTemp + '&deg;F</h2><p><span><a href="' + rquote.Link.Url + '" style="color:white;" class="weatherLink">' + rquote.Title + ' <i class="fal fa-angle-right weatherArrow"></i></a></span></p></div>';
     $("#weather").html(html);
