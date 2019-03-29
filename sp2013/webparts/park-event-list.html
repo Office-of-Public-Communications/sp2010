@@ -1053,37 +1053,40 @@
                                     // if length of recurring week array is greater than 0, add weeks
                                     if (startDate >= today && endDate != undefined) {
                                         if (whatDays.length > 0 && whatWeeks.length < 1) {
-                                            var upcoming = moment(startDate).recur(endDate).every(whatDays).daysOfWeek();
+                                            var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek();
                                             upcoming.fromDate(startDate);
-                                            console.log('id: ' + dirItems.ID + 'start: ' + startDate)
+                                            //console.log('id: ' + dirItems.ID + 'start: ' + startDate)
                                             upcoming.endDate(endDate);
                                             //allDates = upcoming.all('LL');
-                                            var upcomingDates = upcoming.all('LL');
+                                            upcomingDates = upcoming.all('LL');
                                         }
 
                                         // if length of recurring is 0, build recur
-                                        if (whatDays.length > 0 && whatWeeks.length > 0 && endDate != undefined) {
-                                            var upcoming = moment(startDate).recur(endDate).every(whatDays).daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
+                                        if (whatDays.length > 0 && whatWeeks.length > 0) {
+                                            var upcoming = moment(startDate).recur(endDate ? endDate :
+                                            false).every(whatDays).daysOfWeek().every(whatWeeks).monthWeekByDay().weeksOfMonthByDay();
                                             upcoming.fromDate(startDate);
-                                            console.log('id: ' + dirItems.ID + 'start: ' + startDate)
+                                            //console.log('id: ' + dirItems.ID + 'start: ' + startDate)
                                             upcoming.endDate(endDate);
                                             //allDates = upcoming.all('LL');
-                                            var upcomingDates = upcoming.all('LL');
+                                            upcomingDates = upcoming.all('LL');
                                         }
                                     }
                                     if (startDate < today) {
                                         if (whatDays.length > 0 && whatWeeks.length < 1) {
                                             var upcoming = moment(today).recur().every(whatDays).daysOfWeek();
+                                            upcomingDates = upcoming.next(10, 'LL');
                                         }
 
                                         // if length of recurring is 0, build recur
                                         if (whatDays.length > 0 && whatWeeks.length > 0) {
                                             var upcoming = moment(today).recur().every(whatDays).daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
+                                            upcomingDates = upcoming.next(10, 'LL');
                                         }
                                     }
-                                    if (endDate != undefined) {
-                                        var upcomingDates = upcoming.next(10, 'LL');
-                                    }
+                                    // if (endDate != undefined) {
+                                    //     upcomingDates = upcoming.next(10, 'LL');
+                                    // }
                                     for (k = 0; k < upcomingDates.length; k++) {
                                         var date = upcomingDates[k];
                                         console.log(upcomingDates[k])

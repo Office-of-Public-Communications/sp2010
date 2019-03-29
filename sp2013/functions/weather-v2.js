@@ -10,9 +10,8 @@ $.ajax({
         nwsTemp = JSON.stringify(data.properties.periods[0].temperature);
         nwsForecast = JSON.stringify(data.properties.periods[0].shortForecast);
     }
-}).done(function () {
-
-    $.ajax({
+});
+$.ajax({
         url: "/_api/web/lists/GetByTitle('WeatherQuotes')/items",
         method: "GET",
         headers: {
@@ -22,7 +21,7 @@ $.ajax({
             quotes = data.d.results;
             console.log(data.d.results);
         }
-    });
+
 }).done(function () {
 
     var nwsIconPath = nwsUrl;
@@ -182,6 +181,7 @@ $.ajax({
         return conds.Condition.results.indexOf(cond) > -1;
     }
     // loop through array of weather quotes
+    console.log(quotes);
     for (i = 0; i < quotes.length; i++) {
         var filteredConds = quotes.filter(matchConds);
         // randomize quote to be injected into html

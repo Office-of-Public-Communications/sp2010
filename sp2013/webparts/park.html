@@ -1945,21 +1945,22 @@
                                         //console.log(endDate.toString().length)
 
                                         // if length of recurring week array is greater than 0, add weeks
-                                        if (startDate >= today) {
-                                            if (whatDays.length > 0 && whatWeeks.length < 1 && endDate != undefined) {
+                                        if (startDate >= today && endDate != undefined) {
+                                            if (whatDays.length > 0 && whatWeeks.length < 1) {
                                                 var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek();
                                                 upcoming.fromDate(startDate);
                                                 upcoming.endDate(endDate);
-                                                allDates = upcoming.all('LL')
+                                                upcomingDates = upcoming.all('LL')
                                                 //console.log(allDates)
                                             }
 
                                             // if length of recurring is 0, build recur
-                                            if (whatDays.length > 0 && whatWeeks.length > 0 && endDate != undefined) {
+                                            if (whatDays.length > 0 && whatWeeks.length > 0) {
                                                 var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek().every(moment(whatWeeks).monthWeekByDay()).weeksOfMonthByDay();
                                                 upcoming.fromDate(startDate);
                                                 upcoming.endDate(endDate);
                                                 //console.log(upcoming.all('LL'))
+                                                upcomingDates = upcoming.all('LL');
                                             }
                                         }
                                         if (startDate < today) {
@@ -1968,6 +1969,7 @@
                                                     whatDays).daysOfWeek();
                                                 upcoming.endDate(endDate);
                                                 // console.log('whatDays: ' + whatDays)
+                                                upcomingDates = upcoming.next(10, 'LL');
                                             }
 
                                             // if length of recurring is 0, build recur
@@ -1978,6 +1980,7 @@
                                                 upcoming.endDate(endDate);
                                                 // console.log('whatDays: ' + whatDays)
                                                 // console.log('whatWeeks: ' + whatWeeks)
+                                                upcomingDates = upcoming.next(10, 'LL');
                                             }
                                         }
                                         //by reservation temporary fix
@@ -1993,7 +1996,7 @@
                                         //     console.log('u2: ' + upcomingDates)
                                         // }
 
-                                        var upcomingDates = upcoming.next(10, 'LL');
+                                        //var upcomingDates = upcoming.next(10, 'LL');
 
                                         for (k = 0; k < upcomingDates.length; k++) {
                                             var date = upcomingDates[k];
