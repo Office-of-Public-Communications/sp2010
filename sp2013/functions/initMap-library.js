@@ -5,8 +5,8 @@ function initMap() {
     for (i = 0; i < locations.length; i++) {
         var lt = locations[i].lt;
         var lg = locations[i].lg;
-        console.log(locations[i].lt)
-        var marker = L.marker([lt, lg])
+        console.log(locations[i].lt);
+        marker = L.marker([lt, lg])
             .bindPopup(locations[i].info)
             .addTo(map);
 
@@ -14,24 +14,24 @@ function initMap() {
     } L.esri.basemapLayer('Streets').addTo(map);
 }
 
-function initMap() {
-    L.mapbox.accessToken = 'pk.eyJ1IjoibXdoYWxsZXkiLCJhIjoiY2pyd2pvcms1MDFzODN5bW5jcjEwYWZtdCJ9.34VZbZizZKHc-xqCOBa6Nw';
-    var map = L.mapbox.map('map').setView([26.240158, -80.160956], 10);
-    //map.flyTo(new L.LatLng(lt, lg));
-    L.mapbox.styleLayer('mapbox://styles/mwhalley/cjrwjqsnv01yj1fk1bqjn8f10').addTo(map);
+// function initMap() {
+//     L.mapbox.accessToken = 'pk.eyJ1IjoibXdoYWxsZXkiLCJhIjoiY2pyd2pvcms1MDFzODN5bW5jcjEwYWZtdCJ9.34VZbZizZKHc-xqCOBa6Nw';
+//     var map = L.mapbox.map('map').setView([26.240158, -80.160956], 10);
+//     //map.flyTo(new L.LatLng(lt, lg));
+//     L.mapbox.styleLayer('mapbox://styles/mwhalley/cjrwjqsnv01yj1fk1bqjn8f10').addTo(map);
 
-    var marker;
-    for (i = 0; i < locations.length; i++) {
-        var lt = locations[i].lt;
-        var lg = locations[i].lg;
-        console.log(locations[i].lt)
-        var marker = L.marker([lt, lg])
-            .bindPopup(locations[i].info)
-            .addTo(map);
+//     var marker;
+//     for (i = 0; i < locations.length; i++) {
+//         var lt = locations[i].lt;
+//         var lg = locations[i].lg;
+//         //console.log(locations[i].lt);
+//         var marker = L.marker([lt, lg])
+//             .bindPopup(locations[i].info)
+//             .addTo(map);
 
-        //L.featureGroup([marker]).on('click', function() { window.open(gMapLink) }).addTo(map);
-    }
-}
+//         //L.featureGroup([marker]).on('click', function() { window.open(gMapLink) }).addTo(map);
+//     }
+// }
 
 /*
 function initMap() {

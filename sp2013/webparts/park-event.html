@@ -128,10 +128,10 @@
         <div class="row">
             <div class="col-md-8 px-3">
                 <section id="description" class="mb-3">
-                    <h1 id="dir-title">&para;</h1>
+                    <!-- <h1 id="dir-title">&para;</h1> -->
                     <strong id="dir-description-title" class="d-none">
                         Description</strong>
-                    <p id="dir-description" class="d-none">&para;</p>
+                    <p id="dir-description" class="d-none">-</p>
                         <a id="register" class="btn btn-outline light-blue darken-1 waves-effect py-2 my-3 d-none" target="_blank">Register</a>
                         <a id="more" class="btn btn-outline light-blue darken-1 waves-effect py-2 my-3 d-none" target="_blank">More Info</a>
                     <ul id="dir-statement" class="mt-2" style="list-style: none; padding-inline-start: 0px;"></ul>
@@ -159,6 +159,18 @@
                         <li>
                             <strong>Fee</strong>
                             <p id="fee">Fee</p>
+                        </li>
+                        <li id="phone" class="d-none">
+                            <strong>Phone</strong>
+                            <p id="phoneText">N/A</p>
+                        </li>
+                        <li id="ages" class="d-none">
+                            <strong>Ages</strong>
+                            <p id="agesText">N/A</p>
+                        </li>
+                        <li id="location" class="d-none">
+                            <strong>Location</strong>
+                            <p id="locationText">N/A</p>
                         </li>
                     </ul>
                 </div>
@@ -271,6 +283,18 @@
                     ows_MoreInfo: {
                         mappedName: "Info",
                         objectType: "URL"
+                    },
+                    ows_Phone: {
+                        mappedName: "Phone",
+                        objectType: "Text"
+                    },
+                    ows_Ages: {
+                    mappedName: "Ages",
+                    objectType: "Text"
+                    },
+                    ows_Location: {
+                    mappedName: "Location",
+                    objectType: "Text"
                     }
                 }, // name, mappedName, objectType,
                 mappingOverrides: null,
@@ -285,8 +309,16 @@
 
                 // build title & description
                 if (dirInfo2.Title) {
-                    $('#dir-title').html(dirInfo2.Title);
+                $('.broward-titles-bg-white').html('<h1 class="broward-titles">' + dirInfo2.Title +
+                    '</h1>');
+                $('.layoutCrumb').html(dirInfo2.Title);
+                document.title = dirInfo2.Title;
+                $('.divider-broward').removeClass('py-3').addClass('pt-3 pb-2');
+                $('.divider-broward').next().removeClass('pt-3');
                 }
+                // if (dirInfo2.Title) {
+                //     $('#dir-title').html(dirInfo2.Title);
+                // }
                 /*$('#dir-subtitle').html(dirInfo2.Artist.lookupValue);*/
                 if (dirInfo2.Description) {
                     $('#dir-description').html(dirInfo2.Description).removeClass(
@@ -325,6 +357,18 @@
                 $('#park').html(dirInfo2.Park.lookupValue).wrap('<a href="/Parks/Pages/Park.aspx?=' +
                     dirInfo2.Park.lookupId + '"></a>');
                 $('#fee').html(dirInfo2.Price);
+                if(dirInfo2.Phone){
+                    $('#phoneText').html(dirInfo2.Phone);
+                    $('#phone').removeClass('d-none');
+                }
+                if(dirInfo2.Ages){
+                    $('#agesText').html(dirInfo2.Ages);
+                    $('#ages').removeClass('d-none');
+                }
+                if(dirInfo2.Location){
+                    $('#locationText').html(dirInfo2.Location);
+                    $('#location').removeClass('d-none');
+                }
                 $('#dir-statement').removeClass('d-none');
                 $('#directoryItem').removeClass('d-none');
             })

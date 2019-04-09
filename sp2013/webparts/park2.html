@@ -1477,7 +1477,7 @@
                             $('.woof').removeClass('d-none')
                             break;
                         default:
-                            console.log('aquatics info not available')
+                            //console.log('aquatics info not available')
                     }
                     //append modal
                 }
@@ -2018,9 +2018,9 @@
                                                 var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
                                                 upcoming.fromDate(startDate);
                                                 upcoming.endDate(endDate);
-                                                console.log(upcoming.all('LL'));
-                                                console.log(whatWeeks);
-                                                console.log(whatDays);
+                                                //console.log(upcoming.all('LL'));
+                                                //console.log(whatWeeks);
+                                                //console.log(whatDays);
                                                 upcomingDates = upcoming.all('LL');
                                             }
                                         }
