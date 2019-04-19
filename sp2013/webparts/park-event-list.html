@@ -1,7 +1,9 @@
-<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 
 <head>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
     <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
     <style type="text/css">
         .dataTables_length label {
@@ -138,9 +140,11 @@
     </form>
 
     <script type="text/javascript" defer src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" defer src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" defer src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js">
+    </script>
     <script type="text/javascript" src="/Style%20Library/Haylee-Dev/js/broward/Library/moment.min.js"></script>
-    <script type="text/javascript" defer src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
+    <script type="text/javascript" defer src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js">
+    </script>
     <!--recurring moment.js plugin script inlined here only until conversion to sp2013 is complete and this can be made external-->
     <script type="text/javascript">
         (function (root, factory) {
@@ -461,8 +465,9 @@
                         });
                     } else if (units === Object(units)) {
                         list = units;
-                    } else if ((Object.prototype.toString.call(units) == '[object Number]') || (Object.prototype
-                        .toString.call(units) == '[object String]')) {
+                    } else if ((Object.prototype.toString.call(units) == '[object Number]') || (Object
+                            .prototype
+                            .toString.call(units) == '[object String]')) {
                         list[units] = true;
                     } else {
                         throw Error("Provide an array, object, string or number when passing units!");
@@ -640,7 +645,8 @@
                     var whatMoment = moment(dateOrRule);
                     // If valid date, try to remove it from exceptions
                     if (whatMoment.isValid()) {
-                        whatMoment = whatMoment.dateOnly(); // change to date only for perfect comparison
+                        whatMoment = whatMoment
+                    .dateOnly(); // change to date only for perfect comparison
                         for (i = 0, len = this.exceptions.length; i < len; i++) {
                             if (whatMoment.isSame(this.exceptions[i])) {
                                 this.exceptions.splice(i, 1);
@@ -771,7 +777,8 @@
                 if (this.tz && typeof (moment.tz) == 'function') {
                     return moment.tz(this.format('YYYY-MM-DD[T]00:00:00Z'), 'UTC');
                 } else {
-                    return this.hours(0).minutes(0).seconds(0).milliseconds(0).add(this.utcOffset(), "minute").utcOffset(0);
+                    return this.hours(0).minutes(0).seconds(0).milliseconds(0).add(this.utcOffset(),
+                        "minute").utcOffset(0);
                 }
             };
             return moment;
@@ -840,14 +847,15 @@
                 //Main Data
                 for (i = 0; i < thisDirResults.length; i++) {
                     var createRow = function () {
-                    $("#rowItems")
-                        .append($('<tr>')
-                            .append('<td><a id="dirListTitleLink" href="../Pages/Event.aspx?=' +
-                                dirItems.ID + '">' + dirItems.Title + '</a></td>')
-                            .append($('<td>' + (dirItems.Park != undefined ? dirItems.Park.lookupValue :
-                                ' ') + '</td>'))
-                            .append($('<td>' + date + '</td>'))
-                        )
+                        $("#rowItems")
+                            .append($('<tr>')
+                                .append('<td><a id="dirListTitleLink" href="../Pages/Event.aspx?=' +
+                                    dirItems.ID + '">' + dirItems.Title + '</a></td>')
+                                .append($('<td>' + (dirItems.Park != undefined ? dirItems.Park
+                                    .lookupValue :
+                                    ' ') + '</td>'))
+                                .append($('<td>' + date + '</td>'))
+                            )
                     }
                     dirItems = thisDirResults[i]
                     //check if date is upcoming or past
@@ -856,8 +864,8 @@
                     // var recurrence, nextDates;
                     // recurrence = moment(today).recur().every(7).days;
                     // nextDates = recurrence.next(3, 'LL')
-                    // console.log(nextDates)
-                    if ((dirItems.Date >= today || dirItems.Recurring) && ((dirItems.EndDate >= today) || (dirItems.EndDate == undefined))) {
+                    if ((dirItems.Date >= today || dirItems.Recurring) && ((dirItems.EndDate >=
+                            today) || (dirItems.EndDate == undefined))) {
                         //console.log(dirItems.Title, dirItems.ID)
                         //console.log(dirItems.Recurring)
                         // if recurring, add recurring text
@@ -866,14 +874,17 @@
                             createRow();
                         }
                         if (dirItems.Recurring) {
-                            // if date, add date
-                            //console.log(dirItems.Recurring)
                             for (j = 0; j < dirItems.Recurring.length; j++) {
-
+                                // no end date or its in the future
                                 if (dirItems.EndDate >= today || !dirItems.EndDate) {
 
+                                    // variables
                                     var whatDays = [];
                                     var whatWeeks = [];
+                                    var everyday = false;
+                                    var startDate = dirItems.Date;
+                                    var endDate = dirItems.EndDate;
+                                    var upcoming;
 
                                     if (dirItems.Recurring[j].lookupValue == 'Every Monday') {
                                         whatDays.push('Monday');
@@ -894,10 +905,6 @@
                                         whatDays.push('Monday');
                                         whatWeeks.push('3');
                                     }
-                                    // if ('Every Last Monday'){
-                                    //     whatDays.push('Monday');
-                                    //     whatWeeks.push('0');
-                                    // }
                                     if (dirItems.Recurring[j].lookupValue == 'Every Tuesday') {
                                         whatDays.push('Tuesday');
                                     }
@@ -917,10 +924,6 @@
                                         whatDays.push('Tuesday');
                                         whatWeeks.push('3');
                                     }
-                                    // if ('Every Last Tuesday'){
-                                    //     whatDays.push('Tuesday');
-                                    //     whatWeeks.push('3');
-                                    // }
                                     if (dirItems.Recurring[j].lookupValue == 'Every Wednesday') {
                                         whatDays.push('Wednesday');
                                     }
@@ -940,10 +943,6 @@
                                         whatDays.push('Wednesday');
                                         whatWeeks.push('3');
                                     }
-                                    // if ('Every Last Wednesday'){
-                                    //     whatDays.push('Tuesday');
-                                    //     whatWeeks.push('3');
-                                    // }
                                     if (dirItems.Recurring[j].lookupValue == 'Every Thursday') {
                                         whatDays.push('Thursday');
                                     }
@@ -963,10 +962,6 @@
                                         whatDays.push('Thursday');
                                         whatWeeks.push('3');
                                     }
-                                    // if ('Every Last Thursday'){
-                                    //     whatDays.push('Tuesday');
-                                    //     whatWeeks.push('3');
-                                    // }
                                     if (dirItems.Recurring[j].lookupValue == 'Every Friday') {
                                         whatDays.push('Friday');
                                     }
@@ -986,10 +981,6 @@
                                         whatDays.push('Friday');
                                         whatWeeks.push('3');
                                     }
-                                    // if ('Every Last Friday'){
-                                    //     whatDays.push('Friday');
-                                    //     whatWeeks.push('3');
-                                    // }
                                     if (dirItems.Recurring[j].lookupValue == 'Every Saturday') {
                                         whatDays.push('Saturday');
                                     }
@@ -1009,10 +1000,6 @@
                                         whatDays.push('Saturday');
                                         whatWeeks.push('3');
                                     }
-                                    // if ('Every Last Saturday'){
-                                    //     whatDays.push('Saturday');
-                                    //     whatWeeks.push('3');
-                                    // }
                                     if (dirItems.Recurring[j].lookupValue == 'Every Sunday') {
                                         whatDays.push('Sunday');
                                     }
@@ -1032,62 +1019,48 @@
                                         whatDays.push('Sunday');
                                         whatWeeks.push('3');
                                     }
-                                    // if ('Every Last Sunday'){
-                                    //     whatDays.push('Sunday');
-                                    //     whatWeeks.push('3');
-                                    // }
-                                    // if (dirItems.Recurring[j].lookupValue == 'Everyday') {
-                                    //     whatDays.push('');
-                                    //     whatWeeks.push('');
-                                    // }
+                                    if (dirItems.Recurring[j].lookupValue == 'Everyday') {
+                                        everday = true;
+                                    }
 
-                                    // console.log(whatDays)
-                                    // console.log(whatWeeks)
-
-                                    var startDate = dirItems.Date;
-                                    var endDate = dirItems.EndDate;
-                                    var upcoming;//moment(startDate).recur().every('monday').daysOfWeek();
-
-                                    //console.log(startDate)
-
-                                    // if length of recurring week array is greater than 0, add weeks
+                                    // begins today or later and has an end date
                                     if (startDate >= today && endDate != undefined) {
-                                        console.log(dirItems.ID)
+                                        // has days but no weeks
                                         if (whatDays.length > 0 && whatWeeks.length < 1) {
-                                            var upcoming = moment(startDate).recur(endDate ? endDate : false).every(whatDays).daysOfWeek();
+                                            var upcoming = moment(startDate).recur(endDate ? endDate :
+                                                false).every(whatDays).daysOfWeek();
                                             upcoming.fromDate(startDate);
-                                            //console.log('id: ' + dirItems.ID + 'start: ' + startDate)
                                             upcoming.endDate(endDate);
-                                            //allDates = upcoming.all('LL');
                                             upcomingDates = upcoming.all('LL');
                                         }
 
-                                        // if length of recurring is 0, build recur
+                                        // has days and weeks
                                         if (whatDays.length > 0 && whatWeeks.length > 0) {
                                             var upcoming = moment(startDate).recur(endDate ? endDate :
-                                            false).every(whatDays).daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
+                                                    false).every(whatDays).daysOfWeek().every(whatWeeks)
+                                                .weeksOfMonthByDay();
                                             upcoming.fromDate(startDate);
-                                            //console.log('id: ' + dirItems.ID + 'start: ' + startDate)
                                             upcoming.endDate(endDate);
-                                            //allDates = upcoming.all('LL');
                                             upcomingDates = upcoming.all('LL');
                                         }
                                     }
+                                    // began before today
                                     if (startDate < today) {
+                                        // has days but no weeks
                                         if (whatDays.length > 0 && whatWeeks.length < 1) {
-                                            var upcoming = moment(today).recur().every(whatDays).daysOfWeek();
+                                            var upcoming = moment(today).recur().every(whatDays)
+                                                .daysOfWeek();
                                             upcomingDates = upcoming.next(10, 'LL');
                                         }
 
-                                        // if length of recurring is 0, build recur
+                                        // has days and weeks
                                         if (whatDays.length > 0 && whatWeeks.length > 0) {
-                                            var upcoming = moment(today).recur().every(whatDays).daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
+                                            var upcoming = moment(today).recur().every(whatDays)
+                                                .daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
                                             upcomingDates = upcoming.next(10, 'LL');
                                         }
                                     }
-                                    // if (endDate != undefined) {
-                                    //     upcomingDates = upcoming.next(10, 'LL');
-                                    // }
+                                    // build 'em, baby!
                                     for (k = 0; k < upcomingDates.length; k++) {
                                         var date = upcomingDates[k];
                                         console.log(upcomingDates[k])
@@ -1096,7 +1069,6 @@
                                 }
                             }
                         }
-                        //console.log(date)
                     }
                 }
             })
