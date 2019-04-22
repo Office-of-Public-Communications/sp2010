@@ -256,6 +256,10 @@
                         mappedName: "StartDate",
                         objectType: "DateTime"
                     },
+                    ows_EndDate: {
+                    mappedName: "EndDate",
+                    objectType: "DateTime"
+                    },
                     ows_Recurring: {
                         mappedName: "Recurring",
                         objectType: "LookupMulti"
@@ -345,14 +349,21 @@
                 }
                 // if date, add date
                 if (dirInfo2.Recurring) {
-                    console.log(dirInfo2.Recurring)
+                    //console.log(dirInfo2.Recurring)
                     for (i = 0; i < dirInfo2.Recurring.length; i++) {
                         recurringDates.push(dirInfo2.Recurring[i].lookupValue);
                         var date = recurringDates.join('<br />');
-                        console.log(date)
+                        //console.log(date)
                     }
                 }
-                $('#date').html(date);
+                if (date != 'Everyday') {
+                    $('#date').html(date);
+                }
+                if (date == 'Everyday') {
+                    //console.log(moment(dirInfo2.EndDate).format('LL').split(' ')[1])
+                    $('#date').html(moment(dirInfo2.StartDate).format('LL').split(',')[0] + '-' +
+                    moment(dirInfo2.EndDate).format('LL').split(' ')[1] + ' ' + moment(dirInfo2.EndDate).format('LL').split(' ')[2]);
+                }
                 $('#time').html(dirInfo2.Time);
                 $('#park').html(dirInfo2.Park.lookupValue).wrap('<a href="/Parks/Pages/Park.aspx?=' +
                     dirInfo2.Park.lookupId + '"></a>');
