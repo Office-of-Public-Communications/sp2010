@@ -124,7 +124,6 @@
 </head>
 
 <body>
-    <form id="form1" runat="server">
         <section aria-label="Main Page Content" id="fullPageContent">
             <div class="container">
                 <!--table trial-->
@@ -137,7 +136,6 @@
                 </table>
             </div>
         </section>
-    </form>
 
     <script type="text/javascript" defer src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" defer src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js">
@@ -1020,9 +1018,18 @@
                                         whatWeeks.push('3');
                                     }
                                     if (dirItems.Recurring[j].lookupValue == 'Everyday') {
-                                        everday = true;
+                                        everyday = true;
                                     }
 
+                                    if (everyday === true) {
+                                        console.log('it true')
+                                        var upcoming = moment(startDate).recur(endDate ? endDate :
+                                            false).every(1).day();
+                                        upcoming.fromDate(startDate);
+                                        upcoming.endDate(endDate);
+                                        upcomingDates = upcoming.all('LL');
+                                        console.log(upcomingDates)
+                                    }
                                     // begins today or later and has an end date
                                     if (startDate >= today && endDate != undefined) {
                                         // has days but no weeks
@@ -1063,7 +1070,7 @@
                                     // build 'em, baby!
                                     for (k = 0; k < upcomingDates.length; k++) {
                                         var date = upcomingDates[k];
-                                        console.log(upcomingDates[k])
+                                        //console.log(upcomingDates[k])
                                         createRow();
                                     }
                                 }
