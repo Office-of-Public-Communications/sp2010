@@ -3,6 +3,20 @@
         <title></title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css"
+            href="https://broward.org/Style%20Library/V7/css/vendor/mdb/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css"
+            href="https://broward.org/Style%20Library/V7/fonts/fontawesome-pro-5.3.1/css/all.min.css" />
+        <link rel="stylesheet" type="text/css"
+            href="https://broward.org/Style%20Library/V7/fonts/fontawesome-pro-5.3.1/css/fontawesome.min.css" />
+        <link rel="stylesheet" type="text/css"
+            href="https://broward.org/Style%20Library/V7/fonts/fontawesome-pro-5.3.1/css/v4-shims.min.css" />
+        <script type="text/javascript"
+            src="https://broward.org/Style%20Library/V7/fonts/fontawesome-pro-5.3.1/js/all.min.js"></script>
+        <script type="text/javascript"
+            src="https://broward.org/Style%20Library/V7/fonts/fontawesome-pro-5.3.1/js/fontawesome.min.js"></script>
+        <script type="text/javascript"
+            src="https://broward.org/Style%20Library/V7/fonts/fontawesome-pro-5.3.1/js/v4-shims.min.js"></script>
         <style type="text/css">
             @font-face {
                 font-family: 'Arquette';
@@ -51,21 +65,19 @@
                 background-color: rgb(28, 42, 72);
                 color: white;
             }
+            footer .socialIcons a {
+                color: white;
+                text-decoration: none;
+            }
             #footerLogo {
                 padding: 16px 0px;
+            }
+            #footerSocial {
+                font-family:'Font Awesome 5 Pro';
             }
             #footerLinks {
                 width: 100%;
                 padding: 16px 0px;
-            }
-            .container {
-                max-width: 1200px;
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                flex-flow: row wrap;
-                margin: 0 auto;
-                padding: 24px 0;
             }
             .item {
                 flex-grow: 1;
@@ -76,24 +88,78 @@
                 background-color: rgba(0,0,0,0.2);
                 padding: 10px 0;
             }
+            .copyright > .item > a {
+                color: white;
+                text-decoration: none;
+            }
+            .copyright > .item > a:hover {
+                text-decoration: none;
+            }
+            #footerLinkInclude > li {
+                list-style: none;
+            }
+            #footerLinkInclude > li > a {
+             color: white;
+            }
+            #footerLinkInclude > li > a:hover {
+                text-decoration: none;
+            }
         </style>
         <script type="text/javascript" src="https://broward.org/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
     </head>
     <body>
         <header>
-            <img id="headerLogo" src="https://broward.org/Style%20Library/V6/img/B-org-logo.png" alt="Broward County Florida Logo">
+            <a href="https://broward.org"><img id="headerLogo" src="https://broward.org/Style%20Library/V6/img/B-org-logo.png" alt="Broward County Florida Logo"></a>
         </header>
         <main>
             <div class="container">INSERT APP CONTENT HERE</div>
         </main>
         <footer>
             <div class="container">
-                <img id="item footerLogo" src="https://browardauthor/Style%20Library/V7/img/Broward_logo_white2.png" alt="Broward County Florida Logo">
-                <div id="item footerLinks"><ul id="footerLinkInclude"></ul></div>
+                <div class="row pt-3">
+                    <div class="col-md-3">
+                        <a href="https://broward.org">
+                            <img id="item footerLogo" src="https://browardauthor/Style%20Library/V7/img/Broward_logo_white2.png" alt="Broward County Florida Logo">
+                        </a>
+                        <div class="p-3 d-flex justify-content-between socialIcons">
+                            <div>
+                                <a href="https://www.facebook.com/BrowardCountyGovernment/" target="_blank">
+                                    <i class="fab fa-facebook-square fa-2x"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <a href="https://twitter.com/BrowardCounty" target="_blank">
+                                    <i class="fab fa-twitter fa-2x"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <a href="http://www.youtube.com/c/BrowardCountyGov" target="_blank">
+                                    <i class="fab fa-youtube fa-2x"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <a href="mailto:publicinfo@broward.org" target="_blank">
+                                    <i class="fal fa-envelope fa-2x"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 offset-md-5">
+                        <div id="item footerLinks">
+                            <ul id="footerLinkInclude">
+                                <li><a href="http://www.broward.org/Pages/PhoneA.aspx">Contact Us</a></li>
+                                <li><a href="http://www.broward.org/ReportAComplaint/Pages/Default.aspx">Report a Complaint</a></li>
+                                <li><a href="http://www.broward.org/StayConnected/Pages/Default.aspx">Subscribe</a></li>
+                                <li><a href="http://www.broward.org/Terms/Pages/Default.aspx">Terms of Use</a></li>
+                                <li><a href="http://www.broward.org/Terms/Pages/Default.aspx">Accessibility Statement</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="copyright">
                 <div class="item">
-                    © 2018 Copyright: Broward County Government
+                    © 2018 Copyright: <a href="https://broward.org">Broward County Government</a>
                 </div>
             </div>
             <script>
