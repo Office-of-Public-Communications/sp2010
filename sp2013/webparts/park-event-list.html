@@ -1022,13 +1022,13 @@
                                     }
 
                                     if (everyday === true) {
-                                        console.log('it true')
+                                        //console.log('it true')
                                         var upcoming = moment(startDate).recur(endDate ? endDate :
                                             false).every(1).day();
                                         upcoming.fromDate(startDate);
                                         upcoming.endDate(endDate);
                                         upcomingDates = upcoming.all('LL');
-                                        console.log(upcomingDates)
+                                        //console.log(upcomingDates)
                                     }
                                     // begins today or later and has an end date
                                     if (startDate >= today && endDate != undefined) {
