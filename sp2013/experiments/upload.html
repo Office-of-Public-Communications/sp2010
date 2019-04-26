@@ -6,8 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="/Style%20Library/V7/css/vendor/mdb/bootstrap.min.css">
-  <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js">
-  </script>
+  <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
 </head>
 
 <body>
@@ -46,26 +45,38 @@
         const img = new Image();
         img.src = event.target.result;
         img.onload = () => {
-            const elem = document.createElement('canvas');
-            elem.setAttribute('id', 'canvas');
-            console.log(elem);
-            elem.width = width;
-            elem.height = height;
-            const ctx = elem.getContext('2d');
-            // img.width and img.height will contain the original dimensions
-            ctx.drawImage(img, 0, 0, width, height);
-            ctx.canvas.toDataURL('image/jpeg', 0.6);
-            console.log(ctx.canvas.toDataURL('image/jpeg', 0.6))
-          },
-          reader.onerror = error => console.log(error);
+          const elem = document.createElement('canvas');
+          elem.setAttribute('id', 'canvas');
+          console.log(elem);
+          elem.width = width;
+          elem.height = height;
+          const ctx = elem.getContext('2d');
+          // img.width and img.height will contain the original dimensions
+          ctx.drawImage(img, 0, 0, width, height);
+          var imgData = ctx.createImageData(width, height);
+          imgData.data.set(elem);
+          var image = ctx.getImageData(0, 0, width, height);
+          console.log(image);
+          console.log(image.data);
+          buffer = image.data.buffer; // ArrayBuffer
+          console.log(buffer);
+          ctx.canvas.toDataURL('image/jpeg', 0.6);
+          //console.log(ctx.canvas.toDataURL('image/jpeg', 0.6))
+          console.log(reader.result)
+
+          //Uint8Array.from(atob(reader.result.replace(/^data:image\/(png|jpeg|jpg);base64,/, '')), function(c) {return c.charCodeAt(0); console.log(this);})}
+        }
+        reader.onerror = error => console.log(error);
       };
     }
+
 
     // Upload the file.
     // You can upload files up to 2 GB with the REST API.
     function uploadFile() {
 
       // Define the folder path for this example.
+      // TODO: this needs to automate based on where the user came from
       var serverRelativeUrlToFolder = '/Sandbox/v6/MattDEV/PublishingImages';
 
       // Get test values from the file input and text input page controls.
@@ -115,12 +126,45 @@
         return deferred.promise();
       }
 
+      // Try getting local file as resized binary
+      /*
+      function compress(e) {
+      const width = 500;
+      const height = 300;
+      const fileName = e.target.files[0].name;
+      const reader = new FileReader();
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onload = event => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+            const elem = document.createElement('canvas');
+            elem.setAttribute('id', 'canvas');
+            console.log(elem);
+            elem.width = width;
+            elem.height = height;
+            const ctx = elem.getContext('2d');
+            // img.width and img.height will contain the original dimensions
+            ctx.drawImage(img, 0, 0, width, height);
+			var img = ctx.getImageData(0, 0, width, height);
+			console.log(img);
+			var buffer = img.data.buffer; // ArrayBuffer
+            ctx.canvas.toDataURL('image/jpeg', 0.6);
+            //console.log(ctx.canvas.toDataURL('image/jpeg', 0.6))
+          },
+          reader.onerror = error => console.log(error);
+      };
+    }*/
+
       // Add the file to the file collection in the Shared Documents folder.
       function addFileToFolder(arrayBuffer) {
 
         // Get the file name from the file input control on the page.
         var parts = fileInput[0].value.split('\\');
         var fileName = parts[parts.length - 1];
+
+        console.log(fileName);
+        console.log(arrayBuffer);
 
         // Construct the endpoint.
         var fileCollectionEndpoint = String.format(
