@@ -3,100 +3,80 @@
 
 <head>
   <title></title>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="/Style%20Library/V7/css/vendor/mdb/bootstrap.min.css">
-  <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js">
+  </script>
 </head>
 
 <body>
 
+  <!-- Learn about this code on MDN: `https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL` -->
+
+  <!-- call the following within the input tag to use preview file function: onchange="previewFile()"-->
+  <input id="file" type="file" accept="image/*"><br>
+  <!-- for use with preview file function only
+    <img src="" height="200" alt="Image preview..."> -->
   <!-- call SP upload function -->
-  <input id="getFile" type="file" accept="image/*"><br>
-  <input id="displayName" type="text" value="Enter a unique name"><br>
-  <input id="addFileButton" type="button" value="Upload" onclick="uploadFile()">
+  <input id="getFile" type="file" /><br />
+  <input id="displayName" type="text" value="Enter a unique name" /><br />
+  <input id="addFileButton" type="button" value="Upload" onclick="uploadFile()" />
 
-  <script type="text/javascript">
+  <script>
     'use strict';
-
     // Check for FileReader API (HTML5) support.
     if (!window.FileReader) {
       alert('This browser does not support the FileReader API.');
     }
-
-    document.getElementById("getFile").addEventListener("change", function (event) {
+    document.getElementById("file").addEventListener("change", function (event) {
       compress(event);
     });
-
-    var blob;
-    var buffer;
-
     // compress image using FileReader & Canvas APIs
     function compress(e) {
       const width = 500;
       const height = 300;
       const fileName = e.target.files[0].name;
       const reader = new FileReader();
-
-      console.log(e);
-
       reader.readAsDataURL(e.target.files[0]);
       reader.onload = event => {
         const img = new Image();
         img.src = event.target.result;
         img.onload = () => {
-          const elem = document.createElement('canvas');
-          elem.setAttribute('id', 'canvas');
-          //console.log(elem);
-          elem.width = width;
-          elem.height = height;
-          const ctx = elem.getContext('2d');
-          // img.width and img.height will contain the original dimensions
-          ctx.drawImage(img, 0, 0, width, height);
-
-          ctx.canvas.toBlob((blob) => {
-            console.log(blob); //output image as a blob
-            const file = new File([blob], fileName, {
-              type: 'image/jpeg',
-              lastModified: Date.now()
-            }); //output image as a file
-          }, 'image/jpeg', 0.7);
-
-          var imageData = ctx.getImageData(0, 0, width, height);
-          var typedArray = imageData.data; // Uint8ClampedArray
-          buffer = imageData.data.buffer; // ArrayBuffer
-        }
-        reader.onerror = error => console.log(error);
+            const elem = document.createElement('canvas');
+            elem.setAttribute('id', 'canvas');
+            console.log(elem);
+            elem.width = width;
+            elem.height = height;
+            const ctx = elem.getContext('2d');
+            // img.width and img.height will contain the original dimensions
+            ctx.drawImage(img, 0, 0, width, height);
+            ctx.canvas.toDataURL('image/jpeg', 0.6);
+            console.log(ctx.canvas.toDataURL('image/jpeg', 0.6))
+          },
+          reader.onerror = error => console.log(error);
       };
     }
-
     // Upload the file.
     // You can upload files up to 2 GB with the REST API.
     function uploadFile() {
-
       // Define the folder path for this example.
-      // TODO: this needs to automate based on where the user came from
       var serverRelativeUrlToFolder = '/Sandbox/v6/MattDEV/PublishingImages';
-
       // Get test values from the file input and text input page controls.
       var fileInput = jQuery('#getFile');
       var newName = jQuery('#displayName').val();
-
       // Get the server URL.
       var serverUrl = _spPageContextInfo.webAbsoluteUrl;
-
       // Initiate method calls using jQuery promises.
       // Get the local file as an array buffer.
       var getFile = getFileBuffer();
       getFile.done(function (arrayBuffer) {
-
         // Add the file to the SharePoint folder.
         var addFile = addFileToFolder(arrayBuffer);
         addFile.done(function (file, status, xhr) {
-
           // Get the list item that corresponds to the uploaded file.
           var getItem = getListItem(file.d.ListItemAllFields.__deferred.uri);
           getItem.done(function (listItem, status, xhr) {
-
             // Change the display name and title of the list item.
             var changeItem = updateListItem(listItem.d.__metadata);
             changeItem.done(function (data, status, xhr) {
@@ -109,36 +89,29 @@
         addFile.fail(onError);
       });
       getFile.fail(onError);
-
       // Get the local file as an array buffer.
       function getFileBuffer() {
         var deferred = jQuery.Deferred();
         var reader = new FileReader();
         reader.onloadend = function (e) {
           deferred.resolve(e.target.result);
-          console.log(e.target.result)
         }
         reader.onerror = function (e) {
           deferred.reject(e.target.error);
         }
-        //reader.readAsArrayBuffer(fileInput[0].files[0]);
-        reader.readAsArrayBuffer(blob);
+        reader.readAsArrayBuffer(fileInput[0].files[0]);
         return deferred.promise();
       }
-
       // Add the file to the file collection in the Shared Documents folder.
       function addFileToFolder(arrayBuffer) {
-
         // Get the file name from the file input control on the page.
         var parts = fileInput[0].value.split('\\');
         var fileName = parts[parts.length - 1];
-
         // Construct the endpoint.
         var fileCollectionEndpoint = String.format(
           "{0}/_api/web/getfolderbyserverrelativeurl('{1}')/files" +
           "/add(overwrite=true, url='{2}')",
           serverUrl, serverRelativeUrlToFolder, fileName);
-
         // Send the request and return the response.
         // This call returns the SharePoint file.
         return jQuery.ajax({
@@ -153,10 +126,8 @@
           }
         });
       }
-
       // Get the list item that corresponds to the file by calling the file's ListItemAllFields property.
       function getListItem(fileListItemUri) {
-
         // Send the request and return the response.
         return jQuery.ajax({
           url: fileListItemUri,
@@ -166,17 +137,14 @@
           }
         });
       }
-
       // Change the display name and title of the list item.
       function updateListItem(itemMetadata) {
-
         // Define the list item changes. Use the FileLeafRef property to change the display name.
         // For simplicity, also use the name as the title.
         // The example gets the list item type from the item's metadata, but you can also get it from the
         // ListItemEntityTypeFullName property of the list.
         var body = String.format("{{'__metadata':{{'type':'{0}'}},'FileLeafRef':'{1}','Title':'{2}'}}",
           itemMetadata.type, newName, newName);
-
         // Send the request and return the promise.
         // This call does not return response content from the server.
         return jQuery.ajax({
@@ -193,12 +161,22 @@
         });
       }
     }
-
     // Display error messages.
     function onError(error) {
       alert(error.responseText);
     }
-
+    // Preview image file in browser using File API
+    // function previewFile() {
+    //   var preview = document.querySelector('img');
+    //   var file = document.querySelector('input[type=file]').files[0];
+    //   var reader = new FileReader();
+    //   reader.addEventListener("load", function () {
+    //     preview.src = reader.result;
+    //   }, false);
+    //   if (file) {
+    //     reader.readAsDataURL(file);
+    //   }
+    // }
     // url for testing: https://browardauthor/Sandbox/v6/MattDEV/PublishingImages/_api/web/getfilebyserverrelativeurl('/<folder name>/<file name>')
     // get folder --> use this to POST images
     /*$.ajax({
@@ -214,7 +192,6 @@
                     console.log(results);
             }
     });*/
-
     // site structure --> use this to create dropdown & create variable for determining folder to put images into
     /*$.ajax({
             // need to make a variable for getFolderByServer.. folder url based on what directory user selects
