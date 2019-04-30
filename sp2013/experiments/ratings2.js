@@ -1,5 +1,5 @@
 f1 = $.ajax({
-  url: "http://bc-net/_api/web/lists/GetByTitle('specialDiscounts')/items",
+  url: "https://bc-net/_api/web/lists/GetByTitle('specialDiscounts')/items",
   method: 'GET',
   headers: {
     'Accept': 'application/json; odata=verbose'
@@ -20,11 +20,13 @@ f1 = $.ajax({
     // console.log(numerator);
     newAvg = Math.round(numerator / newCount); // POST to avgRating column
     console.log(newAvg);
+    refreshToken();
+    ratingPost();
   }
 });
 
-$.when(f1).done(
-f2 = $.ajax({
+function refreshToken() {
+  $.ajax({
     url: _spPageContextInfo.webAbsoluteUrl + "/_api/contextinfo",
     method: "POST",
     headers: { "Accept": "application/json; odata=verbose" },
@@ -34,12 +36,12 @@ f2 = $.ajax({
     error: function (data, errorCode, errorMessage) {
       alert(errorMessage);
     }
-  })
-);
+  });
+}
 
-$.when(f2).done(
+function ratingPost() {
   $.ajax({
-    url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/lists/GetByTitle('specialDiscounts')/items(1)",
+    url: "https://bc-net/_api/web/lists(guid'9208a0f5%2D72eb%2D47bd%2D991b%2D503e4faeb5e7')/items(1)",
     method: 'POST',
     headers: {
       "accept": "application/json;odata=verbose",
@@ -56,5 +58,5 @@ $.when(f2).done(
     error: function (error) {
       alert(JSON.stringify(error));
     }
-  })
-);
+  });
+}
