@@ -1,0 +1,84 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+    <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+    <style>
+        #Calendar1 hr {
+            margin: 25px 0px;
+        }
+
+        .eventsTitle {
+            font-family: Arquette;
+            font-weight: 700 !important;
+            font-size: 1.2rem !important;
+            color: black;
+            padding: .7rem 0 0 0;
+        }
+
+        .eventsDescription {
+            font-family: Arquette;
+            font-weight: 300;
+            font-size: 1rem;
+            color: black;
+        }
+
+        .eventsDescription a:visited,
+        .eventsDescription a {
+            color: #0275d8 !important;
+        }
+
+        .eventsAgency {
+            font-family: Arquette;
+            font-weight: 400 !important;
+            font-size: 1.3rem !important;
+            color: black;
+            margin-bottom: 0px !important
+        }
+    </style>
+</head>
+
+<body>
+    <div class="eventsCalendar" id="Calendar1">
+        <!--Inject the date items here-->
+        <p class="noAlertsHere">No Alerts at this time.</p>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $().SPServices({
+                operation: "GetListItems",
+                async: false,
+                // CHANGE LIST NAME BELOW (CASE SENSITIVE)
+                listName: "alert",
+                // CHANGE LIST LOCATION BELOW IF REMOTE (CASE SENSITIVE)
+                WEBurl: "/",
+                // CHANGE COLUMN NAMES BELOW (CASE SENSITIVE)
+                CAMLViewFields: "<ViewFields><FieldRef Name='Title' /><FieldRef Name='More' /></ViewFields>",
+                completefunc: function (xData, Status) {
+                    $(xData.responseXML).SPFilterNode("z:row").each(function () {
+                        // DO NOT CHANGE ANYTHING BELOW THIS LINE UNLESS ADDING MULTIPLE ACCORDIONS ON ONE PAGE- MUST ADD ID'S
+                        var alertTitle = $(this).attr("ows_Title");
+                        var alertMore = $(this).attr("ows_More") ? $(this).attr("ows_More")
+                            .split(",")[0] : false;
+                        if ((alertTitle !== false) || (alertMore !== false)) {
+                            $(".noAlertsHere").hide();
+                            calendarItem = $('#Calendar1.eventsCalendar');
+                            calendarItem.append($('<h2 class="eventsTitle">').html(
+                                alertTitle));
+                            if (alertMore !== false) {
+                                calendarItem.append($('<p class="eventsDescription">')
+                                    .append($('<a>').html('More Information').attr({
+                                        href: alertMore,
+                                        target: "_blank"
+                                    })))
+                            }
+                            calendarItem.append($('<hr/>'));
+                        }
+                    });
+                }
+            })
+        });
+    </script>
+</body>
+
+</html>
