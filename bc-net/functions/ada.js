@@ -143,9 +143,7 @@ var accessibilityButtons = function accessibilityButtons(options) {
             ariaLabelButtonIncrease: 'Increase Font',
             nameButtonDecrease: '-A',
             ariaLabelButtonDecrease: 'Decrease Font'
-        }
-
-        ,
+        },
         contrast: {
             nameButtonAdd: 'Add Contrast',
             ariaLabelButtonAdd: 'Add Contrast',
@@ -297,7 +295,7 @@ var accessibilityButtons = function accessibilityButtons(options) {
 
                         for (var i = 0, len = txtArray.length; i < len; i++) {
                             //txtArray.map(function (element) {
-                            var element = txtArray[i] //console.log(txtArray[i])
+                            var element = txtArray[i]; //console.log(txtArray[i])
 
                             if (element !== $('.navbar-desktop *') || $('.menu-horizontal *') || $('.vjs-text-track-display') || $('iframe')) {
                                 if (element.hasAttribute('href')) {
