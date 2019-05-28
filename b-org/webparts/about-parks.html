@@ -104,12 +104,12 @@
                     <!-- Grid row -->
                     <div class="row d-flex justify-content-center">
 
-                        <!-- Grid column -->
+                        <!-- Grid column-->
                         <div class="col-md-12 pb-5 mr-1" id="accordionColumn">
-                            <div id="welcomeText">This guide contains useful information about our many parks. To begin,
-                                select a topic.</div>
+                            <!----<div id="welcomeText">This guide contains useful information about our many parks. To begin,
+                                select a topic.</div>-->
                         </div>
-                        <!-- Grid column -->
+                        <!--Grid column -->
 
                     </div>
                     <!-- Grid row -->
@@ -122,7 +122,7 @@
     <script type="text/javascript">
         //Webpart Scripts
 
-        var accID = '';
+        var accID = 'Mission Statement';
         var searchVal = '';
         $(document).ready(function () {
 
@@ -183,8 +183,8 @@
                         topicName + '</a></li>');
                 }
 
-                var accID = $("#topicOptions > li > a:first-child").html()
-                //$('#faqTopicTitle').html(accID)
+                //var accID = $("#topicOptions > li > a:first-child").html()
+                $('#faqTopicTitle').html(accID)
 
                 var effectIn = function () {
                     $('#faqTopicTitle').html(accID).fadeTo(500, 1);
@@ -249,7 +249,8 @@
                                     headerID +
                                     '">' +
 
-                                    '<div class=""><p class="text-dark">' + cardBody + '</p></div>' +
+                                    '<div class="">' + cardBody +
+                                    '</div>' +
                                     /*
                                     '<a class="collapsed" data-toggle="collapse" data-parent="#' +
                                     accID2 + '" href="#' + cardBodyID +
@@ -301,7 +302,7 @@
                         $(".accordion").remove();
                         createAccordion();
                         effectIn();
-                        $('#accordionColumn > #welcomeText').hide();
+                        $//('#accordionColumn > #welcomeText').hide();
                     });
                 });
 

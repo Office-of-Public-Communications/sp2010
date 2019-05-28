@@ -144,7 +144,7 @@ $(document).ready(function () {
                 return;
 
 
-            } // End of createColumns function
+            }; // End of createColumns function
 
             //Array of categories
             var catGroup = [];
@@ -157,7 +157,7 @@ $(document).ready(function () {
                 for (var i = 0; i < items.length; i++) {
 
                     var categories = items[i].Category;
-                    console.log(categories)
+                    console.log(categories);
                     catGroup.push(categories);
 
                     if (catGroup[i] === "Automotive") {

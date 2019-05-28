@@ -81,9 +81,9 @@
             $().SPServices({
                 operation: "GetListItems",
                 async: false,
-                listName: "LibraryLocations",
-                webURL: "/library/",
-                CAMLViewFields: "<ViewFields><FieldRef Name='ID' /><FieldRef Name='Title' /><FieldRef Name='Address' /><FieldRef Name='Zip' /><FieldRef Name='DirectionsLink' /><FieldRef Name='Longitude' /><FieldRef Name='Latitude' /><FieldRef Name='Phone' /><FieldRef Name='Monday' /><FieldRef Name='Tuesday' /><FieldRef Name='Wednesday' /><FieldRef Name='Thursday' /><FieldRef Name='Friday' /><FieldRef Name='Saturday' /><FieldRef Name='Sunday' /></ViewFields>",
+                listName: "Parks",
+                webURL: "/Parks/",
+                CAMLViewFields: "<ViewFields><FieldRef Name='ID' /><FieldRef Name='Title' /><FieldRef Name='Address' /><FieldRef Name='City' /><FieldRef Name='Zip' /><FieldRef Name='DirectionsLink' /><FieldRef Name='Longitude' /><FieldRef Name='Latitude' /><FieldRef Name='Phone' /><FieldRef Name='Monday' /><FieldRef Name='Tuesday' /><FieldRef Name='Wednesday' /><FieldRef Name='Thursday' /><FieldRef Name='Friday' /><FieldRef Name='Saturday' /><FieldRef Name='Sunday' /></ViewFields>",
                 completefunc: function (xData, Status) {
                     $(xData.responseXML).SPFilterNode("z:row").each(function () {
 
@@ -97,12 +97,16 @@
                                     mappedName: "Location",
                                     objectType: "Text"
                                 },
-                                ows_AddressLine1: {
+                                ows_Address: {
                                     mappedName: "AddressLine1",
                                     objectType: "Text"
                                 },
+                                ows_City: {
+                                    mappedName: "City",
+                                    objectType: "Lookup"
+                                },
                                 ows_Zip: {
-                                    mappedName: "AddressLine2",
+                                    mappedName: "Zip",
                                     objectType: "Text"
                                 },
                                 ows_DirectionsLink: {
@@ -191,13 +195,14 @@
                             .LocationID;
                         DirectionsLink = locationInfo.DirectionsLink;
                         getDirections = getDirections = 'https://www.google.com/maps/dir//' +
-                            locationInfo.AddressLine1 + locationInfo.AddressLine2;
+                            locationInfo.AddressLine1 + locationInfo.City.lookupValue + locationInfo
+                            .Zip;
                         $("#locationList")
                             .append($('<a href=""><h5 style="font-size:1rem; font-weight:700">' +
                                 locationInfo.Location + '</h5></a>').attr("href", branchInfo))
                             .append($('<p style="line-height:1.2rem;">' + locationInfo.Telephone +
                                     '<br>' + locationInfo.AddressLine1 + '<br>' + locationInfo
-                                    .AddressLine2 +
+                                    .City.lookupValue + ', FL ' + locationInfo.Zip +
                                     '<br><br></p>')
                                 .append($(branchOpenClose))
                                 .append($('<a>').html('Get Directions').attr({
@@ -209,7 +214,8 @@
                         locations.push({
                             info: '<h5 style="font-size:1rem;">' + locationInfo.Location +
                                 '</h5><p>' + locationInfo.Telephone + '<br>' + locationInfo
-                                .AddressLine1 + '<br>' + locationInfo.AddressLine2 +
+                                .AddressLine1 + '<br>' + locationInfo.City.lookupValue +
+                                ', FL ' + locationInfo.Zip +
                                 '<br><br><a href="' + getDirections +
                                 '" target="_blank">Get Directions</a></p>',
                             lt: locationInfo.Latitude,
