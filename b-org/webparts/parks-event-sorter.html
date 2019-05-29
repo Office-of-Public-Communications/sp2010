@@ -94,17 +94,20 @@
 		<script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript">
 			$.ajax({
-				url: "/Parks/_api/web/lists/GetByTitle('Events')/items",
+				url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$select=*,Park/Title&$expand=Park/Id",
 				method: "GET",
 				headers: {
 					"Accept": "application/json; odata=verbose"
 				},
 				success: function (data) {
 					eventItems = data.d.results;
-					//console.log(eventItems);
-
-
-
+					console.log(eventItems);
+					$.each(eventItems, function (index, event) {
+						//console.log(eventItems);
+						console.log(index + ': ' + event.Title);
+						console.log(index + ': ' + event.Date);
+						console.log(index + ': ' + event.Park.Title);
+					});
 				}
 			});
 
@@ -160,7 +163,7 @@
 
 				});
 				$.when(terminalResults).done(function () {
-					console.log(eventItems);
+					//console.log(eventItems);
 					var thisTerminalResults = this.data;
 					var searchOption = 'Food';
 					var searchTerm = '';
@@ -218,11 +221,22 @@
 							$('.Service').addClass('active')
 						};
 						if (selectResults1.length > 0) {
-						$.each(selectResults1, function (index, resultItems){
-							$('#finalFilterResults').append($('<div class="col-12 col-md-4"><a class="row mx-1 my-2 py-3 z-depth-1 shopName" type="button" data-toggle="modal" data-target="#shopInfo" data-index="'+ index +'"><div class="col"><p class="fw-500 my-auto"><strong style="letter-spacing: -.25px;">' + resultItems.name + '</strong></p><small class="my-auto pr-3"><i class="fal fa-calendar broward-color-blue my-auto"></i> Terminal ' + resultItems.terminal.charAt(0) + '</small><small class="my-auto pr-3"><i class="fal fa-tree broward-color-blue my-auto"></i> Terminal ' + resultItems.terminal.charAt(0) + '</small></div></a></div>'));
+							$.each(selectResults1, function (index, resultItems) {
+								$('#finalFilterResults').append($(
+									'<div class="col-12 col-md-4"><a class="row mx-1 my-2 py-3 z-depth-1 shopName" type="button" data-toggle="modal" data-target="#shopInfo" data-index="' +
+									index +
+									'"><div class="col"><p class="fw-500 my-auto"><strong style="letter-spacing: -.25px;">' +
+									resultItems.name +
+									'</strong></p><small class="my-auto pr-3"><i class="fal fa-calendar broward-color-blue my-auto"></i> Terminal ' +
+									resultItems.terminal.charAt(0) +
+									'</small><small class="my-auto pr-3"><i class="fal fa-tree broward-color-blue my-auto"></i> Terminal ' +
+									resultItems.terminal.charAt(0) +
+									'</small></div></a></div>'));
 							});
 						} else {
-							$('#finalFilterResults').append($('<div class="col-12 pt-3 text-center text-md-left"><h3>Sorry! No matching results.</h3><h5>Adjust your filter options and try again.</h5></div>'));
+							$('#finalFilterResults').append($(
+								'<div class="col-12 pt-3 text-center text-md-left"><h3>Sorry! No matching results.</h3><h5>Adjust your filter options and try again.</h5></div>'
+								));
 						}
 
 						$('body').on('click', '.shopName', function () {
