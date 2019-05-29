@@ -14,6 +14,16 @@
 		#resultBtns .btn {
 			padding: .85rem 2rem;
 		}
+		.day {
+			font-size: 1.8rem;
+			color: #4FC3F7;
+			font-weight: 400;
+		}
+		.pkImg {
+			max-height: 120px;
+			width: 100%;
+			object-fit: cover;
+		}
 	</style>
 </head>
 
@@ -53,40 +63,7 @@
 						</div>
 					</div>
 				</div>
-				<!--<div id="moreOptions" class="my-4">
-					<div id="resultTitle" class="text-center text-md-left"></div>
-					<div id="resultBtns" class="btn-group d-none justify-content-center justify-content-md-start"
-						role="group" aria-label="search results">
-						<button type="button" class="btn btn-info Dine px-">Dine</button>
-						<button type="button" class="btn btn-info mx-2 Shop">Shop</button>
-						<button type="button" class="btn btn-info Service">Services</button>
-					</div>
-				</div>-->
-				<div id="termSearchResults" class="mb-5">
-				</div>
-			</div>
-			<div class="modal fade" id="shopInfo" tabindex="-1" role="dialog" aria-labelledby="shopModalLabel"
-				aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered modal-notify modal-info" role="document">
-					<div class="modal-content">
-						<div class="modal-header" style="background-color:#1C2A48">
-							<h5 class="modal-title text-white text-uppercase" id="shopModalTitle">
-								<!--Inject Publication Title-->
-							</h5>
-							<button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<p id="shopModalBody" style="color:#333;">
-								<!-- inject description -->
-							</p>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn" style="background-color:#FF9802"
-								data-dismiss="modal">Close</button>
-						</div>
-					</div>
+				<div id="termSearchResults" class="mb-5 row">
 				</div>
 			</div>
 		</div>
@@ -96,19 +73,20 @@
 		<script type="text/javascript">
 		// Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
 		String.prototype.toTitleCase = function() {
-		var i, j, str, lowers, uppers;
-		str = this.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
-		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-		});
+			var i, j, str, lowers, uppers;
+			str = this.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
+			return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+			});
 
-		// Certain minor words should be left lowercase unless
-		// they are the first or last words in the string
-		lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
-		'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'];
-		for (i = 0, j = lowers.length; i < j; i++) str=str.replace(new RegExp('\\s' + lowers[i] + '\\s' , 'g' ), function(txt)
-			{ return txt.toLowerCase(); }); // Certain words such as initialisms or acronyms should be left uppercase
-			uppers=['Id', 'Tv' ]; for (i=0, j=uppers.length; i < j; i++) str=str.replace(new RegExp('\\b' + uppers[i] + '\\b'
-			, 'g' ), uppers[i].toUpperCase()); return str; }
+			// Certain minor words should be left lowercase unless
+			// they are the first or last words in the string
+			lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
+			'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'];
+			for (i = 0, j = lowers.length; i < j; i++) str=str.replace(new RegExp('\\s' + lowers[i] + '\\s' , 'g' ), function(txt)
+				{ return txt.toLowerCase(); }); // Certain words such as initialisms or acronyms should be left uppercase
+				uppers=['Id', 'Tv' ]; for (i=0, j=uppers.length; i < j; i++) str=str.replace(new RegExp('\\b' + uppers[i] + '\\b'
+				, 'g' ), uppers[i].toUpperCase()); return str; 
+		}
 
 			$.ajax({
 				url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$select=*,Park/Title&$expand=Park/Id",
@@ -122,12 +100,23 @@
 					$.each(eventItems, function (index, event) {
 						//console.log(eventItems);
 						// initial caps the titles
-						var title = event.Title.toTitleCase;
+						title = event.Title.toTitleCase();
+						park = event.Park.Title;
 						// moment the date
-						var date = moment(event.Date).format('LL');
+						date = moment(event.Date).format('ddd, MMM D');
+						day = moment(event.Date).format('D');
+						mon = moment(event.Date).format('MMM');
+						events = [];
+						dates = [];
+						parks = [];
+
+
 						console.log(index + ': ' + title);
 						console.log(index + ': ' + date);
-						console.log(index + ': ' + event.Park.Title);
+						console.log(index + ': ' + park);
+						// build the cards
+						$('#termSearchResults').append($(
+							'<div class="col-12 col-md-6 col-lg-4 p-3 my-1"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' + mon + '<br/><span class="day">' + day + '</span></div><div class="col-9 pl-3"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' + title + ' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-calendar"></i> ' + date + '</small><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> ' + park + '</small></div></div></div></div>'));
 					});
 				}
 			});
@@ -242,16 +231,16 @@
 							$('.Service').addClass('active')
 						};
 						if (selectResults1.length > 0) {
-							$.each(selectResults1, function (index, resultItems) {
+							$.each(eventItems, function (index, event) {
 								$('#finalFilterResults').append($(
 									'<div class="col-12 col-md-4"><a class="row mx-1 my-2 py-3 z-depth-1 shopName" type="button" data-toggle="modal" data-target="#shopInfo" data-index="' +
 									index +
 									'"><div class="col"><p class="fw-500 my-auto"><strong style="letter-spacing: -.25px;">' +
-									resultItems.name +
-									'</strong></p><small class="my-auto pr-3"><i class="fal fa-calendar broward-color-blue my-auto"></i> Terminal ' +
-									resultItems.terminal.charAt(0) +
-									'</small><small class="my-auto pr-3"><i class="fal fa-tree broward-color-blue my-auto"></i> Terminal ' +
-									resultItems.terminal.charAt(0) +
+									title +
+									'</strong></p><small class="my-auto pr-3"><i class="fal fa-calendar broward-color-blue my-auto"></i> ' +
+									date +
+									'</small><small class="my-auto pr-3"><i class="fal fa-tree broward-color-blue my-auto"></i> ' +
+									park +
 									'</small></div></a></div>'));
 							});
 						} else {
