@@ -92,7 +92,24 @@
 		</div>
 
 		<script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment.min.js"></script>
 		<script type="text/javascript">
+		// Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
+		String.prototype.toTitleCase = function() {
+		var i, j, str, lowers, uppers;
+		str = this.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
+		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+		});
+
+		// Certain minor words should be left lowercase unless
+		// they are the first or last words in the string
+		lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
+		'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'];
+		for (i = 0, j = lowers.length; i < j; i++) str=str.replace(new RegExp('\\s' + lowers[i] + '\\s' , 'g' ), function(txt)
+			{ return txt.toLowerCase(); }); // Certain words such as initialisms or acronyms should be left uppercase
+			uppers=['Id', 'Tv' ]; for (i=0, j=uppers.length; i < j; i++) str=str.replace(new RegExp('\\b' + uppers[i] + '\\b'
+			, 'g' ), uppers[i].toUpperCase()); return str; }
+
 			$.ajax({
 				url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$select=*,Park/Title&$expand=Park/Id",
 				method: "GET",
@@ -104,8 +121,12 @@
 					console.log(eventItems);
 					$.each(eventItems, function (index, event) {
 						//console.log(eventItems);
-						console.log(index + ': ' + event.Title);
-						console.log(index + ': ' + event.Date);
+						// initial caps the titles
+						var title = event.Title.toTitleCase;
+						// moment the date
+						var date = moment(event.Date).format('LL');
+						console.log(index + ': ' + title);
+						console.log(index + ': ' + date);
 						console.log(index + ': ' + event.Park.Title);
 					});
 				}
