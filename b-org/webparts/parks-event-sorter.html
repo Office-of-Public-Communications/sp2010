@@ -69,7 +69,8 @@
 		</div>
 
 		<script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
-		<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment.min.js"></script>
+		<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
+		<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"></script>
 		<script type="text/javascript">
 		// Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
 		String.prototype.toTitleCase = function() {
@@ -89,7 +90,8 @@
 		}
 
 			$.ajax({
-				url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$select=*,Park/Title&$expand=Park/Id",
+				url:
+				"/Parks/_api/web/lists/GetByTitle('Events')/items?$top=5000&$select=*,Park/Title&$expand=Park/Id&$orderby=Date%20asc",
 				method: "GET",
 				headers: {
 					"Accept": "application/json; odata=verbose"
@@ -100,23 +102,31 @@
 					$.each(eventItems, function (index, event) {
 						//console.log(eventItems);
 						// initial caps the titles
-						title = event.Title.toTitleCase();
-						park = event.Park.Title;
-						// moment the date
-						date = moment(event.Date).format('ddd, MMM D');
-						day = moment(event.Date).format('D');
-						mon = moment(event.Date).format('MMM');
-						events = [];
-						dates = [];
-						parks = [];
+						var today = moment(new Date());
+						var eDate = moment(event.Date);
+						console.log(typeof eDate);
+						console.log(typeof today);
+						console.log(moment(event.Date).isAfter(today));
+						if (moment(eDate).isAfter(today)) {
+							title = event.Title.toTitleCase();
+							park = event.Park.Title;
+							// moment the date
+							date = moment(event.Date).format('ddd, MMM D');
+							day = moment(event.Date).format('D');
+							mon = moment(event.Date).format('MMM');
+							events = [];
+							dates = [];
+							parks = [];
 
 
-						console.log(index + ': ' + title);
-						console.log(index + ': ' + date);
-						console.log(index + ': ' + park);
-						// build the cards
-						$('#termSearchResults').append($(
-							'<div class="col-12 col-md-6 col-lg-4 p-3 my-1"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' + mon + '<br/><span class="day">' + day + '</span></div><div class="col-9 pl-3"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' + title + ' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-calendar"></i> ' + date + '</small><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> ' + park + '</small></div></div></div></div>'));
+							console.log(index + ': ' + title);
+							console.log(index + ': ' + moment(event.Date).format('LL'));
+							console.log(index + ': ' + park);
+							// build the cards
+							$('#termSearchResults').append($(
+								'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' + park + '" data-date="' + event.Date + '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' + mon + '<br/><span class="day">' + day + '</span></div><div class="col-9 pl-3"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' + title + ' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-calendar"></i> ' + date + '</small><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> ' + park + '</small></div></div></div></div>'
+							));
+						};
 					});
 				}
 			});
