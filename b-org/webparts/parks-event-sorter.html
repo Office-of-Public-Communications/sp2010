@@ -27,560 +27,279 @@
 </head>
 
 <body>
-	<form id="form1" runat="server">
-		<div aria-label="Airport Main Content" id="airportContent">
-			<div class="container">
-				<div class="row mb-5" id="filterOptions">
-					<div class="col-12 col-md-6">
-						<div class="d-md-block typeOption my-2">
-							<select id="parkSelect" class="browser-default col-12 my-0 mdb-select termSelect">
-								<option value="0">Any Park</option>
-								<!-- Inject Parks here -->
-							</select>
-						</div>
-					</div>
-					<div class="col-12 col-md-6">
-						<div class="d-md-block typeOption my-2">
-							<select id="dateSelect" class="browser-default col-12 my-2 mdb-select secSelect">
-								<option value="0">Any Day</option>
-								<option value="1">Today</option>
-								<option value="2">Tomorrow</option>
-								<!-- <option value="3">This Weekend</option> -->
-								<option value="4">This Week</option>
-								<option value="5">Next Week</option>
-								<option value="6">This Month</option>
-								<option value="7">Next Month</option>
-								<!--<option value="">Pick a Date...</option>-->
-							</select>
-							<!-- <div class="col-12 col-md-6">
-								<button type="button"
-									class="btn btn-info float-right float-md-none srchBtn my-2">Search</button>
-							</div> -->
-						</div>
+	<div aria-label="Airport Main Content" id="airportContent">
+		<div class="container">
+			<div class="row mb-5" id="filterOptions">
+				<div class="col-12 col-md-6">
+					<div class="d-md-block typeOption my-2">
+						<select id="parkSelect" class="browser-default col-12 my-0 mdb-select termSelect">
+							<option value="0">Any Park</option>
+							<!-- Inject Parks here -->
+						</select>
 					</div>
 				</div>
-				<div id="termSearchResults" class="mb-5 row">
+				<div class="col-12 col-md-6">
+					<div class="d-md-block typeOption my-2">
+						<select id="dateSelect" class="browser-default col-12 my-2 mdb-select secSelect">
+							<option value="0">Any Day</option>
+							<option value="1">Today</option>
+							<option value="2">Tomorrow</option>
+							<!-- <option value="3">This Weekend</option> -->
+							<option value="4">This Week</option>
+							<option value="5">Next Week</option>
+							<option value="6">This Month</option>
+							<option value="7">Next Month</option>
+							<!--<option value="">Pick a Date...</option>-->
+						</select>
+						<!-- <div class="col-12 col-md-6">
+							<button type="button"
+								class="btn btn-info float-right float-md-none srchBtn my-2">Search</button>
+						</div> -->
+					</div>
 				</div>
 			</div>
+			<div id="termSearchResults" class="mb-5 row">
+			</div>
 		</div>
+	</div>
 
-		<script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
-		<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
-		<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"></script>
-		<script type="text/javascript">
-		// Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
-		String.prototype.toTitleCase = function() {
-			var i, j, str, lowers, uppers;
-			str = this.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
-			return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+	<script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
+	<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"></script>
+	<script type="text/javascript">
+	// Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
+	String.prototype.toTitleCase = function() {
+		var i, j, str, lowers, uppers;
+		str = this.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
+		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+		});
+
+		// Certain minor words should be left lowercase unless
+		// they are the first or last words in the string
+		lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
+		'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'];
+		for (i = 0, j = lowers.length; i < j; i++) str=str.replace(new RegExp('\\s' + lowers[i] + '\\s' , 'g' ), function(txt)
+			{ return txt.toLowerCase(); }); // Certain words such as initialisms or acronyms should be left uppercase
+			uppers=['Id', 'Tv' ]; for (i=0, j=uppers.length; i < j; i++) str=str.replace(new RegExp('\\b' + uppers[i] + '\\b'
+			, 'g' ), uppers[i].toUpperCase()); return str;
+	}
+
+	$.ajax({
+		url:
+		"/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,Image/Title&$expand=Image/Name&$orderby=Title%20asc",
+		method: "GET",
+		headers: {
+			"Accept": "application/json; odata=verbose"
+		},
+		success: function (data) {
+			parkItems = data.d.results;
+			//console.log(parkItems);
+			$.each(parkItems, function (index, park) {
+				//console.log(park);
+				$('#parkSelect > option:last-child').after($('<option value="' + park.Id + '">' + park.Title + '</option>'))
 			});
-
-			// Certain minor words should be left lowercase unless
-			// they are the first or last words in the string
-			lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
-			'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'];
-			for (i = 0, j = lowers.length; i < j; i++) str=str.replace(new RegExp('\\s' + lowers[i] + '\\s' , 'g' ), function(txt)
-				{ return txt.toLowerCase(); }); // Certain words such as initialisms or acronyms should be left uppercase
-				uppers=['Id', 'Tv' ]; for (i=0, j=uppers.length; i < j; i++) str=str.replace(new RegExp('\\b' + uppers[i] + '\\b'
-				, 'g' ), uppers[i].toUpperCase()); return str;
+			// Sort by Park dropdown
+			parkSelect = $('#parkSelect').change(function(){
+				var filterValue = $(this).val();
+				//console.log(filterValue)
+				$('.event').hide();
+				if (filterValue == '0') {
+				$('.event').show();
+				}
+				if (filterValue != '0') {
+					$('.event').each(function(i, el) {
+						if ($(el).attr('data-park') == filterValue) {
+							$(el).show();
+						}
+					})
+				}
+			})
 		}
+	});
+	//eventImgs = [];
+	// $.ajax({
+	// 	url:
+	// 	"/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$top=5000",
+	// 	method: "GET",
+	// 	headers: {
+	// 		"Accept": "application/json; odata=verbose"
+	// 	},
+	// 	success: function (data) {
+	// 		parkImgs = data.d.results;
+	// 		//console.log(parkImgs);
+	// 		$.each(parkImgs, function (index, park) {
+	// 			//console.log(park.Title)
+	// 			//console.log(park.ParkId)
+	// 			//eventImgs.push(park.);
+	// 		});
+	// 	}
+	// })
+	$.ajax({
+		url:
+		"/Parks/_api/web/lists/GetByTitle('Events')/items?$top=5000&$select=*,Park/Title,Recurring/Title&$expand=Park/Id,Recurring/Id&$orderby=Date%20asc",
+		method: "GET",
+		headers: {
+			"Accept": "application/json; odata=verbose"
+		},
+		success: function (data) {
+			eventItems = data.d.results;
+			//console.log(eventItems);
+			$.each(eventItems, function (index, event) {
 
-		$.ajax({
-			url:
-			"/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,Image/Title&$expand=Image/Name&$orderby=Title%20asc",
-			method: "GET",
-			headers: {
-				"Accept": "application/json; odata=verbose"
-			},
-			success: function (data) {
-				parkItems = data.d.results;
-				//console.log(parkItems);
-				$.each(parkItems, function (index, park) {
-					//console.log(park);
-					$('#parkSelect > option:last-child').after($('<option value="' + park.Id + '">' + park.Title + '</option>'))
-				});
-				// Sort by Park dropdown
-				parkSelect = $('#parkSelect').change(function(){
-					var filterValue = $(this).val();
-					//console.log(filterValue)
-					$('.event').hide();
-					if (filterValue == '0') {
-					$('.event').show();
-					}
-					if (filterValue != '0') {
-						$('.event').each(function(i, el) {
-							if ($(el).attr('data-park') == filterValue) {
-								$(el).show();
-							}
-						})
-					}
-				})
-			}
-		});
-		//eventImgs = [];
-		// $.ajax({
-		// 	url:
-		// 	"/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$top=5000",
-		// 	method: "GET",
-		// 	headers: {
-		// 		"Accept": "application/json; odata=verbose"
-		// 	},
-		// 	success: function (data) {
-		// 		parkImgs = data.d.results;
-		// 		//console.log(parkImgs);
-		// 		$.each(parkImgs, function (index, park) {
-		// 			//console.log(park.Title)
-		// 			//console.log(park.ParkId)
-		// 			//eventImgs.push(park.);
-		// 		});
-		// 	}
-		// })
-		$.ajax({
-			url:
-			"/Parks/_api/web/lists/GetByTitle('Events')/items?$top=5000&$select=*,Park/Title,Recurring/Title&$expand=Park/Id,Recurring/Id&$orderby=Date%20asc",
-			method: "GET",
-			headers: {
-				"Accept": "application/json; odata=verbose"
-			},
-			success: function (data) {
-				eventItems = data.d.results;
-				//console.log(eventItems);
-				$.each(eventItems, function (index, event) {
+				var today = moment(new Date());
+				var eDate = moment(event.Date);
+				var recur = event.Recurring.results;
 
-					var today = moment(new Date());
-					var eDate = moment(event.Date);
-					var recur = event.Recurring.results;
+				//console.log(eDate);
+				//console.log(event.Recurring);
 
-					//console.log(eDate);
-					//console.log(event.Recurring);
+				// console.log(today)
+				// console.log(moment(eDate))
+				// console.log(moment(eDate).isSame(today))
 
-					// console.log(today)
-					// console.log(moment(eDate))
-					// console.log(moment(eDate).isSame(today))
+				if (moment(eDate.format('LL')).isSame(today.format('LL')) || moment(eDate).isAfter(today)){// || recur.length > 0) {
+					title = event.Title.toTitleCase();
+					park = event.Park.Title;
+					// moment the date
+					date = moment(event.Date).format('ddd, MMM D');
+					day = moment(event.Date).format('D');
+					month = moment(event.Date).format('MMM');
 
-					if (moment(eDate.format('LL')).isSame(today.format('LL')) || moment(eDate).isAfter(today)){// || recur.length > 0) {
-						title = event.Title.toTitleCase();
-						park = event.Park.Title;
-						// moment the date
-						date = moment(event.Date).format('ddd, MMM D');
-						day = moment(event.Date).format('D');
-						month = moment(event.Date).format('MMM');
+					// sort by park dropdown
+					//console.log(moment($('.event').attr('data-date')))
 
-						// sort by park dropdown
-						//console.log(moment($('.event').attr('data-date')))
+					// Sort by Date dropdown
 
-						// Sort by Date dropdown
+					// if no park selected, run select date on everything
+					$('#dateSelect').change(function(){
+						var filterValue = $(this).val();
+						var td = moment().format('LL');
+						var tm = moment().add(1, 'days').format('LL');
+						var tws = moment().startOf('isoWeek');
+						var twe = moment().endOf('isoWeek')
 
-						// if no park selected, run select date on everything
-						$('#dateSelect').change(function(){
-							var filterValue = $(this).val();
-							var td = moment().format('LL');
-							var tm = moment().add(1, 'days').format('LL');
-							var tws = moment().startOf('isoWeek');
-							var twe = moment().endOf('isoWeek')
+						$('.event').hide();
 
-							$('.event').hide();
-
-							switch(filterValue) {
-								// any day
-								case '0':
-									$('.event').show();
-									break;
-								// today
-								case '1':
-									$('.event').each(function(i, el) {
-										var dd = $(el).attr('data-date');
-										if (dd == td) {
-											$(el).show();
-										}
-									})
-									break;
-								// tomorrow
-								case '2':
-									$('.event').each(function(i, el) {
-										var dd = $(el).attr('data-date');
-										if (dd == tm) {
-											$(el).show();
-										}
-									})
-									break;
-								// this weekend
-								case '3':
-									$('.event').each(function(i, el) {
-										var dd = moment($(el).attr('data-date')).format('LL');
-										var sun = moment().add(1, 'weeks').startOf('isoWeek').format('LL');
-										var sat = moment().endOf('isoWeek').format('LL');
-										//console.log(dd, sat, sun)
-										if(moment(dd).isSame(sat, 'day') || moment(dd).isSame(sun, 'day')){console.log(dd,sun,sat)}
-										if (moment(dd).isSame(sat, 'day') || moment(dd).isSame(sun, 'day')) {
-											$(el).show();
-										}
-									})
-									break;
-								// this week
-								case '4':
-									$('.event').each(function(i, el) {
-										var dd = moment($(el).attr('data-date'));
-										if (dd.isAfter(tws) && dd.isBefore(twe)) {
-											$(el).show();
-										}
-									})
-									break;
-								// next week
-								case '5':
-									$('.event').each(function(i, el) {
-										var dd = moment($(el).attr('data-date'));
-										var nws = moment().add(1, 'weeks').startOf('isoWeek');
-										var nwe = moment().add(1, 'weeks').endOf('isoWeek')
-										if (dd.isAfter(nws) && dd.isBefore(nwe)) {
-											$(el).show();
-										}
-									})
-									break;
-								// this month
-								case '6':
-									$('.event').each(function(i, el) {
-										var dd = moment($(el).attr('data-date'));
-										var tms = moment().startOf('month');
-										var tme = moment().endOf('month');
-										if (dd.isAfter(tms) && dd.isBefore(tme)) {
-											$(el).show();
-										}
-									})
-									break;
-								// next month
-								case '7':
-									$('.event').each(function(i, el) {
-										var dd = moment($(el).attr('data-date'));
-										var nms = moment().add(1, 'months').startOf('month');
-										var nme = moment().add(1, 'months').endOf('month');
-										if (dd.isAfter(nms) && dd.isBefore(nme)) {
-											$(el).show();
-										}
-									})
-									break;
-								default:
-									$('.event').show();
-							}
-						})
-
-						// if park selected, run select date only on these parks
-						if ($('#parkSelect').val() != 0) {
-
+						switch(filterValue) {
+							// any day
+							case '0':
+								$('.event').show();
+								break;
+							// today
+							case '1':
+								$('.event').each(function(i, el) {
+									var dd = $(el).attr('data-date');
+									if (dd == td) {
+										$(el).show();
+									}
+								})
+								break;
+							// tomorrow
+							case '2':
+								$('.event').each(function(i, el) {
+									var dd = $(el).attr('data-date');
+									if (dd == tm) {
+										$(el).show();
+									}
+								})
+								break;
+							// this weekend
+							case '3':
+								$('.event').each(function(i, el) {
+									var dd = moment($(el).attr('data-date')).format('LL');
+									var sun = moment().add(1, 'weeks').startOf('isoWeek').format('LL');
+									var sat = moment().endOf('isoWeek').format('LL');
+									//console.log(dd, sat, sun)
+									if(moment(dd).isSame(sat, 'day') || moment(dd).isSame(sun, 'day')){console.log(dd,sun,sat)}
+									if (moment(dd).isSame(sat, 'day') || moment(dd).isSame(sun, 'day')) {
+										$(el).show();
+									}
+								})
+								break;
+							// this week
+							case '4':
+								$('.event').each(function(i, el) {
+									var dd = moment($(el).attr('data-date'));
+									if (dd.isAfter(tws) && dd.isBefore(twe)) {
+										$(el).show();
+									}
+								})
+								break;
+							// next week
+							case '5':
+								$('.event').each(function(i, el) {
+									var dd = moment($(el).attr('data-date'));
+									var nws = moment().add(1, 'weeks').startOf('isoWeek');
+									var nwe = moment().add(1, 'weeks').endOf('isoWeek')
+									if (dd.isAfter(nws) && dd.isBefore(nwe)) {
+										$(el).show();
+									}
+								})
+								break;
+							// this month
+							case '6':
+								$('.event').each(function(i, el) {
+									var dd = moment($(el).attr('data-date'));
+									var tms = moment().startOf('month');
+									var tme = moment().endOf('month');
+									if (dd.isAfter(tms) && dd.isBefore(tme)) {
+										$(el).show();
+									}
+								})
+								break;
+							// next month
+							case '7':
+								$('.event').each(function(i, el) {
+									var dd = moment($(el).attr('data-date'));
+									var nms = moment().add(1, 'months').startOf('month');
+									var nme = moment().add(1, 'months').endOf('month');
+									if (dd.isAfter(nms) && dd.isBefore(nme)) {
+										$(el).show();
+									}
+								})
+								break;
+							default:
+								$('.event').show();
 						}
-						/* TODO: If not recurring, build */
+					})
 
-						/* TODO: If recurring, sort stuff then build */
+					// if park selected, run select date only on these parks
+					if ($('#parkSelect').val() != 0) {
 
-						// build the cards
-						// createCards()
-
-						$('#termSearchResults').append($(
-							'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' + event.ParkId + '" data-date="' + moment(event.Date).format('LL') + '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' + month + '<br/><span class="day">' + day + '</span></div><div class="col-9 pl-3"><a href="/Parks/Pages/Event.aspx?=' + event.Id + '"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' + title + ' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5></a><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-calendar"></i> ' + date + '</small><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> <a href="/parks/Pages/Park.aspx?=' + event.ParkId + '">' + park + '</a></small></div></div></div></div>'
-						));
-					};
-				});
-			}
-		});
-
-
-/****************************** FLL below this *******************************/
-
-			var terminalAll = [];
-			var selectResults = [];
-			var selectResults1 = [];
-			var searchTermStorage = [];
-			var searchSecStorage = [];
-
-			$(document).ready(function () {
-
-				terminalResults = $().SPServices.SPGetListItemsJson({
-					webURL: "/airport",
-					listName: "terminals",
-					viewName: "",
-					CAMLQuery: "",
-					CAMLViewFields: "",
-					CAMLRowLimit: "",
-					CAMLQueryOptions: "",
-					changeToken: "",
-					contains: "",
-					mapping: {
-						ows_LinkTitle: {
-							mappedName: "name",
-							objectType: "Text"
-						},
-
-						ows_description: {
-							mappedName: "desc",
-							objectType: "Text"
-						},
-						ows_hours: {
-							mappedName: "hours",
-							objectType: "text"
-						},
-						ows_security: {
-							mappedName: "security",
-							objectType: "text"
-						},
-						ows_terminal: {
-							mappedName: "terminal",
-							objectType: "text"
-						},
-						ows_foodOrShop: {
-							mappedName: "storeType",
-							objectType: "text"
-						},
-
-					},
-					mappingOverrides: null,
-					debug: false
-
-				});
-				$.when(terminalResults).done(function () {
-					//console.log(eventItems);
-					var thisTerminalResults = this.data;
-					var searchOption = 'Food';
-					var searchTerm = '';
-					//var searchAir = '';
-					var searchSecurity = '';
-
-					function filterItems(query) {
-						return terminalItems.filter(function (el) {
-							return el.toLowerCase().indexOf(query.toLowerCase()) > -1;
-						})
 					}
+					/* TODO: If not recurring, build */
 
-					var clearFields = function () {
-						$('#resultBtns').removeClass('d-none').addClass('d-flex');
-						searchTerm = '';
-						//searchAir = '';
-						searchSecurity = '';
-						$("select").each(function () {
-							this.selectedIndex = 0
-						});
+					/* TODO: If recurring, sort stuff then build */
 
-					};
-					var removeDivs = function () {
-						$('#finalFilterResults').remove();
-						$('#resultTitle').remove();
-					};
+					// build the cards
+					// createCards()
 
-					var buildResults = function () {
-						if (searchSecurity.length && searchTerm.length) {
-							if (searchTerm !== 'R') {
-								var resultTitle = 'Terminal ' + searchTerm + ' & ' + searchSecurity
-							} else {
-								var resultTitle = 'Rental Car Center & ' + searchSecurity
-							}
-						} else if (!searchSecurity.length && searchTerm.length) {
-							if (searchTerm !== 'R') {
-								var resultTitle = 'Terminal ' + searchTerm
-							} else {
-								var resultTitle = 'Rental Car Center'
-							}
-						} else if (searchSecurity.length && !searchTerm.length) {
-							var resultTitle = searchSecurity
-						};
+						getImg = $.ajax({
+						url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$select=*,EncodedAbsUrl,Park/Title&$expand=Park/Id&$filter=(Park eq " + event.ParkId + ")",
+						method: "GET",
+						headers: {
+							"Accept": "application/json; odata=verbose"
+						},
+						success: function (data) {
+							var imgResult = data.d.results;
+							console.log(imgResult)
+							imgUrl = imgResult[0].EncodedAbsUrl;
 
-						$('#termSearchResults').append($('<div class="row" id="finalFilterResults"></div>'))
-						$('#moreOptions').prepend($(
-							'<div id="resultTitle" class="text-center text-md-left"><h3 class="fw-500"><strong>Results for:</strong></h3> <h4>' +
-							resultTitle + '</h4></div>'));
+							var title = event.Title.toTitleCase();
+							//$.when(getImg).done(function () {
+							console.log(imgUrl);
 
-						if (searchOption == 'Food') {
-							$('.Dine').addClass('active')
-						} else if (searchOption == 'Shop') {
-							$('.Shop').addClass('active')
-						} else {
-							$('.Service').addClass('active')
-						};
-						if (selectResults1.length > 0) {
-							$.each(eventItems, function (index, event) {
-								$('#finalFilterResults').append($(
-									'<div class="col-12 col-md-4"><a class="row mx-1 my-2 py-3 z-depth-1 shopName" type="button" data-toggle="modal" data-target="#shopInfo" data-index="' +
-									index +
-									'"><div class="col"><p class="fw-500 my-auto"><strong style="letter-spacing: -.25px;">' +
-									title +
-									'</strong></p><small class="my-auto pr-3"><i class="fal fa-calendar broward-color-blue my-auto"></i> ' +
-									date +
-									'</small><small class="my-auto pr-3"><i class="fal fa-tree broward-color-blue my-auto"></i> ' +
-									park +
-									'</small></div></a></div>'));
-							});
-						} else {
-							$('#finalFilterResults').append($(
-								'<div class="col-12 pt-3 text-center text-md-left"><h3>Sorry! No matching results.</h3><h5>Adjust your filter options and try again.</h5></div>'
-								));
+							$('#termSearchResults').append($(
+								'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' + event.ParkId + '" data-date="' + moment(event.Date).format('LL') + '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg" src="' + imgUrl + '" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' + month + '<br/><span class="day">' + day + '</span></div><div class="col-9 pl-3"><a href="/Parks/Pages/Event.aspx?=' + event.Id + '"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' + title + ' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5></a><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-calendar"></i> ' + date + '</small><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> <a href="/parks/Pages/Park.aspx?=' + event.ParkId + '">' + park + '</a></small></div></div></div></div>'
+							));
 						}
-
-						$('body').on('click', '.shopName', function () {
-							var index = $(this).attr('data-index');
-							var terminalItems = selectResults1[index];
-							$("#shopModalTitle").html(terminalItems.name);
-							if (terminalItems.terminal.length <= 3) {
-								$("#shopModalBody").html(
-									'<div class="fw-400 my-auto"><i class="fal fa-map-marker-alt mr-1" style="font-size:1.5rem;"></i> Terminal ' +
-									terminalItems.terminal.charAt(0) + ' Concourse ' +
-									terminalItems.terminal.substr(1) +
-									'</div><div class="fw-400 pt-1"><i class="fal fa-shield-check" style="font-size:1.5rem;"></i> ' +
-									terminalItems.security +
-									'</div><div class="fw-400 pt-1"><i class="fal fa-clock" style="font-size:1.5rem;"></i> Hours: ' +
-									terminalItems.hours + '</div><div class="pt-3">' +
-									terminalItems.desc + '</div>');
-							} else if (terminalItems.terminal.length > 3 && terminalItems.terminal !=
-								'Rental Car Center') {
-								$("#shopModalBody").html(
-									'<div class="fw-400 my-auto"><i class="fal fa-map-marker-alt mr-1" style="font-size:1.5rem;"></i> Terminal ' +
-									terminalItems.terminal +
-									'</div><div class="fw-400 pt-1"><i class="fal fa-shield-check" style="font-size:1.5rem;"></i> ' +
-									terminalItems.security +
-									'</div><div class="fw-400 pt-1"><i class="fal fa-clock" style="font-size:1.5rem;"></i> Hours: ' +
-									terminalItems.hours + '</div><div class="pt-3">' +
-									terminalItems.desc + '</div>');
-							} else {
-								$("#shopModalBody").html(
-									'<div class="fw-400 my-auto"><i class="fal fa-map-marker-alt mr-1" style="font-size:1.5rem;"></i> ' +
-									terminalItems.terminal +
-									'</div><div class="fw-400 pt-1"><i class="fal fa-shield-check" style="font-size:1.5rem;"></i> ' +
-									terminalItems.security +
-									'</div><div class="fw-400 pt-1"><i class="fal fa-clock" style="font-size:1.5rem;"></i> Hours: ' +
-									terminalItems.hours + '</div><div class="pt-3">' +
-									terminalItems.desc + '</div>');
-							}
-						});
-					}
-					for (i = 0; i < thisTerminalResults.length; i++) {
-						var results = $(this)[0];
-						var thisResults = results.data;
-						terminalAll.push(thisResults[i]);
-					}
-
-					for (i = 0; i < terminalAll.length; i++) {
-						terminalItems = terminalAll[i];
-					};
-					$('.termSelect').on('change', function () {
-						searchTermStorage = [];
-						//get terminal for filter
-						searchTerm = $(this).val();
-						searchTermStorage.push(searchTerm);
 					});
-					/*$('.airSelect').on('change', function () {
-            //get security option
-            searchAir = $(this).val();
-            console.log(searchSecurity);
-        });*/
-
-					$('.secSelect').on('change', function () {
-						searchSecStorage = [];
-						//get security option
-						searchSecurity = $(this).val();
-						searchSecStorage.push(searchSecurity);
-					});
-
-
-					var searchFor = function () {
-						//clear previous results
-						selectResults = [];
-						//filter by storeType
-						var filterStoreType = terminalAll.filter(function (item) {
-							return item.storeType == searchOption;
-						});
-						selectResults.push(filterStoreType);
-
-						if (searchTerm.length && searchSecurity.length <= 0) {
-							//filter by Terminal
-							var filterTerm = selectResults[0].filter(function (item) {
-								return item.terminal.charAt(0) === searchTerm;
-							});
-							selectResults.push(filterTerm);
-
-							selectResults1 = selectResults[1];
-							buildResults();
-							clearFields();
-
-						} else if (searchTerm.length && searchSecurity.length) {
-							//filter by Terminal
-							var filterTerm = selectResults[0].filter(function (item) {
-								return item.terminal.charAt(0) === searchTerm;
-							});
-							selectResults.push(filterTerm);
-
-							//filter by Security
-							var filterSecurity = selectResults[1].filter(function (item) {
-								return item.security === searchSecurity;
-							});
-							selectResults.push(filterSecurity);
-
-							selectResults1 = selectResults[2];
-							buildResults();
-							clearFields();
-
-						} else if (searchTerm.length <= 0 && searchSecurity.length) {
-							//filter by Security
-							var filterSecurity = selectResults[0].filter(function (item) {
-								return item.security === searchSecurity;
-							});
-							selectResults.push(filterSecurity);
-
-							selectResults1 = selectResults[1];
-							buildResults();
-							clearFields();
-						} else {
-							return
-						};
-
-					};
-
-					$('.srchBtn').on('click', function () {
-						if (!searchTerm.length) {
-							searchTermStorage = [];
-						}
-						if (!searchSecurity.length) {
-							searchSecStorage = [];
-						}
-						$('#resultBtns').find('.active').removeClass('active');
-						searchOption = 'Food';
-						removeDivs();
-						searchFor();
-
-					});
-					$('.Shop').on('click', function () {
-						$('#resultBtns').find('.active').removeClass('active');
-						searchOption = 'Shop';
-						searchTerm = searchTermStorage["0"] ? searchTermStorage["0"] : '';
-						searchSecurity = searchSecStorage["0"] ? searchSecStorage["0"] : '';
-						removeDivs();
-						searchFor();
-					});
-					$('.Dine').on('click', function () {
-						$('#resultBtns').find('.active').removeClass('active');
-						searchOption = 'Food';
-						searchTerm = searchTermStorage["0"] ? searchTermStorage["0"] : '';
-						searchSecurity = searchSecStorage["0"] ? searchSecStorage["0"] : '';
-						removeDivs();
-						searchFor();
-					});
-					$('.Service').on('click', function () {
-						$('#resultBtns').find('.active').removeClass('active');
-						searchOption = 'Service';
-						searchTerm = searchTermStorage["0"] ? searchTermStorage["0"] : '';
-						searchSecurity = searchSecStorage["0"] ? searchSecStorage["0"] : '';
-						removeDivs();
-						searchFor();
-					});
-
-					//terminalShops.data().unique().sort().each( function ( d, j ) {
-					//	select.append( '<option value="'+d+'">'+d+'</option>' )
-					//}
-
-
-				});
+				};
 			});
-			$('#fullPageContent > div > div.row.pt-3.mb-r').removeClass('mb-r');
-			webpartMove = $("#airportContent")
-			webpartMove.detach();
-			webpartMove.appendTo("#fullPageContent");
-		</script>
+		}
+	});
+
+	</script>
 </body>
 
 </html>

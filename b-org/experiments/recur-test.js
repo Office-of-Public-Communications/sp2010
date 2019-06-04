@@ -6,13 +6,14 @@ for (i = 0; i < 2; i++) {
     dirTitles = dirKeys[i];
     tHeaderRow = $("#headerRow");
     tFooterRow = $("#footerRow")
-}*/
+}
 tHeaderRow.append($(
     '<th>Title</th><th>Park</th><th>Date</th>'
-));
+));*/
 
 //Main Data
 for (i = 0; i < thisDirResults.length; i++) {
+
     var createCard = function () {
         // build card here
         $("#rowItems")
@@ -23,10 +24,10 @@ for (i = 0; i < thisDirResults.length; i++) {
                     .lookupValue :
                     ' ') + '</td>'))
                 .append($('<td>' + date + '</td>'))
-            )
-    }
+            );
+    };
 
-    dirItems = thisDirResults[i]
+    dirItems = thisDirResults[i];
     //check if date is upcoming or past
     var today = new Date();
     today.setHours(0, 0, 0, 0);
