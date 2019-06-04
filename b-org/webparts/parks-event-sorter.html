@@ -31,7 +31,7 @@
 		<div aria-label="Airport Main Content" id="airportContent">
 			<div class="container">
 				<div class="row mb-5" id="filterOptions">
-					<div class="col-12 col-md-4">
+					<div class="col-12 col-md-6">
 						<div class="d-md-block typeOption my-2">
 							<select id="parkSelect" class="browser-default col-12 my-0 mdb-select termSelect">
 								<option value="0">Any Park</option>
@@ -39,25 +39,23 @@
 							</select>
 						</div>
 					</div>
-					<div class="col-12 col-md-8">
-						<div class="row">
-							<div class="col-12 col-md-6 d-md-block typeOption">
-								<select class="browser-default col-12 my-2 mdb-select secSelect">
-									<option value="">Any Day</option>
-									<option value="">Today</option>
-									<option value="">Tomorrow</option>
-									<option value="">This Weekend</option>
-									<option value="">This Week</option>
-									<option value="">Next Week</option>
-									<option value="">This Month</option>
-									<option value="">Next Month</option>
-									<!--<option value="">Pick a Date...</option>-->
-								</select>
-							</div>
-							<div class="col-12 col-md-6">
+					<div class="col-12 col-md-6">
+						<div class="d-md-block typeOption my-2">
+							<select id="dateSelect" class="browser-default col-12 my-2 mdb-select secSelect">
+								<option value="0">Any Day</option>
+								<option value="1">Today</option>
+								<option value="2">Tomorrow</option>
+								<!-- <option value="3">This Weekend</option> -->
+								<option value="4">This Week</option>
+								<option value="5">Next Week</option>
+								<option value="6">This Month</option>
+								<option value="7">Next Month</option>
+								<!--<option value="">Pick a Date...</option>-->
+							</select>
+							<!-- <div class="col-12 col-md-6">
 								<button type="button"
 									class="btn btn-info float-right float-md-none srchBtn my-2">Search</button>
-							</div>
+							</div> -->
 						</div>
 					</div>
 				</div>
@@ -98,36 +96,45 @@
 				parkItems = data.d.results;
 				//console.log(parkItems);
 				$.each(parkItems, function (index, park) {
-					console.log(park);
+					//console.log(park);
 					$('#parkSelect > option:last-child').after($('<option value="' + park.Id + '">' + park.Title + '</option>'))
 				});
-				$('#parkSelect').change(function(){
+				// Sort by Park dropdown
+				parkSelect = $('#parkSelect').change(function(){
 					var filterValue = $(this).val();
+					//console.log(filterValue)
 					$('.event').hide();
-					$('.event').each(function(i, el) {
-						$(el).attr('data-park').indexOf(filterValue) > -1 ? $(el).show() : false;
-					})
+					if (filterValue == '0') {
+					$('.event').show();
+					}
+					if (filterValue != '0') {
+						$('.event').each(function(i, el) {
+							if ($(el).attr('data-park') == filterValue) {
+								$(el).show();
+							}
+						})
+					}
 				})
 			}
-		})
-		eventImgs = [];
-		$.ajax({
-			url:
-			"/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$top=5000",
-			method: "GET",
-			headers: {
-				"Accept": "application/json; odata=verbose"
-			},
-			success: function (data) {
-				parkImgs = data.d.results;
-				//console.log(parkImgs);
-				$.each(parkImgs, function (index, park) {
-					//console.log(park.Title)
-					//console.log(park.ParkId)
-					//eventImgs.push(park.);
-				});
-			}
-		})
+		});
+		//eventImgs = [];
+		// $.ajax({
+		// 	url:
+		// 	"/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$top=5000",
+		// 	method: "GET",
+		// 	headers: {
+		// 		"Accept": "application/json; odata=verbose"
+		// 	},
+		// 	success: function (data) {
+		// 		parkImgs = data.d.results;
+		// 		//console.log(parkImgs);
+		// 		$.each(parkImgs, function (index, park) {
+		// 			//console.log(park.Title)
+		// 			//console.log(park.ParkId)
+		// 			//eventImgs.push(park.);
+		// 		});
+		// 	}
+		// })
 		$.ajax({
 			url:
 			"/Parks/_api/web/lists/GetByTitle('Events')/items?$top=5000&$select=*,Park/Title,Recurring/Title&$expand=Park/Id,Recurring/Id&$orderby=Date%20asc",
@@ -144,9 +151,14 @@
 					var eDate = moment(event.Date);
 					var recur = event.Recurring.results;
 
+					//console.log(eDate);
 					//console.log(event.Recurring);
 
-					if (moment(eDate).isAfter(today) || recur.length > 0) {
+					// console.log(today)
+					// console.log(moment(eDate))
+					// console.log(moment(eDate).isSame(today))
+
+					if (moment(eDate.format('LL')).isSame(today.format('LL')) || moment(eDate).isAfter(today)){// || recur.length > 0) {
 						title = event.Title.toTitleCase();
 						park = event.Park.Title;
 						// moment the date
@@ -154,7 +166,108 @@
 						day = moment(event.Date).format('D');
 						month = moment(event.Date).format('MMM');
 
+						// sort by park dropdown
+						//console.log(moment($('.event').attr('data-date')))
 
+						// Sort by Date dropdown
+
+						// if no park selected, run select date on everything
+						$('#dateSelect').change(function(){
+							var filterValue = $(this).val();
+							var td = moment().format('LL');
+							var tm = moment().add(1, 'days').format('LL');
+							var tws = moment().startOf('isoWeek');
+							var twe = moment().endOf('isoWeek')
+
+							$('.event').hide();
+
+							switch(filterValue) {
+								// any day
+								case '0':
+									$('.event').show();
+									break;
+								// today
+								case '1':
+									$('.event').each(function(i, el) {
+										var dd = $(el).attr('data-date');
+										if (dd == td) {
+											$(el).show();
+										}
+									})
+									break;
+								// tomorrow
+								case '2':
+									$('.event').each(function(i, el) {
+										var dd = $(el).attr('data-date');
+										if (dd == tm) {
+											$(el).show();
+										}
+									})
+									break;
+								// this weekend
+								case '3':
+									$('.event').each(function(i, el) {
+										var dd = moment($(el).attr('data-date')).format('LL');
+										var sun = moment().add(1, 'weeks').startOf('isoWeek').format('LL');
+										var sat = moment().endOf('isoWeek').format('LL');
+										//console.log(dd, sat, sun)
+										if(moment(dd).isSame(sat, 'day') || moment(dd).isSame(sun, 'day')){console.log(dd,sun,sat)}
+										if (moment(dd).isSame(sat, 'day') || moment(dd).isSame(sun, 'day')) {
+											$(el).show();
+										}
+									})
+									break;
+								// this week
+								case '4':
+									$('.event').each(function(i, el) {
+										var dd = moment($(el).attr('data-date'));
+										if (dd.isAfter(tws) && dd.isBefore(twe)) {
+											$(el).show();
+										}
+									})
+									break;
+								// next week
+								case '5':
+									$('.event').each(function(i, el) {
+										var dd = moment($(el).attr('data-date'));
+										var nws = moment().add(1, 'weeks').startOf('isoWeek');
+										var nwe = moment().add(1, 'weeks').endOf('isoWeek')
+										if (dd.isAfter(nws) && dd.isBefore(nwe)) {
+											$(el).show();
+										}
+									})
+									break;
+								// this month
+								case '6':
+									$('.event').each(function(i, el) {
+										var dd = moment($(el).attr('data-date'));
+										var tms = moment().startOf('month');
+										var tme = moment().endOf('month');
+										if (dd.isAfter(tms) && dd.isBefore(tme)) {
+											$(el).show();
+										}
+									})
+									break;
+								// next month
+								case '7':
+									$('.event').each(function(i, el) {
+										var dd = moment($(el).attr('data-date'));
+										var nms = moment().add(1, 'months').startOf('month');
+										var nme = moment().add(1, 'months').endOf('month');
+										if (dd.isAfter(nms) && dd.isBefore(nme)) {
+											$(el).show();
+										}
+									})
+									break;
+								default:
+									$('.event').show();
+							}
+						})
+
+						// if park selected, run select date only on these parks
+						if ($('#parkSelect').val() != 0) {
+
+						}
 						/* TODO: If not recurring, build */
 
 						/* TODO: If recurring, sort stuff then build */
@@ -163,7 +276,7 @@
 						// createCards()
 
 						$('#termSearchResults').append($(
-							'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' + event.ParkId + '" data-date="' + event.Date + '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><!--<img class="card-img-top pkImg" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">--></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' + month + '<br/><span class="day">' + day + '</span></div><div class="col-9 pl-3"><a href="/Parks/Pages/Event.aspx?=' + event.Id + '"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' + title + ' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5></a><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-calendar"></i> ' + date + '</small><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> <a href="/parks/Pages/Park.aspx?=' + event.ParkId + '">' + park + '</a></small></div></div></div></div>'
+							'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' + event.ParkId + '" data-date="' + moment(event.Date).format('LL') + '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' + month + '<br/><span class="day">' + day + '</span></div><div class="col-9 pl-3"><a href="/Parks/Pages/Event.aspx?=' + event.Id + '"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' + title + ' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5></a><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-calendar"></i> ' + date + '</small><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> <a href="/parks/Pages/Park.aspx?=' + event.ParkId + '">' + park + '</a></small></div></div></div></div>'
 						));
 					};
 				});

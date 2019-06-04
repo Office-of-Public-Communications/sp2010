@@ -1,0 +1,170 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+    <style>
+        #filterOptions select {
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .16), 0 2px 5px 0 rgba(0, 0, 0, .12);
+            font-family: Arquette;
+            padding: 12px;
+        }
+
+        #resultBtns .btn {
+            padding: .85rem 2rem;
+        }
+
+        .day {
+            font-size: 1.8rem;
+            font-weight: 400;
+        }
+
+        .pkImg {
+            max-height: 120px;
+            width: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="form1" runat="server">
+        <div aria-label="Parks Main Content" id="parkContent">
+            <div class="container">
+                <!--<div class="row mb-5" id="filterOptions">
+                    <div class="col">
+                        <div class="d-md-block typeOption my-2">
+                            <select id="parkSelect" class="browser-default col-12 my-0 mdb-select termSelect">
+                                <option value="0">Any Park</option>
+                                <!-- Inject Parks here
+                            </select>
+                        </div>
+                    </div>
+                </div>-->
+                <div id="termSearchResults" class="row">
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
+        <script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"></script>
+        <script type="text/javascript">
+            // Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
+            String.prototype.toTitleCase = function () {
+                var i, j, str, lowers, uppers;
+                str = this.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                });
+
+                // Certain minor words should be left lowercase unless
+                // they are the first or last words in the string
+                lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
+                    'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'
+                ];
+                for (i = 0, j = lowers.length; i < j; i++) str = str.replace(new RegExp('\\s' + lowers[i] + '\\s',
+                    'g'), function (txt) {
+                    return txt.toLowerCase();
+                }); // Certain words such as initialisms or acronyms should be left uppercase
+                uppers = ['Id', 'Tv'];
+                for (i = 0, j = uppers.length; i < j; i++) str = str.replace(new RegExp('\\b' + uppers[i] + '\\b',
+                    'g'), uppers[i].toUpperCase());
+                return str;
+            }
+
+            $.ajax({
+                url: "/Parks/_api/web/lists/GetByTitle('Parks')/items?&$top=5000",
+                method: "GET",
+                headers: {
+                    "Accept": "application/json; odata=verbose"
+                },
+                success: function (data) {
+                    parkItems = data.d.results;
+                    //console.log(parkItems);
+                    $.each(parkItems, function (index, park) {
+                        //console.log(park);
+                        $('#parkSelect > option:last-child').after($('<option value="' + park.Id +
+                            '">' + park.Title + '</option>'))
+                    });
+                    // Sort by Park dropdown
+                    parkSelect = $('#parkSelect').change(function () {
+                        var filterValue = $(this).val();
+                        //console.log(filterValue)
+                        $('.event').hide();
+                        if (filterValue == '0') {
+                            $('.event').show();
+                        }
+                        if (filterValue != '0') {
+                            $('.event').each(function (i, el) {
+                                if ($(el).attr('data-park') == filterValue) {
+                                    $(el).show();
+                                }
+                            })
+                        }
+                    })
+                }
+            });
+
+            $.ajax({
+                url: "/Parks/_api/web/lists/GetByTitle('Features')/items?$top=5000", //?$select=*",Featured_x0200_ImageId/Title&$expand=Featured_x0200_Image/Id",
+                method: "GET",
+                headers: {
+                    "Accept": "application/json; odata=verbose"
+                },
+                success: function (data) {
+                    ttdItems = data.d.results;
+                    // TODO: do this for first three items only
+
+                    $.each(ttdItems, function (index, ttd) {
+
+                        console.log(ttd.Featured_x0020_ImageId)
+                        var imgId = ttd.Featured_x0020_ImageId;
+                        console.log(imgId)
+
+                        if (ttd.Featured == true && imgId != null) {
+
+                            // get image info for featured image
+                            getImg = $.ajax({
+                                url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$filter=(ID eq " +
+                                    imgId + ")&$select=EncodedAbsUrl",
+                                method: "GET",
+                                headers: {
+                                    "Accept": "application/json; odata=verbose"
+                                },
+                                success: function (data) {
+                                    imgUrl = data.d.results;
+                                    console.log(imgUrl)
+
+                                }
+                            })
+
+                            title = ttd.Title.toTitleCase();
+                            //park = ttd.Park.Title;
+                            $.when(getImg).done(function () {
+                                $('#termSearchResults').append($(
+                                    '<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' +
+                                    ttd.ParkId + '" data-date="' + moment(ttd.Date)
+                                    .format('LL') +
+                                    '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg" src="' +
+                                    imgUrl[0].EncodedAbsUrl +
+                                    '" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-12 pl-3"><a href="/Parks/Pages/ttd.aspx?=' +
+                                    ttd.Id +
+                                    '"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' +
+                                    title +
+                                    '</strong></h5></a><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> 13 parks</small></div></div><div class="row"><div class="col"><div type="button" class="btn btn-sm btn-primary float-right">Reserve Now</div></div></div></div></div></div>'
+                                ));
+                            });
+                        }
+                    });
+                }
+            });
+
+            $('#fullPageContent > div > div.row.pt-3.mb-r').removeClass('mb-r');
+            webpartMove = $("#airportContent")
+            webpartMove.detach();
+            webpartMove.appendTo("#fullPageContent");
+        </script>
+</body>
+
+</html>
