@@ -136,7 +136,7 @@
 	// })
 	$.ajax({
 		url:
-		"/Parks/_api/web/lists/GetByTitle('Events')/items?$top=5000&$select=*,Park/Title,Recurring/Title&$expand=Park/Id,Recurring/Id&$orderby=Date%20asc",
+		"/Parks/_api/web/lists/GetByTitle('Events')/items?$top=5000&$select=*,Park/Title&$expand=Park/Id&$orderby=Date%20asc",
 		method: "GET",
 		headers: {
 			"Accept": "application/json; odata=verbose"
@@ -148,7 +148,8 @@
 
 				var today = moment(new Date());
 				var eDate = moment(event.Date);
-				var recur = event.Recurring.results;
+				console.log(eDate)
+				//var recur = event.Recurring.results;
 
 				//console.log(eDate);
 				//console.log(event.Recurring);
@@ -157,13 +158,13 @@
 				// console.log(moment(eDate))
 				// console.log(moment(eDate).isSame(today))
 
-				if (moment(eDate.format('LL')).isSame(today.format('LL')) || moment(eDate).isAfter(today)){// || recur.length > 0) {
-					title = event.Title.toTitleCase();
-					park = event.Park.Title;
+				if (moment(eDate.format('LL')).isSame(today.format('LL')) || moment(eDate.format('LL')).isAfter(today.format('LL'))){// || recur.length > 0) {
+					var title = event.Title.toTitleCase();
+					var park = event.Park.Title;
 					// moment the date
-					date = moment(event.Date).format('ddd, MMM D');
-					day = moment(event.Date).format('D');
-					month = moment(event.Date).format('MMM');
+					var date = moment(event.Date).format('ddd, MMM D');
+					var day = moment(event.Date).format('D');
+					var month = moment(event.Date).format('MMM');
 
 					// sort by park dropdown
 					//console.log(moment($('.event').attr('data-date')))
@@ -274,7 +275,7 @@
 					// build the cards
 					// createCards()
 
-						getImg = $.ajax({
+						$.ajax({
 						url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$select=*,EncodedAbsUrl,Park/Title&$expand=Park/Id&$filter=(Park eq " + event.ParkId + ")",
 						method: "GET",
 						headers: {

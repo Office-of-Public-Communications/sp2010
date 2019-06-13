@@ -5,12 +5,11 @@
     <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
     <link href="/Style%20Library/Haylee-Dev/Library/css/LibraryLocations_styles.css" rel="stylesheet">
     <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.2/dist/leaflet.css"
-        integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
         crossorigin="" />
-    <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js"
-        integrity="sha512-2fA79E27MOeBgLjmBrtAgM/20clVSV8vJERaW/EcnnWCVGwQRazzKtQS1kIusCZv1PtaQxosDZZ0F1Oastl55w=="
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+        integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
         crossorigin=""></script>
     <!-- Mapbox styles -->
     <!-- <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' /> -->
@@ -53,7 +52,7 @@
     <script src="/Style%20Library/Haylee-Dev/js/broward/Library/moment.min.js"></script>
     <!-- <script src="/Style%20Library/V7/js/broward/Library/js/libraryLocations_script.js"></script> -->
     <!-- <script src="/Style%20Library/V7/js/broward/Library/libraryLocations_map.js"></script> -->
-    <script src="/Style%20Library/V7/js/broward/Library/initMap-library.js"></script>
+    <script src="/Style%20Library/V7/js/broward/Parks/initMap-locator.js"></script>
     <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByVibsaiiXYvyTkywDbK5Yciy_JPJ3Spc&callback=initMap"></script> -->
     <!-- Load Esri Leaflet from CDN -->
     <script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
@@ -77,13 +76,28 @@
 
         var locations = [];
 
+        $.ajax({
+            url:
+            "/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,Title&$orderby=Title%20asc",
+            method: "GET",
+            headers: {
+            "Accept": "application/json; odata=verbose"
+            },
+            success: function (data) {
+                eventItems = data.d.results;
+                console.log(eventItems);
+                // if park is not 'TBD', map it
+
+            }
+        });
+
         $(document).ready(function () {
             $().SPServices({
                 operation: "GetListItems",
                 async: false,
                 listName: "Parks",
                 webURL: "/Parks/",
-                CAMLViewFields: "<ViewFields><FieldRef Name='ID' /><FieldRef Name='Title' /><FieldRef Name='Address' /><FieldRef Name='City' /><FieldRef Name='Zip' /><FieldRef Name='DirectionsLink' /><FieldRef Name='Longitude' /><FieldRef Name='Latitude' /><FieldRef Name='Phone' /><FieldRef Name='Monday' /><FieldRef Name='Tuesday' /><FieldRef Name='Wednesday' /><FieldRef Name='Thursday' /><FieldRef Name='Friday' /><FieldRef Name='Saturday' /><FieldRef Name='Sunday' /></ViewFields>",
+                CAMLViewFields: "<ViewFields><FieldRef Name='ID' /><OrderBy><FieldRef Name='Title' /></OrderBy><FieldRef Name='Address' /><FieldRef Name='City' /><FieldRef Name='Zip' /><FieldRef Name='DirectionsLink' /><FieldRef Name='Longitude' /><FieldRef Name='Latitude' /><FieldRef Name='Phone' /><FieldRef Name='Monday' /><FieldRef Name='Tuesday' /><FieldRef Name='Wednesday' /><FieldRef Name='Thursday' /><FieldRef Name='Friday' /><FieldRef Name='Saturday' /><FieldRef Name='Sunday' /></ViewFields>",
                 completefunc: function (xData, Status) {
                     $(xData.responseXML).SPFilterNode("z:row").each(function () {
 
@@ -113,7 +127,7 @@
                                     mappedName: "DirectionsLink",
                                     objectType: "Text"
                                 },
-                                ows_Telephone: {
+                                ows_Phone: {
                                     mappedName: "Telephone",
                                     objectType: "Text"
                                 },
@@ -180,30 +194,28 @@
                         openTimeFull = moment(openTime, 'h:mmA');
 
                         if ((moment(timeNow, 'hh:mmA').isBetween(openTimeFull, closeTimeFull,
-                                'minute', '[)')) && (locationInfo.Closed !== "1")) {
+                            'minute', '[)')) && (locationInfo.Closed !== "1")) {
                             branchOpenClose = $(
                                 '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px">  Open Today Until ' +
                                 '<span class="notranslate">' + closeTime + '</span></p>')
                         } else if (moment(moment(timeNow, 'hh:mmA').isBetween(closeTimeFull,
-                                openTimeFull, 'minute', '[)')) || (locationInfo.Closed == "1")) {
+                            openTimeFull, 'minute', '[)')) || (locationInfo.Closed == "1")) {
                             branchOpenClose = $(
                                 '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px"> CLOSED NOW </p>'
                             )
                         }
 
-                        branchInfo = "/library/Pages/BranchDetails.aspx?branchInfo=" + locationInfo
-                            .LocationID;
+                        branchInfo = "/Parks/Pages/park.aspx?=" + locationInfo.LocationID;
                         DirectionsLink = locationInfo.DirectionsLink;
                         getDirections = getDirections = 'https://www.google.com/maps/dir//' +
                             locationInfo.AddressLine1 + locationInfo.City.lookupValue + locationInfo
-                            .Zip;
+                                .Zip;
                         $("#locationList")
-                            .append($('<a href=""><h5 style="font-size:1rem; font-weight:700">' +
+                            .append($('<a href=""><h5 style="font-size:1.25rem; font-weight:700;text-transform: uppercase;">' +
                                 locationInfo.Location + '</h5></a>').attr("href", branchInfo))
-                            .append($('<p style="line-height:1.2rem;">' + locationInfo.Telephone +
-                                    '<br>' + locationInfo.AddressLine1 + '<br>' + locationInfo
-                                    .City.lookupValue + ', FL ' + locationInfo.Zip +
-                                    '<br><br></p>')
+                            .append($('<p style="line-height:1.3rem;">' + locationInfo.AddressLine1 + '<br>' + locationInfo
+                                .City.lookupValue + ', FL ' + locationInfo.Zip +
+                                '<br><br><a href="tel:1-' + locationInfo.Telephone + '">' + locationInfo.Telephone + '</a><br><br></p>')
                                 .append($(branchOpenClose))
                                 .append($('<a>').html('Get Directions').attr({
                                     href: getDirections,
@@ -212,11 +224,8 @@
                             .append($('<hr>'));
 
                         locations.push({
-                            info: '<h5 style="font-size:1rem;">' + locationInfo.Location +
-                                '</h5><p>' + locationInfo.Telephone + '<br>' + locationInfo
-                                .AddressLine1 + '<br>' + locationInfo.City.lookupValue +
-                                ', FL ' + locationInfo.Zip +
-                                '<br><br><a href="' + getDirections +
+                            info: '<h5 style="font-size:1.1rem;font-weight:700;text-transform: uppercase;">' + locationInfo.Location +
+                                '</h5><p style="line-height:1.3rem;">' + locationInfo.AddressLine1 + '<br>' + locationInfo.City.lookupValue + ', FL ' + locationInfo.Zip + '<br><br><a href="tel:1-' + locationInfo.Telephone + '">' + locationInfo.Telephone + '</a><br><br><a href="' + getDirections +
                                 '" target="_blank">Get Directions</a></p>',
                             lt: locationInfo.Latitude,
                             lg: locationInfo.Longitude
