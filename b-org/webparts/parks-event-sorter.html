@@ -53,10 +53,6 @@
 							<option value="7">Next Month</option>
 							<!--<option value="">Pick a Date...</option>-->
 						</select>
-						<!-- <div class="col-12 col-md-6">
-							<button type="button"
-								class="btn btn-info float-right float-md-none srchBtn my-2">Search</button>
-						</div> -->
 					</div>
 				</div>
 			</div>
@@ -84,7 +80,8 @@
 			for (i = 0, j = lowers.length; i < j; i++) str = str.replace(new RegExp('\\s' + lowers[i] + '\\s', 'g'),
 				function (txt) {
 					return txt.toLowerCase();
-				}); // Certain words such as initialisms or acronyms should be left uppercase
+				});
+				// Certain words such as initialisms or acronyms should be left uppercase
 			uppers = ['Id', 'Tv'];
 			for (i = 0, j = uppers.length; i < j; i++) str = str.replace(new RegExp('\\b' + uppers[i] + '\\b', 'g'),
 				uppers[i].toUpperCase());
@@ -99,9 +96,8 @@
 			},
 			success: function (data) {
 				parkItems = data.d.results;
-				//console.log(parkItems);
+
 				$.each(parkItems, function (index, park) {
-					//console.log(park);
 					$('#parkSelect > option:last-child').after($('<option value="' + park.Id + '">' + park
 						.Title + '</option>'))
 				});
@@ -116,13 +112,11 @@
 			url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$top=30&$select=*,Park/Title&$expand=Park/Id&$orderby=Date asc&$filter=Date ge datetime'" +
 				todayStartISO + "'",
 			method: "GET",
-			async: false,
+			//async: false,
 			headers: {
 				"Accept": "application/json; odata=verbose"
 			},
 			success: function (data) {
-				eventItems = data.d.results;
-
 				eventItems = data.d.results;
 				//console.log(eventItems)
 
@@ -130,11 +124,7 @@
 
 				var f1 = $.each(eventItems, function (index, event) {
 
-					var imgId = event.ImageId;
-
-					//event.img = 'test';
-
-					//console.log(event);
+					var imgId = event.FeaturedImageId;
 
 					// moment the date for this event
 					var date = moment(event.Date).format('ddd, MMM D, YYYY');
@@ -149,12 +139,11 @@
 
 					var imgUrl = '';
 
-
-					// if no image is selected, do this
+					// if no image is selected, get first image for this park
 					if (imgId == null) {
 						var f2 = $.ajax({
 							url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$select=*,EncodedAbsUrl,Park/Title&$expand=Park/Id&$filter=Park/Id eq " +
-								event.ParkId, // + " and ",
+								event.ParkId,
 							method: "GET",
 							async: false,
 							headers: {
@@ -164,20 +153,16 @@
 
 								var imgResult = data.d.results;
 
-								//var random = Math.floor(Math.random() * imgResult.length);
-
 								event.imgUrl = imgResult[0].EncodedAbsUrl;
-
-								console.log(1)
 							}
 						})
 						$.when(f2).done(frag());
 					}
 
-					// if image is selected, do this
+					// if image is selected, get it
 					if (imgId != null) {
 						var f2 = $.ajax({
-							url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$select=*,EncodedAbsUrl,Park/Title&$expand=Park/Id&$filter=Id eq " +
+							url: "/Parks/_api/web/lists/GetByTitle('eventImages')/items?$select=*,EncodedAbsUrl&$filter=Id eq " +
 								imgId, // + " and ",
 							method: "GET",
 							async: false,
@@ -188,15 +173,12 @@
 								var imgResult = data.d.results;
 
 								event.imgUrl = imgResult[0].EncodedAbsUrl;
-
-								console.log('yes img')
 							}
 						})
 						$.when(f2).done(frag());
 					}
-
+					// build fragment
 					function frag() {
-						console.log(2)
 						$fraggle.append($(
 							'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' +
 							event.ParkId + '" data-date="' + moment(event.Date).format('LL') +
@@ -214,12 +196,11 @@
 							event.ParkId + '">' + park +
 							'</a></small></div></div></div></div>'
 						))
-						//debugger;
 					}
 				});
+				// append fragment to DOM
 				$.when(f1).done(function () {
 					$fraggle.appendTo('#featEvents');
-					console.log('i ran')
 				})
 			}
 			//});
@@ -230,138 +211,138 @@
 			var parkValue = $('#parkSelect').val();
 			var dateValue = $('#dateSelect').val();
 
-			//console.log(filterValue)
 			$('.event').hide();
-			// show all
+
+			// if 'any' park & 'any' date -> show all
 			if (parkValue === '0' && dateValue === '0') {
 				$('.event').show();
 			}
 
-			// filter by park
+			// if 'any' date -> filter by park
 			if (parkValue !== '0' && dateValue === '0') {
 				$('.event').each(function (i, el) {
 					if ($(el).attr('data-park') == parkValue) {
 						$(el).show();
-						console.log(1)
 					}
 				})
 			}
+			// if 'any' park -> filter by date
 			if (parkValue === '0' && dateValue !== '0') {
-				$('.event').each(function (i, el) {
-					if ($(el).attr('data-date') == dateValue) {
-						$(el).show();
-						console.log(2)
-					}
+				console.log(1)
+				$('.event').each(function () {
+					dateSort();
 				})
 			}
+			// filter by park && date
 			if (parkValue !== '0' && dateValue !== '0') {
 				$('.event').each(function (i, el) {
 					if ($(el).attr('data-date') === dateValue && $(el).attr('data-park') === parkValue) {
 						$(el).show();
-						console.log(3)
 					}
 				})
 			}
 
-			// filter by date
-			var dateValue = $('#dateSelect').val();
-			var td = moment().format('LL');
-			var tm = moment().add(1, 'days').format('LL');
-			var tws = moment().startOf('isoWeek');
-			var twe = moment().endOf('isoWeek')
+			function dateSort(){
+				$('.event').each(function(i, el){
+					// filter by date
+					var dateValue = $('#dateSelect').val();
+					var td = moment().format('LL');
+					var tm = moment().add(1, 'days').format('LL');
+					var tws = moment().startOf('isoWeek');
+					var twe = moment().endOf('isoWeek')
 
-			$('.event').hide();
-
-			switch (dateValue) {
-				// any day
-				case '0':
-					$('.event').show();
-					break;
-					// today
-				case '1':
-					$('.event').each(function (i, el) {
-						var dd = $(el).attr('data-date');
-						if (dd == td) {
+					switch (dateValue) {
+						// any day
+						case '0':
 							$(el).show();
-						}
-					})
-					break;
-					// tomorrow
-				case '2':
-					$('.event').each(function (i, el) {
-						var dd = $(el).attr('data-date');
-						if (dd == tm) {
+							break;
+							// today
+						case '1':
+							$(el).each(function (i, el) {
+								var dd = $(el).attr('data-date');
+								if (dd == td) {
+									$(el).show();
+								}
+							})
+							break;
+							// tomorrow
+						case '2':
+							$(el).each(function (i, el) {
+								var dd = $(el).attr('data-date');
+								if (dd == tm) {
+									$(el).show();
+								}
+							})
+							break;
+							// this weekend
+						case '3':
+							$(el).each(function (i, el) {
+								var dd = moment($(el).attr('data-date')).format(
+									'LL');
+								var sun = moment().add(1, 'weeks').startOf(
+									'isoWeek').format('LL');
+								var sat = moment().endOf('isoWeek').format('LL');
+								//console.log(dd, sat, sun)
+								if (moment(dd).isSame(sat, 'day') || moment(dd)
+									.isSame(sun, 'day')) {
+									//console.log(dd, sun, sat)
+								}
+								if (moment(dd).isSame(sat, 'day') || moment(dd)
+									.isSame(sun, 'day')) {
+									$(el).show();
+								}
+							})
+							break;
+							// this week
+						case '4':
+							$(el).each(function (i, el) {
+								var dd = moment($(el).attr('data-date'));
+								if (dd.isAfter(tws) && dd.isBefore(twe)) {
+									$(el).show();
+								}
+							})
+							break;
+							// next week
+						case '5':
+							$(el).each(function (i, el) {
+								var dd = moment($(el).attr('data-date'));
+								var nws = moment().add(1, 'weeks').startOf(
+									'isoWeek');
+								var nwe = moment().add(1, 'weeks').endOf(
+									'isoWeek')
+								if (dd.isAfter(nws) && dd.isBefore(nwe)) {
+									$(el).show();
+								}
+							})
+							break;
+							// this month
+						case '6':
+							$(el).each(function (i, el) {
+								var dd = moment($(el).attr('data-date'));
+								var tms = moment().startOf('month');
+								var tme = moment().endOf('month');
+								if (dd.isAfter(tms) && dd.isBefore(tme)) {
+									$(el).show();
+								}
+							})
+							break;
+							// next month
+						case '7':
+							$(el).each(function (i, el) {
+								var dd = moment($(el).attr('data-date'));
+								var nms = moment().add(1, 'months').startOf(
+									'month');
+								var nme = moment().add(1, 'months').endOf(
+									'month');
+								if (dd.isAfter(nms) && dd.isBefore(nme)) {
+									$(el).show();
+								}
+							})
+							break;
+						default:
 							$(el).show();
-						}
-					})
-					break;
-					// this weekend
-				case '3':
-					$('.event').each(function (i, el) {
-						var dd = moment($(el).attr('data-date')).format(
-							'LL');
-						var sun = moment().add(1, 'weeks').startOf(
-							'isoWeek').format('LL');
-						var sat = moment().endOf('isoWeek').format('LL');
-						//console.log(dd, sat, sun)
-						if (moment(dd).isSame(sat, 'day') || moment(dd)
-							.isSame(sun, 'day')) {
-							console.log(dd, sun, sat)
-						}
-						if (moment(dd).isSame(sat, 'day') || moment(dd)
-							.isSame(sun, 'day')) {
-							$(el).show();
-						}
-					})
-					break;
-					// this week
-				case '4':
-					$('.event').each(function (i, el) {
-						var dd = moment($(el).attr('data-date'));
-						if (dd.isAfter(tws) && dd.isBefore(twe)) {
-							$(el).show();
-						}
-					})
-					break;
-					// next week
-				case '5':
-					$('.event').each(function (i, el) {
-						var dd = moment($(el).attr('data-date'));
-						var nws = moment().add(1, 'weeks').startOf(
-							'isoWeek');
-						var nwe = moment().add(1, 'weeks').endOf(
-							'isoWeek')
-						if (dd.isAfter(nws) && dd.isBefore(nwe)) {
-							$(el).show();
-						}
-					})
-					break;
-					// this month
-				case '6':
-					$('.event').each(function (i, el) {
-						var dd = moment($(el).attr('data-date'));
-						var tms = moment().startOf('month');
-						var tme = moment().endOf('month');
-						if (dd.isAfter(tms) && dd.isBefore(tme)) {
-							$(el).show();
-						}
-					})
-					break;
-					// next month
-				case '7':
-					$('.event').each(function (i, el) {
-						var dd = moment($(el).attr('data-date'));
-						var nms = moment().add(1, 'months').startOf(
-							'month');
-						var nme = moment().add(1, 'months').endOf(
-							'month');
-						if (dd.isAfter(nms) && dd.isBefore(nme)) {
-							$(el).show();
-						}
-					})
-					break;
-				default:
-					$('.event').show();
+					}
+				})
 			}
 		})
 	</script>

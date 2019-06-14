@@ -13,7 +13,7 @@ try { $(document).ready(function(e) {
 		}).get();
 
 		// COVER ITEM HTML STRUCTURE
-		coverItemTemplate = '<div class="coverItemNEW">' + '<a href="" target="_blank">' + '<img  src="" alt="" class="coverImg">' + '</a>' + '</div>';
+		coverItemTemplate = '<div class="coverItemNEW">' + '<a href="" target="_blank">' + '<img  src="" alt="" class="coverImg lazyload">' + '</a>' + '</div>';
 
 		// LOOPS TO ACCESS ARRAY DATA
 		img = $.each(imgs, function (index, value) {
