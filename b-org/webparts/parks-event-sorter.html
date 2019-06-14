@@ -56,7 +56,8 @@
 					</div>
 				</div>
 			</div>
-			<div id="featEvents" class="mb-5 row">
+			<div class="mb-5 row">
+				<div id="featEvents" class="container"></div>
 			</div>
 		</div>
 	</div>
@@ -216,6 +217,7 @@
 			// if 'any' park & 'any' date -> show all
 			if (parkValue === '0' && dateValue === '0') {
 				$('.event').show();
+				console.log('any park && any date')
 			}
 
 			// if 'any' date -> filter by park
@@ -225,25 +227,30 @@
 						$(el).show();
 					}
 				})
+				console.log('any date, sort by park')
 			}
 			// if 'any' park -> filter by date
 			if (parkValue === '0' && dateValue !== '0') {
-				console.log(1)
 				$('.event').each(function () {
 					dateSort();
 				})
+				console.log('any park, sort by date')
 			}
 			// filter by park && date
 			if (parkValue !== '0' && dateValue !== '0') {
+				// sort by event
 				$('.event').each(function (i, el) {
-					if ($(el).attr('data-date') === dateValue && $(el).attr('data-park') === parkValue) {
-						$(el).show();
+
+					if ($(el).attr('data-park') === parkValue) {
+						console.log($(el).attr('data-park'))
+						dateSort(el);
 					}
 				})
+				console.log('sort by park && sort by park')
 			}
 
-			function dateSort(){
-				$('.event').each(function(i, el){
+			function dateSort(el){
+				$(el).each(function(i, el){
 					// filter by date
 					var dateValue = $('#dateSelect').val();
 					var td = moment().format('LL');
