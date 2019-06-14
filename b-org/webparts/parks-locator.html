@@ -76,166 +76,173 @@
 
         var locations = [];
 
+        $(document).ready(function () {
+
         $.ajax({
             url:
-            "/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,Title&$orderby=Title%20asc",
+            "/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,City/Title,Title&$expand=City/Title&$orderby=Title%20asc",
             method: "GET",
+            async: false,
             headers: {
             "Accept": "application/json; odata=verbose"
             },
             success: function (data) {
-                eventItems = data.d.results;
-                console.log(eventItems);
+                newData = data.d.results;
+                //console.log(newData);
                 // if park is not 'TBD', map it
 
-            }
-        });
+        //     }
+        // });
 
-        $(document).ready(function () {
-            $().SPServices({
-                operation: "GetListItems",
-                async: false,
-                listName: "Parks",
-                webURL: "/Parks/",
-                CAMLViewFields: "<ViewFields><FieldRef Name='ID' /><OrderBy><FieldRef Name='Title' /></OrderBy><FieldRef Name='Address' /><FieldRef Name='City' /><FieldRef Name='Zip' /><FieldRef Name='DirectionsLink' /><FieldRef Name='Longitude' /><FieldRef Name='Latitude' /><FieldRef Name='Phone' /><FieldRef Name='Monday' /><FieldRef Name='Tuesday' /><FieldRef Name='Wednesday' /><FieldRef Name='Thursday' /><FieldRef Name='Friday' /><FieldRef Name='Saturday' /><FieldRef Name='Sunday' /></ViewFields>",
-                completefunc: function (xData, Status) {
-                    $(xData.responseXML).SPFilterNode("z:row").each(function () {
+        // $(document).ready(function () {
+        //     $().SPServices({
+        //         operation: "GetListItems",
+        //         async: false,
+        //         listName: "Parks",
+        //         webURL: "/Parks/",
+        //         CAMLViewFields: "<ViewFields><FieldRef Name='ID' /><OrderBy><FieldRef Name='Title' /></OrderBy><FieldRef Name='Address' /><FieldRef Name='City' /><FieldRef Name='Zip' /><FieldRef Name='DirectionsLink' /><FieldRef Name='Longitude' /><FieldRef Name='Latitude' /><FieldRef Name='Phone' /><FieldRef Name='Monday' /><FieldRef Name='Tuesday' /><FieldRef Name='Wednesday' /><FieldRef Name='Thursday' /><FieldRef Name='Friday' /><FieldRef Name='Saturday' /><FieldRef Name='Sunday' /></ViewFields>",
+        //         completefunc: function (xData, Status) {
+        //             $(xData.responseXML).SPFilterNode("z:row").each(function () {
 
-                        newData = $(xData.responseXML).SPFilterNode("z:row").SPXmlToJson({
-                            mapping: {
-                                ows_ID: {
-                                    mappedName: "LocationID",
-                                    objectType: "Text"
-                                },
-                                ows_Title: {
-                                    mappedName: "Location",
-                                    objectType: "Text"
-                                },
-                                ows_Address: {
-                                    mappedName: "AddressLine1",
-                                    objectType: "Text"
-                                },
-                                ows_City: {
-                                    mappedName: "City",
-                                    objectType: "Lookup"
-                                },
-                                ows_Zip: {
-                                    mappedName: "Zip",
-                                    objectType: "Text"
-                                },
-                                ows_DirectionsLink: {
-                                    mappedName: "DirectionsLink",
-                                    objectType: "Text"
-                                },
-                                ows_Phone: {
-                                    mappedName: "Telephone",
-                                    objectType: "Text"
-                                },
-                                ows_Longitude: {
-                                    mappedName: "Longitude",
-                                    objectType: "Text"
-                                },
-                                ows_Latitude: {
-                                    mappedName: "Latitude",
-                                    objectType: "Text"
-                                },
-                                ows_Monday: {
-                                    mappedName: "Monday",
-                                    objectType: "Text"
-                                },
-                                ows_Tuesday: {
-                                    mappedName: "Tuesday",
-                                    objectType: "Text"
-                                },
-                                ows_Wednesday: {
-                                    mappedName: "Wednesday",
-                                    objectType: "Text"
-                                },
-                                ows_Thursday: {
-                                    mappedName: "Thursday",
-                                    objectType: "Text"
-                                },
-                                ows_Friday: {
-                                    mappedName: "Friday",
-                                    objectType: "Text"
-                                },
-                                ows_Saturday: {
-                                    mappedName: "Saturday",
-                                    objectType: "Text"
-                                },
-                                ows_Sunday: {
-                                    mappedName: "Sunday",
-                                    objectType: "Text"
-                                },
-                                ows_Closed: {
-                                    mappedName: "Closed",
-                                    objectType: "Text"
-                                },
+        //                 newData = $(xData.responseXML).SPFilterNode("z:row").SPXmlToJson({
+        //                     mapping: {
+        //                         ows_ID: {
+        //                             mappedName: "LocationID",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Title: {
+        //                             mappedName: "Location",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Address: {
+        //                             mappedName: "AddressLine1",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_City: {
+        //                             mappedName: "City",
+        //                             objectType: "Lookup"
+        //                         },
+        //                         ows_Zip: {
+        //                             mappedName: "Zip",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_DirectionsLink: {
+        //                             mappedName: "DirectionsLink",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Phone: {
+        //                             mappedName: "Telephone",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Longitude: {
+        //                             mappedName: "Longitude",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Latitude: {
+        //                             mappedName: "Latitude",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Monday: {
+        //                             mappedName: "Monday",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Tuesday: {
+        //                             mappedName: "Tuesday",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Wednesday: {
+        //                             mappedName: "Wednesday",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Thursday: {
+        //                             mappedName: "Thursday",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Friday: {
+        //                             mappedName: "Friday",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Saturday: {
+        //                             mappedName: "Saturday",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Sunday: {
+        //                             mappedName: "Sunday",
+        //                             objectType: "Text"
+        //                         },
+        //                         ows_Closed: {
+        //                             mappedName: "Closed",
+        //                             objectType: "Text"
+        //                         },
 
-                            }, // name, mappedName, objectType
-                        })
-                    })
+        //                     }, // name, mappedName, objectType
+        //                 })
+        //             })
                     for (i = 0; i < newData.length; i++) {
                         locationInfo = newData[i];
-                        timeNow = moment().format('h:mmA');
+                        console.log(locationInfo.Title)
+                        if(locationInfo.Title != 'TBD'){
+                            //console.log(locationInfo[todaysDate])
+                            timeNow = moment().format('h:mmA');
 
-                        //Closing Time
-                        closeTime = locationInfo[todaysDate].split('-')[1];
-                        if (closeTime == "NOON") {
-                            closeTime = "12:00PM";
-                        };
-                        closeTimeFull = moment(closeTime, 'h:mmA');
+                            //Closing Time
+                            closeTime = locationInfo[todaysDate].split('-')[1];
+                            if (closeTime == "NOON") {
+                                closeTime = "12:00PM";
+                            };
+                            closeTimeFull = moment(closeTime, 'h:mmA');
 
-                        //Opening Time
-                        openTime = locationInfo[todaysDate].split('-')[0].toUpperCase();
-                        if (openTime == "NOON") {
-                            openTime = "12:00PM";
-                        };
-                        openTimeFull = moment(openTime, 'h:mmA');
+                            //Opening Time
+                            openTime = locationInfo[todaysDate].split('-')[0].toUpperCase();
+                            if (openTime == "NOON") {
+                                openTime = "12:00PM";
+                            };
+                            openTimeFull = moment(openTime, 'h:mmA');
 
-                        if ((moment(timeNow, 'hh:mmA').isBetween(openTimeFull, closeTimeFull,
-                            'minute', '[)')) && (locationInfo.Closed !== "1")) {
-                            branchOpenClose = $(
-                                '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px">  Open Today Until ' +
-                                '<span class="notranslate">' + closeTime + '</span></p>')
-                        } else if (moment(moment(timeNow, 'hh:mmA').isBetween(closeTimeFull,
-                            openTimeFull, 'minute', '[)')) || (locationInfo.Closed == "1")) {
-                            branchOpenClose = $(
-                                '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px"> CLOSED NOW </p>'
-                            )
+                            if ((moment(timeNow, 'hh:mmA').isBetween(openTimeFull, closeTimeFull,
+                                'minute', '[)')) && (locationInfo.Closed !== "1")) {
+                                branchOpenClose = $(
+                                    '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px">  Open Today Until ' +
+                                    '<span class="notranslate">' + closeTime + '</span></p>')
+                            } else if (moment(moment(timeNow, 'hh:mmA').isBetween(closeTimeFull,
+                                openTimeFull, 'minute', '[)')) || (locationInfo.Closed == "1")) {
+                                branchOpenClose = $(
+                                    '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px"> CLOSED NOW </p>'
+                                )
+                            }
+
+                            console.log(locationInfo)
+
+                            branchInfo = "/Parks/Pages/park.aspx?=" + locationInfo.ID;
+                            DirectionsLink = locationInfo.DirectionsLink;
+                            getDirections = 'https://www.google.com/maps/dir//' + locationInfo.Address + '+' + locationInfo.City.Title + '+' + locationInfo.Zip;
+                            $("#locationList")
+                                .append($('<a href=""><h5 style="font-size:1.25rem; font-weight:700;text-transform: uppercase;">' +
+                                    locationInfo.Title + '</h5></a>').attr("href", branchInfo))
+                                .append($('<p style="line-height:1.3rem;">' + locationInfo.Address + '<br>' + locationInfo
+                                    .City.Title + ', FL ' + locationInfo.Zip +
+                                    '<br><br><a href="tel:1-' + locationInfo.Phone + '">' + locationInfo.Phone + '</a><br><br></p>')
+                                    .append($(branchOpenClose))
+                                    .append($('<a>').html('Get Directions').attr({
+                                        href: getDirections,
+                                        target: "_blank"
+                                    })))
+                                .append($('<hr>'));
+
+                            locations.push({
+                                info: '<h5 style="font-size:1.1rem;font-weight:700;text-transform: uppercase;">' + locationInfo.Title +
+                                    '</h5><p style="line-height:1.3rem;">' + locationInfo.Address + '<br>' + locationInfo.City.Title + ', FL ' + locationInfo.Zip + '<br><br><a href="tel:1-' + locationInfo.Phone + '">' + locationInfo.Phone + '</a><br><br><a href="' + getDirections +
+                                    '" target="_blank">Get Directions</a></p>',
+                                lt: locationInfo.Latitude,
+                                lg: locationInfo.Longitude
+                            })
                         }
-
-                        branchInfo = "/Parks/Pages/park.aspx?=" + locationInfo.LocationID;
-                        DirectionsLink = locationInfo.DirectionsLink;
-                        getDirections = getDirections = 'https://www.google.com/maps/dir//' +
-                            locationInfo.AddressLine1 + locationInfo.City.lookupValue + locationInfo
-                                .Zip;
-                        $("#locationList")
-                            .append($('<a href=""><h5 style="font-size:1.25rem; font-weight:700;text-transform: uppercase;">' +
-                                locationInfo.Location + '</h5></a>').attr("href", branchInfo))
-                            .append($('<p style="line-height:1.3rem;">' + locationInfo.AddressLine1 + '<br>' + locationInfo
-                                .City.lookupValue + ', FL ' + locationInfo.Zip +
-                                '<br><br><a href="tel:1-' + locationInfo.Telephone + '">' + locationInfo.Telephone + '</a><br><br></p>')
-                                .append($(branchOpenClose))
-                                .append($('<a>').html('Get Directions').attr({
-                                    href: getDirections,
-                                    target: "_blank"
-                                })))
-                            .append($('<hr>'));
-
-                        locations.push({
-                            info: '<h5 style="font-size:1.1rem;font-weight:700;text-transform: uppercase;">' + locationInfo.Location +
-                                '</h5><p style="line-height:1.3rem;">' + locationInfo.AddressLine1 + '<br>' + locationInfo.City.lookupValue + ', FL ' + locationInfo.Zip + '<br><br><a href="tel:1-' + locationInfo.Telephone + '">' + locationInfo.Telephone + '</a><br><br><a href="' + getDirections +
-                                '" target="_blank">Get Directions</a></p>',
-                            lt: locationInfo.Latitude,
-                            lg: locationInfo.Longitude
-                        })
                     }
                     initMap();
                 }
-
             })
         });
+        //});
     </script>
 </body>
 
