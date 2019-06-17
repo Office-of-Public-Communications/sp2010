@@ -88,123 +88,152 @@
 				uppers[i].toUpperCase());
 			return str;
 		}
-		// build park dropdown
-		$.ajax({
-			url: "/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,Image/Title&$expand=Image/Name&$orderby=Title%20asc",
-			method: "GET",
-			headers: {
-				"Accept": "application/json; odata=verbose"
-			},
-			success: function (data) {
-				parkItems = data.d.results;
-
-				$.each(parkItems, function (index, park) {
-					$('#parkSelect > option:last-child').after($('<option value="' + park.Id + '">' + park
-						.Title + '</option>'))
-				});
-			}
-		});
 
 		var todayStart = new Date();
 		todayStart.setHours(0, 0, 0, 0);
 		var todayStartISO = todayStart.toISOString();
-		// get events
-		$.ajax({
-			url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$top=300&$select=*,Park/Title&$expand=Park/Id&$orderby=Date asc&$filter=Date ge datetime'" +
-				todayStartISO + "'",
-			method: "GET",
-			//async: false,
-			headers: {
-				"Accept": "application/json; odata=verbose"
-			},
-			success: function (data) {
-				eventItems = data.d.results;
-				//console.log(eventItems)
 
-				$fraggle = $('<div id="eventSearchResults" class="row"></div>');
 
-				var f1 = $.each(eventItems, function (index, event) {
+		// get list of parks & build park dropdown
+			$.ajax({
+				url: "/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,Image/Title&$expand=Image/Name",
+				method: "GET",
+				headers: {
+					"Accept": "application/json; odata=verbose"
+				},
+				success: function (data) {
+					parkItems = data.d.results;
+					//console.log(parkItems)
 
-					var imgId = event.FeaturedImageId;
+					pkResArr = [];
 
-					// moment the date for this event
-					var date = moment(event.Date).format('ddd, MMM D, YYYY');
-					var day = moment(event.Date).format('D');
-					var month = moment(event.Date).format('MMM');
-
-					var park = event.Park.Title;
-
-					var today = moment(new Date).toIsoString;
-
-					var title = event.Title.toTitleCase();
-
-					var imgUrl = '';
-
-					// if no image is selected, get first image for this park
-					if (imgId == null) {
-						var f2 = $.ajax({
-							url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$select=*,EncodedAbsUrl,Park/Title&$expand=Park/Id&$filter=Park/Id eq " +
-								event.ParkId,
-							method: "GET",
-							async: false,
-							headers: {
-								"Accept": "application/json; odata=verbose"
-							},
-							success: function (data) {
-
-								var imgResult = data.d.results;
-
-								event.imgUrl = imgResult[0].EncodedAbsUrl;
-							}
+					$.each(parkItems, function (index, park) {
+						pkResArr.push({pkid: park.Id , pkimg: park.ImageId})
+					})
+					console.log(pkResArr);
+					$.each(parkItems, function (index, park) {
+						$('#parkSelect > option:last-child').after($('<option value="' + park.Id + '">' + park
+							.Title + '</option>'))
+					});
+				}
+			})
+			.then( function(){
+			// get park images
+				return $.ajax({
+					url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$select=*,EncodedAbsUrl,Park/Title&$expand=Park/Id&$top=5000",
+					method: "GET",
+					headers: {
+						"Accept": "application/json; odata=verbose"
+					},
+					success: function (data) {
+						imgResults = data.d.results;
+						//console.log(imgResults)
+						imgResArr = [];
+						// all images that are chosen ones
+						//console.log(imgResults)
+						//if(imgResults.Image){
+						$.each(imgResults, function (index, img) {
+							imgResArr.push({url: img.EncodedAbsUrl , id: img.Id})
 						})
-						$.when(f2).done(frag());
+						//}
+						console.log(imgResArr);
+						//return imgResults;
 					}
-
-					// if image is selected, get it
-					if (imgId != null) {
-						var f2 = $.ajax({
-							url: "/Parks/_api/web/lists/GetByTitle('eventImages')/items?$select=*,EncodedAbsUrl&$filter=Id eq " +
-								imgId, // + " and ",
-							method: "GET",
-							async: false,
-							headers: {
-								"Accept": "application/json; odata=verbose"
-							},
-							success: function (data) {
-								var imgResult = data.d.results;
-
-								event.imgUrl = imgResult[0].EncodedAbsUrl;
-							}
-						})
-						$.when(f2).done(frag());
-					}
-					// build fragment
-					function frag() {
-						$fraggle.append($(
-							'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' +
-							event.ParkId + '" data-date="' + moment(event.Date).format('LL') +
-							'"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><a href="/Parks/Pages/Event.aspx?=' + event.Id + '"><img class="card-img-top pkImg lazyload" src="' + event.imgUrl +
-							'" alt="Card image cap"></a></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' +
-							month + '<br/><span class="day">' + day +
-							'</span></div><div class="col-9 pl-3"><a href="/Parks/Pages/Event.aspx?=' +
-							event.Id +
-							'"><h5 class="pt-3 eventTitle"><strong style="letter-spacing: -.25px;">' +
-							title +
-							' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5></a><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-calendar"></i> ' +
-							date +
-							'</small><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> <a href="/parks/Pages/Park.aspx?=' +
-							event.ParkId + '">' + park +
-							'</a></small></div></div></div></div>'
-						))
-					}
-				});
-				// append fragment to DOM
-				$.when(f1).done(function () {
-					$fraggle.appendTo('#featEvents');
 				})
-			}
-			//});
+			}).then( function(){
+
+			// get events
+			return $.ajax({
+				url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$top=300&$select=*,Park/Title&$expand=Park/Id&$orderby=Date asc&$filter=Date ge datetime'" +
+					todayStartISO + "'",
+				method: "GET",
+				headers: {
+					"Accept": "application/json; odata=verbose"
+				},
+				success: function (data) {
+					eventResults = data.d.results;
+					//console.log(eventResults)
+
+					$fraggle = $('<div id="eventSearchResults" class="row"></div>');
+
+					var f1 = $.each(eventResults, function (index, event) {
+
+						var imgId = event.FeaturedImageId;
+						//console.log(imgId);
+
+						// moment the date for this event
+						var date = moment(event.Date).format('ddd, MMM D, YYYY');
+						var day = moment(event.Date).format('D');
+						var month = moment(event.Date).format('MMM');
+
+						var park = event.Park.Title;
+
+						var today = moment(new Date).toIsoString;
+
+						var title = event.Title.toTitleCase();
+
+						var imgUrl = '';
+
+						// if no image is selected, get first image for this park
+						if (imgId == null) {
+							//f2 = function(){
+								if (imgId != undefined){
+								var filterResults = pkResArr.filter(function(e){
+									return e.pkid == event.ParkId;
+								})
+								console.log(filterResults[0].pkimg);
+								var imgID = filterResults[0].pkimg;
+								console.log(imgID)
+								var filtrResults = imgResArr.filter(function(e){
+									return e.id == imgID;
+								})
+								console.log(filtrResults[0].url)
+								eventImgUrl = filtrResults[0].url;
+								}
+							//}
+							//$.when(f2).done(frag());
+							frag();
+						}
+
+						// if image is selected, get it
+						if (imgId != null) {
+							var f2 = function () {
+									// get selected image URL
+									console.log(eventResults)
+									// assign selected image to variable
+									//event.imgUrl = imgResult[0].EncodedAbsUrl;
+								}
+							$.when(f2).done(frag());
+						}
+						// build fragment
+						function frag() {
+							$fraggle.append($(
+								'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' +
+								event.ParkId + '" data-date="' + moment(event.Date).format('LL') +
+								'"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><a href="/Parks/Pages/Event.aspx?=' + event.Id + '"><img class="card-img-top pkImg lazyload" data-src="' + eventImgUrl +
+								'" alt="Card image cap"></a></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' +
+								month + '<br/><span class="day">' + day +
+								'</span></div><div class="col-9 pl-3"><a href="/Parks/Pages/Event.aspx?=' +
+								event.Id +
+								'"><h5 class="pt-3 eventTitle"><strong style="letter-spacing: -.25px;">' +
+								title +
+								' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5></a><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-calendar"></i> ' +
+								date +
+								'</small><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> <a href="/parks/Pages/Park.aspx?=' +
+								event.ParkId + '">' + park +
+								'</a></small></div></div></div></div>'
+							))
+						}
+					});
+					// append fragment to DOM
+					$.when(f1).done(function () {
+						$fraggle.appendTo('#featEvents');
+					})
+				}
+			})
 		})
+
+
 		// dropdown sort functionality
 		$('#dateSelect, #parkSelect').change(function () {
 

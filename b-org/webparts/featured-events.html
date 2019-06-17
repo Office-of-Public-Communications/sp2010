@@ -88,28 +88,21 @@
 
                     var imgId = event.FeaturedImageId;
 
-                    //event.img = 'test';
-
-                    //console.log(event);
-
                     // moment the date for this event
                     var date = moment(event.Date).format('ddd, MMM D, YYYY');
                     var day = moment(event.Date).format('D');
                     var month = moment(event.Date).format('MMM');
 
+                    // variables
                     var park = event.Park.Title;
-
                     var today = moment(new Date).toIsoString;
-
                     var title = event.Title.toTitleCase();
-
                     var imgUrl = '';
-
 
                     // if no image is selected, do this
                     if (imgId == null){
                         var f2 = $.ajax({
-                            url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$select=*,EncodedAbsUrl,Park/Title&$expand=Park/Id&$filter=Park/Id eq " + event.ParkId, // + " and ",
+                            url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$select=*,EncodedAbsUrl,Park/Title&$expand=Park/Id&$filter=Park/Id eq " + event.ParkId, //
                             method: "GET",
                             async: false,
                             headers: {
@@ -151,7 +144,7 @@
                     function frag(){
                         $fraggle.append($('<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' +
                         event.ParkId + '" data-date="' + moment(event.Date).format('LL') +
-                        '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><a href="/Parks/Pages/Event.aspx?=' + event.Id + '"><img class="card-img-top pkImg lazyload" src="' +
+                        '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><a href="/Parks/Pages/Event.aspx?=' + event.Id + '"><img class="card-img-top pkImg lazyload" data-src="' +
                         event.imgUrl +
                         '" alt="Card image cap"></a></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' +
                         month + '<br/><span class="day">' + day +

@@ -21,7 +21,7 @@
         }
 
         .pkImg {
-            max-height: 120px;
+            max-height: 200px;
             width: 100%;
             object-fit: cover;
         }
@@ -73,7 +73,7 @@
         }
 
         $.ajax({
-            url: "/Parks/_api/web/lists/GetByTitle('Parks')/items?&$top=5000",
+            url: "/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000",
             method: "GET",
             headers: {
                 "Accept": "application/json; odata=verbose"
@@ -106,7 +106,7 @@
         });
 
         $.ajax({
-            url: "/Parks/_api/web/lists/GetByTitle('Features')/items?$top=5000",//?$select=*",Featured_x0200_ImageId/Title&$expand=Featured_x0200_Image/Id",
+            url: "/Parks/_api/web/lists/GetByTitle('Features')/items?$top=5000", //?$select=*",Featured_x0200_ImageId/Title&$expand=Featured_x0200_Image/Id",
             method: "GET",
             headers: {
                 "Accept": "application/json; odata=verbose"
@@ -121,7 +121,8 @@
                     if (ttd.Featured == true) {
 
                         getImg = $.ajax({
-                            url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$filter=(ID eq " + imgId + ")&$select=EncodedAbsUrl",
+                            url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$filter=(ID eq " +
+                                imgId + ")&$select=EncodedAbsUrl",
                             method: "GET",
                             headers: {
                                 "Accept": "application/json; odata=verbose"
@@ -130,26 +131,28 @@
                                 imgResult = data.d.results;
                                 imgUrl = imgResult[0].EncodedAbsUrl;
 
-                        var title = ttd.Title.toTitleCase();
-                        //$.when(getImg).done(function () {
-                            console.log(imgUrl);
-                            $('#ttdSearchResults').append($(
-                                '<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' +
-                                ttd.ParkId + '" data-date="' + moment(ttd.Date).format('LL') +
-                                '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg" src="' + imgUrl + '" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-12 pl-3"><a href="/Parks/Pages/ttd.aspx?=' +
-                                ttd.Id +
-                                '"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' +
-                                title +
-                                '</strong></h5></a><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> 13 parks</small></div></div><div class="row"><div class="col"><div type="button" class="btn btn-sm btn-primary float-right">Reserve Now</div></div></div></div></div></div>'
-                            ));
-                        //});
-                        }
+                                var title = ttd.Title.toTitleCase();
+                                //$.when(getImg).done(function () {
+                                //console.log('link: ' + ttd.Link.Url);
+                                $('#ttdSearchResults').append($(
+                                    '<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' +
+                                    ttd.ParkId + '" data-date="' + moment(ttd
+                                        .Date).format('LL') +
+                                    '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg lazyload" data-src="' +
+                                    imgUrl +
+                                    '" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-12 pl-3"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' +
+                                    title +
+                                    '</strong></h5><!--<small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> 13 parks</small>--></div></div><div class="row"><a href="' +
+                                    ttd.Link.Url +
+                                    '" target="_blank"><div class="col"><div type="button" class="btn btn-sm btn-primary float-right">Reserve Now</div></a></div></div></div></div></div>'
+                                ));
+                                //});
+                            }
                         })
                     };
                 });
             }
         });
-
     </script>
 </body>
 
