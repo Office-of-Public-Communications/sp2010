@@ -29,7 +29,7 @@
 </head>
 
 <body>
-	<div aria-label="Airport Main Content" id="airportContent">
+	<div aria-label="Park Main Content" id="parkContent">
 		<div class="container">
 			<div class="row mb-5" id="filterOptions">
 				<div class="col-12 col-md-6">
@@ -96,7 +96,7 @@
 
 		// get list of parks & build park dropdown
 			$.ajax({
-				url: "/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,Image/Title&$expand=Image/Name",
+				url: "/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,Image/Title&$expand=Image/Name&$orderby=Title asc",
 				method: "GET",
 				headers: {
 					"Accept": "application/json; odata=verbose"
@@ -110,10 +110,11 @@
 					$.each(parkItems, function (index, park) {
 						pkResArr.push({pkid: park.Id , pkimg: park.ImageId})
 					})
-					console.log(pkResArr);
+					//console.log(pkResArr);
 					$.each(parkItems, function (index, park) {
-						$('#parkSelect > option:last-child').after($('<option value="' + park.Id + '">' + park
-							.Title + '</option>'))
+						if (park.Title != 'TBD'){
+							$('#parkSelect > option:last-child').after($('<option value="' + park.Id + '">' + park.Title + '</option>'))
+						}
 					});
 				}
 			})
@@ -136,7 +137,7 @@
 							imgResArr.push({url: img.EncodedAbsUrl , id: img.Id})
 						})
 						//}
-						console.log(imgResArr);
+						//console.log(imgResArr);
 						//return imgResults;
 					}
 				})
@@ -144,22 +145,35 @@
 
 			// get events
 			return $.ajax({
-				url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$top=300&$select=*,Park/Title&$expand=Park/Id&$orderby=Date asc&$filter=Date ge datetime'" +
-					todayStartISO + "'",
+				url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$top=3000&$select=*,Park/Title,Recurring/Title&$expand=Park/Id,Recurring&$orderby=Date asc",//&$filter=Date ge datetime'" + todayStartISO + "'",
 				method: "GET",
 				headers: {
 					"Accept": "application/json; odata=verbose"
 				},
 				success: function (data) {
 					eventResults = data.d.results;
-					//console.log(eventResults)
 
 					$fraggle = $('<div id="eventSearchResults" class="row"></div>');
+
+					console.log(eventResults)
+
+					// removed expired events
+					function isNotOld(i){
+						return i.Recurring.results.length > 0 || i.Date >= todayStartISO || i.EndDate >= todayStartISO
+					}
+					var filteredResults = eventResults.filter(isNotOld);
+					console.log(filteredResults)
+
+					// sort array by date
+					//console.log(eventResults)
+					filteredResults.sort(function(a, b) {
+						return (a.Date < b.Date) ? -1 : ((a.Date> b.Date) ? 1 : 0);
+					});
+					console.log(filteredResults)
 
 					var f1 = $.each(eventResults, function (index, event) {
 
 						var imgId = event.FeaturedImageId;
-						//console.log(imgId);
 
 						// moment the date for this event
 						var date = moment(event.Date).format('ddd, MMM D, YYYY');
@@ -174,24 +188,251 @@
 
 						var imgUrl = '';
 
+						// remove old events (non-recurring or recurring with expired end date)
+						// console.log(eventResults)
+						// eventResults.filter(function(){
+						// 	if(event.Date > todayStartISO || event.EndDate > todayStartISO || event.Recurring.results.length > 0){console.log(this)}
+						// })
+						// console.log(eventResults)
+						//})
+						//moment(event.EndDate) > today
+
+						// run moment recur.js on recurring events & push to event array
+						if(event.RecurringId.results.length > 0 && event.EndDate > todayStartISO){
+							//console.log(event.Recurring.results)
+							recurArr = event.Recurring.results;
+							$.each(recurArr, function(index, recur){
+
+								//console.log(recur.Title)
+								//console.log(event.Title)
+
+								// variables
+								var whatDays = [];
+								var whatWeeks = [];
+								var everyday = false;
+								var startDate = moment(event.Date);
+								var endDate = moment(event.EndDate);
+								var upcoming;
+								var today = moment(new Date());
+
+								if (recur.Title == 'Every Monday') {
+									whatDays.push('Monday');
+								}
+								if (recur.Title == 'Every First Monday') {
+									whatDays.push('Monday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Monday') {
+									whatDays.push('Monday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Monday') {
+									whatDays.push('Monday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Monday') {
+									whatDays.push('Monday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Tuesday') {
+									whatDays.push('Tuesday');
+								}
+								if (recur.Title == 'Every First Tuesday') {
+									whatDays.push('Tuesday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Tuesday') {
+									whatDays.push('Tuesday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Tuesday') {
+									whatDays.push('Tuesday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Tuesday') {
+									whatDays.push('Tuesday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Wednesday') {
+									whatDays.push('Wednesday');
+								}
+								if (recur.Title == 'Every First Wednesday') {
+									whatDays.push('Wednesday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Wednesday') {
+									whatDays.push('Wednesday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Wednesday') {
+									whatDays.push('Wednesday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Wednesday') {
+									whatDays.push('Wednesday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Thursday') {
+									whatDays.push('Thursday');
+								}
+								if (recur.Title == 'Every First Thursday') {
+									whatDays.push('Thursday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Second Thursday') {
+									whatDays.push('Thursday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Third Thursday') {
+									whatDays.push('Thursday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Fourth Thursday') {
+									whatDays.push('Thursday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Friday') {
+									whatDays.push('Friday');
+								}
+								if (recur.Title == 'Every First Friday') {
+									whatDays.push('Friday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Friday') {
+									whatDays.push('Friday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Friday') {
+									whatDays.push('Friday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Friday') {
+									whatDays.push('Friday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Saturday') {
+									whatDays.push('Saturday');
+								}
+								if (recur.Title == 'Every First Saturday') {
+									whatDays.push('Saturday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Saturday') {
+									whatDays.push('Saturday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Saturday') {
+									whatDays.push('Saturday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Saturday') {
+									whatDays.push('Saturday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Sunday') {
+									whatDays.push('Sunday');
+								}
+								if (recur.Title == 'Every First Sunday') {
+									whatDays.push('Sunday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Sunday') {
+									whatDays.push('Sunday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Sunday') {
+									whatDays.push('Sunday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Sunday') {
+									whatDays.push('Sunday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Everyday') {
+									everyday = true;
+								}
+
+								if (everyday === true) {
+									//console.log('it true')
+									var upcoming = moment(startDate).recur(endDate ? endDate :
+										false).every(1).day();
+									upcoming.fromDate(startDate);
+									upcoming.endDate(endDate);
+									upcomingDates = upcoming.next(1, 'LL');
+									//console.log(upcomingDates)
+								}
+								// begins today or later and has an end date
+								if (startDate >= today && endDate != undefined) {
+									// has days but no weeks
+									if (whatDays.length > 0 && whatWeeks.length < 1) {
+										var upcoming = moment(startDate).recur(endDate ? endDate :
+											false).every(whatDays).daysOfWeek();
+										upcoming.fromDate(startDate);
+										upcoming.endDate(endDate);
+										upcomingDates = upcoming.next(1, 'LL');
+										//console.log(upcomingDates)
+									}
+
+									// has days and weeks
+									if (whatDays.length > 0 && whatWeeks.length > 0) {
+										var upcoming = moment(startDate).recur(endDate ? endDate :
+												false).every(whatDays).daysOfWeek().every(whatWeeks)
+											.weeksOfMonthByDay();
+										upcoming.fromDate(startDate);
+										upcoming.endDate(endDate);
+										upcomingDates = upcoming.next(1, 'LL');
+										//console.log(upcomingDates)
+									}
+								}
+								// began before today
+								if (startDate < today) {
+									// has days but no weeks
+									if (whatDays.length > 0 && whatWeeks.length < 1) {
+										//console.log('heyo')
+										var upcoming = moment(today).recur().every(whatDays)
+											.daysOfWeek();
+										upcomingDates = upcoming.next(1, 'LL');
+										//console.log(upcomingDates)
+									}
+
+									// has days and weeks
+									if (whatDays.length > 0 && whatWeeks.length > 0) {
+										var upcoming = moment(today).recur().every(whatDays)
+											.daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
+										upcomingDates = upcoming.next(1, 'LL');
+										//console.log(upcomingDates)
+									}
+								}
+								// push next occurrence of recurring event to event array
+								for (k = 0; k < upcomingDates.length; k++) {
+									var date = upcomingDates[k];
+									var id = event.ID;
+									//console.log(event.Date)
+									var isoDate = moment(date).startOf('day').toISOString();
+									event.Date = isoDate;
+									//console.log(event.Date, event.Title, event.ID)
+								}
+							});
+						};
+
 						// if no image is selected, get first image for this park
 						if (imgId == null) {
-							//f2 = function(){
-								if (imgId != undefined){
-								var filterResults = pkResArr.filter(function(e){
-									return e.pkid == event.ParkId;
-								})
-								console.log(filterResults[0].pkimg);
-								var imgID = filterResults[0].pkimg;
-								console.log(imgID)
-								var filtrResults = imgResArr.filter(function(e){
-									return e.id == imgID;
-								})
-								console.log(filtrResults[0].url)
+							var filterResults = pkResArr.filter(function(e){
+								return e.pkid == event.ParkId;
+							})
+							//console.log(filterResults[0].pkimg);
+							var imgID = filterResults[0].pkimg;
+							//console.log(imgID)
+							var filtrResults = imgResArr.filter(function(e){
+								return e.id == imgID;
+							})
+							if(filtrResults[0] != undefined){
+								//console.log(filtrResults[0].url)
 								eventImgUrl = filtrResults[0].url;
-								}
-							//}
-							//$.when(f2).done(frag());
+							}
+							if(filtrResults[0] == undefined){
+								eventImgUrl = '/Parks/ParksImages/undefined.jpg'
+							}
 							frag();
 						}
 
@@ -199,7 +440,7 @@
 						if (imgId != null) {
 							var f2 = function () {
 									// get selected image URL
-									console.log(eventResults)
+									//console.log(eventResults)
 									// assign selected image to variable
 									//event.imgUrl = imgResult[0].EncodedAbsUrl;
 								}
@@ -241,6 +482,7 @@
 			var dateValue = $('#dateSelect').val();
 
 			$('.event').hide();
+			// if($('#eventSearchResults').children().css('display', '').length == 0){$('#featEvents').html('No events match your filters. Check out...')}
 
 			// if 'any' park & 'any' date -> show all
 			if (parkValue === '0' && dateValue === '0') {
@@ -259,8 +501,8 @@
 			}
 			// if 'any' park -> filter by date
 			if (parkValue === '0' && dateValue !== '0') {
-				$('.event').each(function () {
-					dateSort();
+				$('.event').each(function (i, el) {
+					dateSort(el);
 				})
 				//console.log('any park, sort by date')
 			}
