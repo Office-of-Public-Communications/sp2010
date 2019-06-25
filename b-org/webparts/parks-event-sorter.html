@@ -46,7 +46,7 @@
 							<option value="0">Any Day</option>
 							<option value="1">Today</option>
 							<option value="2">Tomorrow</option>
-							<!-- <option value="3">This Weekend</option> -->
+							<option value="3">This Weekend</option>
 							<option value="4">This Week</option>
 							<option value="5">Next Week</option>
 							<option value="6">This Month</option>
@@ -141,11 +141,28 @@
 						//return imgResults;
 					}
 				})
-			}).then( function(){
+			})
+			.then( function(){
+
+				// get events
+				return $.ajax({
+					url:
+					"/Parks/_api/web/lists/GetByTitle('eventImages')/items?$top=3000&$select=*,EncodedAbsUrl",
+					method: "GET",
+					headers: {
+					"Accept": "application/json; odata=verbose"
+					},
+					success: function (data) {
+						eventImgResults = data.d.results;
+						//console.log(eventImgResults)
+					}
+				})
+			})
+			.then( function(){
 
 			// get events
 			return $.ajax({
-				url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$top=3000&$select=*,Park/Title,Recurring/Title&$expand=Park/Id,Recurring&$orderby=Date asc",//&$filter=Date ge datetime'" + todayStartISO + "'",
+				url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$top=3000&$select=*,Park/Title,Recurring/Title,FeaturedImage/Title&$expand=Park/Id,Recurring,FeaturedImage/Id&$orderby=Date asc",//&$filter=Date ge datetime'" + todayStartISO + "'",
 				method: "GET",
 				headers: {
 					"Accept": "application/json; odata=verbose"
@@ -155,56 +172,38 @@
 
 					$fraggle = $('<div id="eventSearchResults" class="row"></div>');
 
-					console.log(eventResults)
+					//console.log(eventResults)
 
 					// removed expired events
 					function isNotOld(i){
-						return i.Recurring.results.length > 0 || i.Date >= todayStartISO || i.EndDate >= todayStartISO
+						return (i.Recurring.results.length > 0 && (i.EndDate >= todayStartISO || !i.EndDate)) || i.Date >= todayStartISO
 					}
 					var filteredResults = eventResults.filter(isNotOld);
-					console.log(filteredResults)
+					//console.log(filteredResults)
 
 					// sort array by date
-					//console.log(eventResults)
-					filteredResults.sort(function(a, b) {
-						return (a.Date < b.Date) ? -1 : ((a.Date> b.Date) ? 1 : 0);
-					});
-					console.log(filteredResults)
+					// var sortedResults = filteredResults.sort(function(a, b) {
+					// 	return (a.Date < b.Date) ? -1 : ((a.Date> b.Date) ? 1 : 0);
+					// });
+					//console.log(sortedResults)
 
-					var f1 = $.each(eventResults, function (index, event) {
+					var f1 = $.each(filteredResults, function (index, event) {
 
 						var imgId = event.FeaturedImageId;
-
-						// moment the date for this event
-						var date = moment(event.Date).format('ddd, MMM D, YYYY');
-						var day = moment(event.Date).format('D');
-						var month = moment(event.Date).format('MMM');
-
+						// var date = moment(event.Date).format('ddd, MMM D, YYYY');
+						// var day = moment(event.Date).format('D');
+						// var month = moment(event.Date).format('MMM');
 						var park = event.Park.Title;
-
 						var today = moment(new Date).toIsoString;
-
 						var title = event.Title.toTitleCase();
-
 						var imgUrl = '';
 
-						// remove old events (non-recurring or recurring with expired end date)
-						// console.log(eventResults)
-						// eventResults.filter(function(){
-						// 	if(event.Date > todayStartISO || event.EndDate > todayStartISO || event.Recurring.results.length > 0){console.log(this)}
-						// })
-						// console.log(eventResults)
-						//})
-						//moment(event.EndDate) > today
+						// run moment recur.js on recurring events & push next date to event array
+						function recurGenerator(){
+						//if(event.Recurring.results.length > 0){
 
-						// run moment recur.js on recurring events & push to event array
-						if(event.RecurringId.results.length > 0 && event.EndDate > todayStartISO){
-							//console.log(event.Recurring.results)
 							recurArr = event.Recurring.results;
 							$.each(recurArr, function(index, recur){
-
-								//console.log(recur.Title)
-								//console.log(event.Title)
 
 								// variables
 								var whatDays = [];
@@ -403,14 +402,36 @@
 										//console.log(upcomingDates)
 									}
 								}
-								// push next occurrence of recurring event to event array
+								// ~~push next occurrence of recurring event to event array~~ must build card for each occurrence, pushing would only overwrite date each loop through resulting in one date for events that may have more than one day of recurrence
 								for (k = 0; k < upcomingDates.length; k++) {
 									var date = upcomingDates[k];
 									var id = event.ID;
 									//console.log(event.Date)
 									var isoDate = moment(date).startOf('day').toISOString();
+									//console.log(event.Date)
 									event.Date = isoDate;
-									//console.log(event.Date, event.Title, event.ID)
+									recurDeets = event.Recurring.results;
+									recurDeet = [];
+									//console.log(recurDeets[k].Title)
+									// make string out of recurring deets for use in frag();
+									$.each(recurDeets, function(index, deet){
+										// if event is recurring && has end date, show date range instead
+										if(deet.Title == 'Everyday' && event.EndDate.length != null){
+											//console.log(event);
+											var endDate = moment(event.EndDate).format('LL');
+											var range = moment(event.Date).format('LL').split(',')[0] + '-' + endDate.split(' ')[1] + ' ' + endDate.split(' ')[2];
+											//console.log(range)
+											recurDeet.push('Everyday, ' + range);
+											// $('#date').html(moment(dirInfo2.StartDate).format('LL').split(',')[0] + '-' +
+											// moment(dirInfo2.EndDate).format('LL').split(' ')[1] + ' ' + moment(dirInfo2.EndDate).format('LL').split(' ')[2]);
+
+										} else {
+											recurDeet.push(deet.Title);
+										}
+									});
+									deet = recurDeet.join(', ');
+									frag();
+									//console.log('frag done ' + event.Title)
 								}
 							});
 						};
@@ -433,21 +454,61 @@
 							if(filtrResults[0] == undefined){
 								eventImgUrl = '/Parks/ParksImages/undefined.jpg'
 							}
-							frag();
+							// if recurring, run recurring date generator & build there
+							if(event.Recurring.results.length > 0){
+								//console.log('recur ' + event.Title)
+								recurGenerator();
+							}
+							// if one timer, build here
+							if(event.Recurring.results.length == 0){
+								frag();
+							}
 						}
 
 						// if image is selected, get it
+						//console.log(imgId)
 						if (imgId != null) {
-							var f2 = function () {
-									// get selected image URL
-									//console.log(eventResults)
-									// assign selected image to variable
-									//event.imgUrl = imgResult[0].EncodedAbsUrl;
+							function f2() {
+								//console.log(imgId, event)
+								// get selected image URL
+								//event.imgUrl = imgResult[0].EncodedAbsUrl;
+								// if recurring, run recurring date generator & build there
+								var filtrResults = eventImgResults.filter(function(e){
+									//console.log(e.Id)
+									return e.Id == imgId;
+								})
+								eventImgUrl = filtrResults[0].EncodedAbsUrl;
+								//console.log(eventImgUrl)
+							}
+							f2();
+							$.when(f2).done(
+								function(){
+									// if recurring, run recurring date generator & build there
+									if(event.Recurring.results.length > 0){
+										recurGenerator();
+									}
+									// if one timer, build here
+									if(event.Recurring.results.length == 0){
+										frag();
+									}
 								}
-							$.when(f2).done(frag());
+							);
 						}
 						// build fragment
 						function frag() {
+							// date if recurring
+							if(event.Recurring.results.length > 0){
+								var date = deet;
+								var deetIcon = 'sync';
+							}
+							// date if not recurring
+							if(event.Recurring.results.length == 0){
+								var date = moment(event.Date).format('ddd, MMM D, YYYY');
+								var deetIcon = 'calendar';
+							}
+							var day = moment(event.Date).format('D');
+							var month = moment(event.Date).format('MMM');
+
 							$fraggle.append($(
 								'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' +
 								event.ParkId + '" data-date="' + moment(event.Date).format('LL') +
@@ -458,7 +519,7 @@
 								event.Id +
 								'"><h5 class="pt-3 eventTitle"><strong style="letter-spacing: -.25px;">' +
 								title +
-								' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5></a><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-calendar"></i> ' +
+								' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5></a><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-' + deetIcon + '"></i> ' +
 								date +
 								'</small><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> <a href="/parks/Pages/Park.aspx?=' +
 								event.ParkId + '">' + park +
@@ -468,7 +529,17 @@
 					});
 					// append fragment to DOM
 					$.when(f1).done(function () {
+
 						$fraggle.appendTo('#featEvents');
+
+						// sort array by date
+						var cardList = $('.event');
+						//console.log(cardList)
+						cardList.sort(function(a,b){
+							return moment($(a).data('date')) - moment($(b).data('date'));
+						});
+						//console.log(sortedResults)
+						cardList.appendTo('#eventSearchResults')
 					})
 				}
 			})
@@ -556,10 +627,11 @@
 							$(el).each(function (i, el) {
 								var dd = moment($(el).attr('data-date')).format(
 									'LL');
-								var sun = moment().add(1, 'weeks').startOf(
-									'isoWeek').format('LL');
-								var sat = moment().endOf('isoWeek').format('LL');
-								//console.log(dd, sat, sun)
+								var d = moment();
+								var sun = d.endOf('isoWeek').format('LL');
+								var sat = moment(sun).subtract(1, 'days').format('LL');
+								//console.log(moment(sun).subtract(1, 'days').format('LL'));
+								console.log(dd, sat, sun)
 								if (moment(dd).isSame(sat, 'day') || moment(dd)
 									.isSame(sun, 'day')) {
 									//console.log(dd, sun, sat)

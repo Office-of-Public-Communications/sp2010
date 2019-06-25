@@ -43,7 +43,7 @@ $(document).ready(function () {
 
         // var of star counts from GET
         stars = $(this).parent().children('li.star');
-        console.log(stars)
+        console.log(stars);
         for (i = 0; i < items[j].AvgRating; i++) {
           //console.log(this);
           $(stars[i]).addClass('selected');
@@ -130,7 +130,7 @@ $(document).ready(function () {
           $(stars[i]).addClass('selected');
           console.log(onStar);
           // onStar = var for rating selected by user
-          // TODO: var for item ID for use in POST url
+          // var for item ID for use in POST url
           var newRating = onStar; // var for rating selected by user to go here
           // console.log(newRating);
           var avgRating = Number(items[0].AvgRating); // GET for this calculation only
@@ -158,7 +158,7 @@ $(document).ready(function () {
                     var items = data.d.results;
                     // console.log(items);
                     // onStar = var for rating selected by user
-                    // TODO: var for item ID for use in POST url
+                    // var for item ID for use in POST url
                     var newRating = onStar; // var for rating selected by user to go here
                     // console.log(newRating);
                     var avgRating = Number(items[0].AvgRating); // GET for this calculation only
@@ -186,7 +186,7 @@ $(document).ready(function () {
                     var items = data.d.results;
                     // console.log(items);
                     // onStar = var for rating selected by user
-                    // TODO: var for item ID for use in POST url
+                    // var for item ID for use in POST url
                     var newRating = onStar; // var for rating selected by user to go here
                     // console.log(newRating);
                     var avgRating = Number(items[0].AvgRating); // GET for this calculation only
@@ -203,8 +203,6 @@ $(document).ready(function () {
                     //ratingPost();
                   }
                 });
-        
-        */
         */
         function refreshToken() {
           $.ajax({

@@ -7,7 +7,7 @@ f1 = $.ajax({
   success: function (data) {
     var items = data.d.results;
     // console.log(items);
-    // TODO: var for rating selected by user
+    // var for rating selected by user
     var newRating = 0; // var for rating selected by user to go here
     // console.log(newRating);
     var avgRating = Number(items[0].AvgRating); // GET for this calculation only
