@@ -27,103 +27,116 @@
 </head>
 
 <body>
-	<form id="form1" runat="server">
-		<div aria-label="Airport Main Content" id="airportContent">
-			<div class="container">
-				<div class="row mb-5" id="filterOptions">
-					<div class="col">
-						<div class="d-md-block typeOption my-2">
-							<select id="parkSelect" class="browser-default col-12 my-0 mdb-select termSelect">
-								<option value="0">Any Park</option>
-								<!-- Inject Parks here -->
-							</select>
-						</div>
+	<div aria-label="Airport Main Content" id="airportContent">
+		<div class="container">
+			<div class="row mb-5" id="filterOptions">
+				<div class="col">
+					<div class="d-md-block typeOption my-2">
+						<select id="parkSelect" class="browser-default col-12 my-0 mdb-select termSelect">
+							<option value="0">Any Park</option>
+							<!-- Inject Parks here -->
+						</select>
 					</div>
 				</div>
-				<div id="termSearchResults" class="mb-5 row">
-				</div>
+			</div>
+			<div id="termSearchResults" class="mb-5 row">
 			</div>
 		</div>
+	</div>
 
-		<script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
-		<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
-		<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"></script>
-		<script type="text/javascript">
-		// Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
-		String.prototype.toTitleCase = function() {
-			var i, j, str, lowers, uppers;
-			str = this.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
-			return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+	<script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
+	<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"></script>
+	<script type="text/javascript">
+	// Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
+	String.prototype.toTitleCase = function() {
+		var i, j, str, lowers, uppers;
+		str = this.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
+		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+		});
+
+		// Certain minor words should be left lowercase unless
+		// they are the first or last words in the string
+		lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
+		'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'];
+		for (i = 0, j = lowers.length; i < j; i++) str=str.replace(new RegExp('\\s' + lowers[i] + '\\s' , 'g' ), function(txt)
+			{ return txt.toLowerCase(); }); // Certain words such as initialisms or acronyms should be left uppercase
+			uppers=['Id', 'Tv' ]; for (i=0, j=uppers.length; i < j; i++) str=str.replace(new RegExp('\\b' + uppers[i] + '\\b'
+			, 'g' ), uppers[i].toUpperCase()); return str;
+	}
+
+	$.ajax({
+		url:
+		"/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,Image/Title&$expand=Image/Name&$orderby=Title%20asc",
+		method: "GET",
+		headers: {
+			"Accept": "application/json; odata=verbose"
+		},
+		success: function (data) {
+			parkItems = data.d.results;
+			// console.log(parkItems);
+			$.each(parkItems, function (index, park) {
+				console.log(park.FeaturesId.results);
+				$('#parkSelect > option:last-child').after($('<option value="' + park.Id + '">' + park.Title + '</option>'))
 			});
-
-			// Certain minor words should be left lowercase unless
-			// they are the first or last words in the string
-			lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
-			'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'];
-			for (i = 0, j = lowers.length; i < j; i++) str=str.replace(new RegExp('\\s' + lowers[i] + '\\s' , 'g' ), function(txt)
-				{ return txt.toLowerCase(); }); // Certain words such as initialisms or acronyms should be left uppercase
-				uppers=['Id', 'Tv' ]; for (i=0, j=uppers.length; i < j; i++) str=str.replace(new RegExp('\\b' + uppers[i] + '\\b'
-				, 'g' ), uppers[i].toUpperCase()); return str;
+			// Sort by Park dropdown
+			parkSelect = $('#parkSelect').change(function(){
+				var filterValue = $(this).val();
+				//console.log(filterValue)
+				$('.event').hide();
+				if (filterValue == '0') {
+				$('.event').show();
+				}
+				if (filterValue != '0') {
+					$('.event').each(function(i, el) {
+						if ($(el).attr('data-park') == filterValue) {
+							$(el).show();
+						}
+					})
+				}
+			})
 		}
+	}).then(function(){
 
-		$.ajax({
-			url:
-			"/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,Image/Title&$expand=Image/Name&$orderby=Title%20asc",
-			method: "GET",
-			headers: {
-				"Accept": "application/json; odata=verbose"
-			},
-			success: function (data) {
-				parkItems = data.d.results;
-				//console.log(parkItems);
-				$.each(parkItems, function (index, park) {
-					//console.log(park);
-					$('#parkSelect > option:last-child').after($('<option value="' + park.Id + '">' + park.Title + '</option>'))
-				});
-				// Sort by Park dropdown
-				parkSelect = $('#parkSelect').change(function(){
-					var filterValue = $(this).val();
-					//console.log(filterValue)
-					$('.event').hide();
-					if (filterValue == '0') {
-					$('.event').show();
-					}
-					if (filterValue != '0') {
-						$('.event').each(function(i, el) {
-							if ($(el).attr('data-park') == filterValue) {
-								$(el).show();
-							}
-						})
-					}
+	return $.ajax({
+		url:
+		"/Parks/_api/web/lists/GetByTitle('Features')/items?$top=5000&$orderby=Title%20asc",
+		method: "GET",
+		headers: {
+			"Accept": "application/json; odata=verbose"
+		},
+		success: function (data) {
+			ttdItems = data.d.results;
+
+			//console.log(ttdItems);
+
+			$.each(ttdItems, function (index, ttd) {
+				title = ttd.Title.toTitleCase();
+				//park = ttd.Park.Title;
+				//console.log(ttd)
+				//park.FeaturesId.results
+				var count = 0;
+				$.each(parkItems, function(index, park){
+					if(park.FeaturesId.results.indexOf(ttd.Id) > -1){
+						//console.log(park.Title)
+						count++;
+					};
 				})
-			}
-		});
+				console.log(count)
+				//console.log(parkItems[].indexOf(ttd.Id) > -1)
+				$('#termSearchResults').append($(
+						'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' + ttd.ParkId + '" data-date="' + moment(ttd.Date).format('LL') + '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-12 pl-3"><a href="/Parks/Pages/ttd.aspx?=' + ttd.Id + '"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' + title + '</strong></h5></a><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> ' + count + ' parks</small></div></div><div class="row"><div class="col"><div type="button" class="btn btn-sm btn-primary float-right">Reserve Now</div></div></div></div></div></div>'
+					));
+			});
+		}
+	});
 
-		$.ajax({
-			url:
-			"/Parks/_api/web/lists/GetByTitle('Features')/items?$top=5000&$orderby=Title%20asc",
-			method: "GET",
-			headers: {
-				"Accept": "application/json; odata=verbose"
-			},
-			success: function (data) {
-				ttdItems = data.d.results;
-
-				$.each(ttdItems, function (index, ttd) {
-					title = ttd.Title.toTitleCase();
-					//park = ttd.Park.Title;
-					$('#termSearchResults').append($(
-							'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' + ttd.ParkId + '" data-date="' + moment(ttd.Date).format('LL') + '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-12 pl-3"><a href="/Parks/Pages/ttd.aspx?=' + ttd.Id + '"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' + title + '</strong></h5></a><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> 13 parks</small></div></div><div class="row"><div class="col"><div type="button" class="btn btn-sm btn-primary float-right">Reserve Now</div></div></div></div></div></div>'
-						));
-				});
-			}
-		});
-
-			$('#fullPageContent > div > div.row.pt-3.mb-r').removeClass('mb-r');
-			webpartMove = $("#airportContent")
-			webpartMove.detach();
-			webpartMove.appendTo("#fullPageContent");
-		</script>
+	})
+		$('#fullPageContent > div > div.row.pt-3.mb-r').removeClass('mb-r');
+		webpartMove = $("#airportContent")
+		webpartMove.detach();
+		webpartMove.appendTo("#fullPageContent");
+	</script>
 </body>
 
 </html>
