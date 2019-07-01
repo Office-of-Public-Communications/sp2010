@@ -1,0 +1,178 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+    <style>
+        .newPark:before {
+            content: 'New Park';
+            font-size: .6rem;
+            font-weight: 400;
+            padding: 3px 5px;
+            color: white;
+            background-color: #46a54b;
+            border-radius: 5px;
+            margin-right: 10px;
+            text-transform: uppercase;
+            bottom: 2px;
+            position: relative;
+            letter-spacing: 1px;
+        }
+
+        .park {
+            font-weight: 700;
+        }
+
+        @media screen and (min-width: 769px) {
+            #timeline {
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .tl-item {
+                flex: 0 0 auto;
+                vertical-align: top;
+                width: 25%;
+            }
+
+            .timeline-text {
+                text-align: center;
+            }
+
+            .line {
+                height: 3px;
+                background-color: #46a54b;
+                width: 100%;
+                position: relative;
+            }
+
+            .line-first {
+                height: 3px;
+                background: #46a54b;
+                background: -moz-linear-gradient(left, #46a54b 0%, #46a54b 50%, #fff 50%, #fff 100%);
+                background: -webkit-linear-gradient(left, #46a54b 0%, #46a54b 50%, #fff 50%, #fff 100%);
+                background: linear-gradient(to left, #46a54b 0%, #46a54b 50%, #fff 50%, #fff 100%);
+                width: 100%;
+                position: relative;
+            }
+
+            .line-last {
+                height: 3px;
+                background: #46a54b;
+                background: -moz-linear-gradient(left, #fff 0%, #fff 50%, #46a54b 50%, #46a54b 100%);
+                background: -webkit-linear-gradient(left, #fff 0%, #fff 50%, #46a54b 50%, #46a54b 100%);
+                background: linear-gradient(to left, #fff 0%, #fff 50%, #46a54b 50%, #46a54b 100%);
+                width: 100%;
+                position: relative;
+            }
+
+            .circle {
+                height: 24px;
+                width: 24px;
+                background-color: white;
+                border: 3px solid #46a54b;
+                border-radius: 15px;
+                -moz-border-radius: 15px;
+                -webkit-border-radius: 15px;
+                position: absolute;
+                left: 46%;
+                top: -10px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            #timeline {
+                margin-left: 20px;
+            }
+
+            .tl-item {
+                border-left: 3px solid #46a54b;
+                padding-left: 20px;
+            }
+
+            .tl-item:before {
+                content: '';
+                display: block;
+                height: 24px;
+                width: 24px;
+                background-color: white;
+                border: 3px solid #46a54b;
+                border-radius: 15px;
+                -moz-border-radius: 15px;
+                -webkit-border-radius: 15px;
+                position: absolute;
+                left: 24px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="timeline" class="timeline-text pb-5">
+        <div class="tl-item pb-5">
+            <div class="date">OCT 12, 2018</div>
+            <div class="line-first my-5">
+                <div class="circle"></div>
+            </div>
+            <div class="mb-2">
+                <a href="" class="park">Quiet Waters Park</a>
+            </div>
+            <div>Opened Woofing Waters Dog Park & Marina</div>
+        </div>
+
+        <div class="tl-item pb-5">
+            <div class="date">JUN 23, 2018</div>
+            <div class="line my-5">
+                <div class="circle"></div>
+            </div>
+            <div class="mb-2">
+                <a href="" class="new park">Washburn Park</a>
+            </div>
+            <div>Opening Ceremony</div>
+        </div>
+
+        <div class="tl-item pb-5">
+            <div class="date">JUN 20, 2018</div>
+            <div class="line my-5">
+                <div class="circle"></div>
+            </div>
+            <div class="mb-2">
+                <a href="" class="park">Lafayette Hart Park</a>
+            </div>
+            <div>Ribbon-Cutting Ceremony - Park Improvements</div>
+        </div>
+
+        <div class="tl-item pb-5">
+            <div class="date">NOV 2, 2018</div>
+            <div class="line my-5">
+                <div class="circle"></div>
+            </div>
+            <div class="mb-2">
+                <a href="" class="park">Tree Tops Park</a>
+            </div>
+            <div>Memorial Fitness Zone Opening</div>
+        </div>
+
+        <div class="tl-item pb-5">
+            <div class="date">SEP 28, 2018</div>
+            <div class="line-last my-5">
+                <div class="circle"></div>
+            </div>
+            <div class="mb-2">
+                <a href="" class="park">Vista View Park</a>
+            </div>
+            <div>Memorial Fitness Zone Opening</div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
+    <script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"></script>
+
+    <script type="text/javascript">
+    </script>
+</body>
+
+</html>

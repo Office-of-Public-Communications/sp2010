@@ -110,11 +110,6 @@
     <!-- Directory Web Part - Item View -->
     <div id="directoryItem" class="container py-3 d-none">
         <div class="row">
-            <div class="col px-3">
-                <h1 id="dir-title">&para;</h1>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-md-8">
                 <section id="description" class="mb-3">
                     <strong id="dir-disciplines-title" class="d-none">Disciplines</strong>
@@ -165,9 +160,9 @@
                             <i class="fab fa-youtube"></i>
                         </a>
                     </p>
-                    <!--<div id="backToDir" class="py-2 my-4 btn btn-outline waves-light d-block">
+                    <div id="backToDir" class="py-2 my-4 btn btn-outline waves-light d-block">
                         <a href="ArtsEducationDirectory.aspx">Back to Directory</a>
-                    </div>-->
+                    </div>
                 </section>
             </div>
         </div>
@@ -210,10 +205,21 @@
         });
     </script>
     <script type="text/javascript">
-        /**
-         * Spservices for program information
-         *
-         * /
+        // Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
+        String.prototype.toTitleCase = function () {
+        var i, j, str, lowers, uppers;
+        str = this.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+
+        // Certain minor words should be left lowercase unless
+        // they are the first or last words in the string
+        lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
+        'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'
+        ];
+        for (i = 0, j = lowers.length; i < j; i++) str=str.replace(new RegExp('\\s' + lowers[i] + '\\s' , 'g' ),
+            function (txt) { return txt.toLowerCase(); }); // Certain words such as initialisms or acronyms should be left uppercase
+            uppers=['Id', 'Tv' ]; for (i=0, j=uppers.length; i < j; i++) str=str.replace(new RegExp('\\b' + uppers[i] + '\\b' , 'g' ), uppers[i].toUpperCase()); return str; }
 
         /* Dynamically Load Item */
         URL = location.href.toLowerCase();
@@ -292,7 +298,10 @@
                 console.log(dirInfo)
                 // build title & description
                 if (dirInfo.Title) {
-                    $('#dir-title').html(dirInfo.Title).removeClass('d-none');
+                    var title = dirInfo.Title.toTitleCase();
+                    $('.broward-titles-bg-white').html('<h1 class="broward-titles">' + title + '</h1>');
+                    $('.breadcrumbCurrentNode').html(title);
+                    document.title = title;
                 }
                 if (dirInfo.Disciplines) {
                     for (i = 0; i < dirInfo.Disciplines.length; i++) {

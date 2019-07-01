@@ -2,8 +2,8 @@
     xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 
 <head>
-    <script type="text/javascript" src="/Style%20Library/v7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
-    <style>
+    <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+    <style type="text/css">
         div#directoryItem {
             font-family: Arquette;
             font-size: 1rem;
@@ -15,6 +15,8 @@
         h5 {
             font-weight: 700;
         }
+
+
 
         .byLetter {
             overflow-x: scroll;
@@ -28,7 +30,13 @@
             text-decoration: none;
         }
 
+        section#description {
+            border-bottom: 1px solid #eaeaea;
+            padding-bottom: 20px;
+        }
+
         #description h1 {
+            font-size: 2.5rem;
             font-weight: 700;
         }
 
@@ -36,9 +44,24 @@
             white-space: pre-wrap;
         }
 
+        #dir-statement {
+            white-space: pre-wrap;
+        }
+
+        h2#dir-artist {
+            font-size: 1.35rem;
+            font-weight: 400;
+            /*color: #0277BD;*/
+        }
+
+        span#dir-year {
+            margin-right: 20px;
+        }
+
         img#dir-img.contactImg {
             width: 100%;
-            border-radius: 2px;
+            border-radius: 8px;
+            padding: 6px;
         }
 
         .contactInfoButton {
@@ -82,10 +105,9 @@
         }
     </style>
     <!-- Image gallery styles -->
-    <link rel="stylesheet" href="/Style%20Library/v7/plugins/JustifiedGallery/justifiedGallery.min.css">
-    <link rel="stylesheet" href="/Style%20Library/v7/plugins/SwipeBox/css/swipebox.css">
+    <link rel="stylesheet" href="/Style%20Library/V6/plugins/JustifiedGallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/Style%20Library/V6/plugins/SwipeBox/css/swipebox.css">
     <!-- /Image gallery styles -->
-    <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.2/dist/leaflet.css"
         integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
         crossorigin="" />
@@ -93,8 +115,6 @@
     <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js"
         integrity="sha512-2fA79E27MOeBgLjmBrtAgM/20clVSV8vJERaW/EcnnWCVGwQRazzKtQS1kIusCZv1PtaQxosDZZ0F1Oastl55w=="
         crossorigin=""></script>
-    <!-- Load Esri Leaflet from CDN -->
-    <script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
 </head>
 
 <body>
@@ -106,9 +126,15 @@
                     <div class="card-body">
                         <img id="dir-img" src="" class="contactImg mb-3 d-none">
                         <section id="contactInfo dir-contact" class="my-2">
-                            <a class="btn btn-outline light-blue darken-1 waves-effect  py-2 my-2 swipebox d-none"
-                                id="dir-gallery" href="#">
-                                <i class="fal fa-images"></i>&nbsp;Images
+                            <span itemprop="telephone">
+                                <a class="py-2 mt-2 my-2 btn btn-outline light-blue darken-1 waves-effect d-none"
+                                    id="dir-call" href="">
+                                    <i class="fal fa-phone"></i>&nbsp;Call
+                                </a>
+                            </span>
+                            <a class="btn btn-outline light-blue darken-1 waves-effect  py-2 my-2 d-none" id="dir-email"
+                                href="">
+                                <i class="fal fa-envelope"></i>&nbsp;Email
                             </a>
                             <a class="btn btn-outline light-blue darken-1 waves-effect py-2 my-2 d-none"
                                 id="dir-website" href="">
@@ -119,23 +145,10 @@
                 </div>
             </div>
             <div class="col-md-8 col-lg-6 px-3">
-                <section id="description" class="mb-3">
-                    <a href="" id="dir-artist-link">
-                        <h2 id="dir-artist" class="d-none">
-                            &para;</h2>
-                    </a>
+                <section id="description">
                     <strong id="dir-description-title" class="d-none">
                         <i class="fal fa-info-circle"></i> Description</strong>
                     <p id="dir-description" class="d-none">&para;</p>
-                    <strong id="dir-statement-title" class="d-none">
-                        <i class="fal fa-quote-left"></i> Artist Statement</strong>
-                    <p id="dir-statement" class="d-none">&para;</p>
-                    <strong id="dir-year-title" class="d-none">
-                        <i class="fal fa-calendar"></i> Year</strong>
-                    <span id="dir-year" class="d-none">&para;</span>
-                    <strong id="dir-dimension-title" class="d-none">
-                        <i class="fal fa-expand-arrows"></i> Dimensions</strong>
-                    <span id="dir-dimension" class="d-none">&para;</span>
                 </section>
                 <strong class="d-block">
                     <i class="fal fa-tag"></i> Related</strong>
@@ -162,13 +175,44 @@
                 </div>-->
             </div>
         </div>
-
     </div>
+    <!--Page layout Inline Scripts-->
+    <script type="text/javascript">
+        $("#siteLinks .slm-dragdrop-source .link-item a").addClass(
+            "list-group-item siteLinks-item");
+        $("#siteLinks .item a").addClass("list-group-item siteLinks-item");
+        // Hides Empty Resources
+        $('#siteLinks').each(function () {
+            var $this = $(this);
+            //find element with '.siteLinks-item' class if none then hide
+            var hasResources = $this.find('.siteLinks-item').length > 0;
+            if (!hasResources) {
+                $this.hide();
+            }
+        });
 
-    <!--Image Gallery-->
-    <script type="text/javascript" src="/Style%20Library/v7/plugins/SwipeBox/js/jquery.swipebox.js" defer></script>
-    <script type="text/javascript" src="/Style%20Library/v7/plugins/JustifiedGallery/jquery.justifiedGallery.min.js"
-        defer></script>
+        var images = [
+            "hero1.jpg",
+            "hero2.jpg",
+            "hero3.jpg",
+            "hero4.jpg",
+            "hero5.jpg",
+            "hero6.jpg",
+            "hero7.jpg",
+            "hero8.jpg",
+            "hero9.jpg",
+        ];
+        $("#agencyInfo").css({
+            "background": "linear-gradient(0deg,rgba(233, 236, 239, 0.51),#f8f9fa),url(/Style%20Library/V6/img/HomeHero/" +
+                images[Math.floor(Math.random() * images.length)] +
+                ") no-repeat bottom center",
+            "background-size": "cover"
+        });
+        $("#fullPageContent h1").each(function () {
+            var $this = $(this);
+            $this.html($this.html().replace(/&nbsp;/g, ''));
+        });
+    </script>
 
     <!-- directory item webpart -->
     <script type="text/javascript">
@@ -193,36 +237,16 @@
                 uppers[i].toUpperCase());
             return str;
         }
-
         // spservices
         /* Dynamically Load Item */
 
         URL = location.href.toLowerCase();
         newID = URL.split('=')[1].replace("#", "");
 
-        gallery = [];
-
         lt = '';
         lg = '';
 
         $(document).ready(function () {
-
-            $().SPServices({
-                operation: "GetListItems",
-                listName: "Directory",
-                webURL: "/Arts/",
-                CAMLQuery: "<Query><Where><Eq><FieldRef Name='ID'/><Value Type='Text'>" +
-                    newID + "</Value></Eq></Where></Query>",
-                CAMLViewFields: "<ViewFields Properties='True' />",
-                completefunc: function (xData, Status) {
-
-                    $(xData.responseXML).SPFilterNode("z:row").each(function () {
-                        json = $(this).attr("ows_Description");
-                        //console.log(json)
-                    })
-                }
-            })
-
             newData2 = $().SPServices.SPGetListItemsJson({
                 webURL: "/Arts/",
                 listName: "Directory",
@@ -299,18 +323,6 @@
                         mappedName: "Website",
                         objectType: "URL"
                     },
-                    ows_Statement: {
-                        mappedName: "Statement",
-                        objectType: "Text"
-                    },
-                    ows_Year: {
-                        mappedName: "Year",
-                        objectType: "Text"
-                    },
-                    ows_Dimensions: {
-                        mappedName: "Dimensions",
-                        objectType: "Text"
-                    },
                 }, // name, mappedName, objectType,
                 mappingOverrides: null,
                 debug: false
@@ -318,41 +330,22 @@
 
             // build page elements from data
 
-            f1 = $.when(newData2).done(function () {
+            $.when(newData2).done(function () {
                 dirInfo2 = this.data[0];
 
                 // build title & description
                 if (dirInfo2.Title) {
                     var title = dirInfo2.Title.toTitleCase();
-                    $('.broward-titles-bg-white').html('<h1 class="broward-titles">' + title +
-                        '</h1>');
+                    $('.broward-titles-bg-white').html('<h1 class="broward-titles">' + title + '</h1>');
                     $('.breadcrumbCurrentNode').html(title);
                     document.title = title;
-                    gallery.push(dirInfo2.ID);
                 }
                 /*$('#dir-subtitle').html(dirInfo2.Artist.lookupValue);*/
                 if (dirInfo2.Description) {
-                    $('#dir-description').html(dirInfo2.Description).removeClass(
-                        'd-none');
-                    $('#dir-description-title').removeClass('d-none').addClass(
-                        'd-block mt-3');
+                    $('#dir-description').html(dirInfo2.Description).removeClass('d-none');
+                    $('#dir-description-title').removeClass('d-none').addClass('d-block mt-3');
                 }
-                if (dirInfo2.Statement) {
-                    $('#dir-statement').html(dirInfo2.Statement).removeClass(
-                        'd-none');
-                    $('#dir-statement-title').removeClass('d-none').addClass(
-                        'd-block mt-3');
-                }
-                if (dirInfo2.Year) {
-                    $('#dir-year').html(dirInfo2.Year).removeClass(
-                        'd-none');
-                    $('#dir-year-title').removeClass('d-none');
-                }
-                if (dirInfo2.Dimensions) {
-                    $('#dir-dimension').html(dirInfo2.Dimensions).removeClass(
-                        'd-none');
-                    $('#dir-dimension-title').removeClass('d-none');
-                }
+
 
                 // build location info
 
@@ -402,7 +395,7 @@
                         "hero9.jpg",
                     ];
                     $('#dir-img').attr('src',
-                        '/Style%20Library/v7/img/HomeHero/' +
+                        '/Style%20Library/V6/img/HomeHero/' +
                         images[Math.floor(Math.random() * images.length)]
                     ).removeClass('d-none');
                     $('#dir-call').removeClass('mt-4').addClass(
@@ -419,8 +412,7 @@
                 if (dirInfo2.Website) {
                     $('#dir-website').attr('href', dirInfo2.Website.split(
                         ',')[
-                        0]).attr('target', '_blank').removeClass(
-                        'd-none').addClass(
+                        0]).attr('target', '_blank').removeClass('d-none').addClass(
                         'd-block');
                 }
 
@@ -428,15 +420,12 @@
                 if (dirInfo2.Artist || dirInfo2.Located || dirInfo2.Medium ||
                     dirInfo2.DirectoryType) {
                     if (dirInfo2.Artist) {
-                        $('#dir-tags').append('<a href="artist.aspx?=' +
+                        $('#dir-tags').append('<a href="default.aspx?=' +
                             dirInfo2.Artist
-                            .lookupId +
-                            '" class="tags">' +
-                            dirInfo2.Artist.lookupValue +
+                            .lookupValue.split(' ').join('+').trim()
+                            .toLowerCase() +
+                            '" class="tags">' + dirInfo2.Artist.lookupValue +
                             '</a>');
-                        $('#dir-artist').html(dirInfo2.Artist.lookupValue).removeClass('d-none')
-                        $('#dir-artist-link').attr('href',
-                            'artist.aspx?=' + dirInfo2.Artist.lookupId);
                     }
 
                     if (dirInfo2.Located) {
@@ -461,13 +450,30 @@
                     }
 
                     if (dirInfo2.DirectoryType) {
-                        $('#dir-tags').append('<a href="default.aspx" class="tags">' +
+                        $('#dir-tags').append('<a href="default.aspx?=' +
+                            dirInfo2.DirectoryType
+                            .lookupValue.split(' ').join('+').trim()
+                            .toLowerCase() +
+                            '" class="tags">' +
                             dirInfo2
                             .DirectoryType.lookupValue + '</a>')
                     }
                 }
 
-                if (dirInfo2.Located || dirInfo2.AddressLine1) {
+                /*if (dirInfo2.Located || dirInfo2.AddressLine1) {
+                    // leaflet map --> using G map instead
+
+                    // var map = L.map('mapid', {
+                    //     center: [26.240158, -80.160956],
+                    //     zoom: 9,
+                    //     attribution: false,
+                    //     zoomControl: false,
+                    //     attributionControl: false
+                    // });
+
+                    // L.tileLayer(
+                    //     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    // ).addTo(map);
 
                     if (dirInfo2.Located !== undefined) {
                         locatedRequest = dirInfo2.Located.lookupValue +
@@ -477,71 +483,47 @@
                         dirInfo2.AddressLine1 + '+' +
                         '+' +
                         dirInfo2.City.lookupValue + ',+FL';
-                    if (addressRequest) {
-                        console.log(addressRequest)
-
-                        var urlify = addressRequest.split('undefined').join(
-                            '').split(' ').join('+').split('++').join(
-                            '+').toLowerCase();
-                        console.log(urlify)
+                    /* commenting this function to geocode address based on located info from list as errors occur occasionally - geocoding done based only on address instead
+                    //
+                    //
+                    if (locatedRequest) {
+                        var urlify = locatedRequest.split('undefined').join('')
+                            .split(' ').join('+').split('++').join('+').toLowerCase();
+                    console.log('urlify => ' + urlify);
                         $.get(location.protocol +
                                 '//nominatim.openstreetmap.org/search?format=json&q=' +
                                 urlify,
                                 function (data) {
-                                    console.log(data.length > 0)
-                                    if (data.length > 0) {
-                                        console.log(data)
-                                        lt = data[0].lat;
-                                        lg = data[0].lon;
-                                    }
-                                })
-                            .then(function () {
+                                    lt = data[0].lat;
+                                    lg = data[0].lon;
+                                }).promise()
+                            .done(function () {
                                 initMap();
                             });
-                    }
-                    $('#directoryItem').removeClass('d-none');
-                };
-            });
-            $.when(f1).done(function () {
-                // Lightbox
-                $().SPServices({
-                    operation: "GetListItems",
-                    listName: "PublicArt",
-                    webURL: "/Arts/",
-                    CAMLViewFields: "<ViewFields><FieldRef Name='RequiredField' /><FieldRef Name='Title' /><FieldRef Name='Artwork' /></ViewFields>",
-                    completefunc: function (xData, Status) {
-                        lb = [];
-                        $(xData.responseXML).SPFilterNode("z:row").each(function (i) {
-                            tilePicture = $(this).attr("ows_RequiredField");
-                            linkTitle = $(this).attr("ows_Title");
-                            art = $(this).attr("ows_Artwork") ? $(this).attr(
-                                    "ows_Artwork").split(";#")[0].toString() :
-                                false;
-                            // `Artwork` items from `Artist`  = `Artwork` items from `PublicArt`
-                            gallery.indexOf(art) > -1 ? lb.push({
-                                    href: "" + "/" + tilePicture + "",
-                                    title: linkTitle
-                                }) && $('#dir-gallery').removeClass('d-none')
-                                .addClass(
-                                    'd-block') : false;
-                        });
-                        $('#dir-gallery').click(function (e) {
-                            e.preventDefault();
-                            $.swipebox(lb, {
-                                removeBarsOnMobile: false,
-                                hideCloseButtonOnMobile: false, // true will hide the close button on mobile devices
-                                hideBarsDelay: 0, // delay before hiding bars on desktop
-                                videoMaxWidth: 1140, // videos max width
-                                loopAtEnd: true // true will return to the first image after the last image is reached
+                    } else
+                    if (addressRequest) {
+
+                        var urlify = addressRequest.split('undefined').join('').split(' ').join('+')
+                            .split('++').join('+').toLowerCase();
+                        console.log('urlify inside address request fn: ' + urlify);
+                        $.get(location.protocol +
+                                '//nominatim.openstreetmap.org/search?format=json&q=' +
+                                urlify,
+                                function (data) {
+                                    lt = data[0].lat;
+                                    lg = data[0].lon;
+                                }).promise()
+                            .done(function () {
+                                initMap();
                             });
-                        });
-                    }
-                })
-            })
+                    }*/
+                $('#directoryItem').removeClass('d-none');
+                //};
+            });
         })
     </script>
-    <!-- Init map -->
-    <script defer type="text/javascript" src="/Style%20Library/v7/js/broward/Arts/artsMap.js"></script>
+    <script defer type="text/javascript" src="/Style%20Library/V6/js/broward/Arts/artsMap.js"></script>
+
 </body>
 
 </html>

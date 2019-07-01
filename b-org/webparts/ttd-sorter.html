@@ -129,10 +129,10 @@
 				// Reserve Now button
 				// if(webtrac){
 				if (ttd.Webtrac != null) {
-					var reserve = '<a href="https://webtrac.broward.org/wbwsc/webtrac.wsc/wbsearch.html?xxmod=FR&xxfacilitylocation=' + ttd.Webtrac + '" target="_blank" type="button" class="btn btn-sm btn-info btn-block light-blue darken-1"><i class="fal fa-calendar-check"></i> Reserve Now</a>';
+					var reserve = '<a href="https://webtrac.broward.org/wbwsc/webtrac.wsc/wbsearch.html?xxmod=FR&xxfacilitylocation=' + ttd.Webtrac + '" target="_blank" type="button" class="btn btn-sm btn-info btn-block light-blue darken-1"><!--<i class="fal fa-calendar-check"></i>--> Reserve Now</a>';
 				} else { var reserve = ""}
 				// More Info button
-				var info = '<a href="/Parks/Pages/ttd.aspx?=' + ttd.Id + '" type="button" class="btn btn-sm btn-light z-depth-0 align-baseline btn-block"><i class="fal fa-info-circle"></i> More Info</a>';
+				var info = '<a href="/Parks/Pages/ttd.aspx?=' + ttd.Id + '" type="button" class="btn btn-sm btn-light z-depth-0 align-baseline btn-block"><!--<i class="fal fa-info-circle"></i>--> More Info</a>';
 				// build cards
 				$('#termSearchResults').append($(
 						'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' + dataParks.join(' ') + '" data-date="' + moment(ttd.Date).format('LL') + '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><img class="card-img-top pkImg" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap"></div></div><div class="container"><div class="row"><div class="col-12 pl-3"><a href="/Parks/Pages/ttd.aspx?=' + ttd.Id + '"><h5 class="pt-3"><strong style="letter-spacing: -.25px;">' + title + '</strong></h5></a><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> ' + count + ' ' + pk + '</small></div></div><div class="row mt-3 mb-2"><div class="col">'+ info + '</div><div class="col">' + reserve + '</div></div></div></div></div>'

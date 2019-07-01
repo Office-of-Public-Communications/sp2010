@@ -1,4 +1,5 @@
-<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 
 <head>
     <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
@@ -94,6 +95,7 @@
             top: 1px;
             position: relative;
         }
+
         .dirT {
             margin-bottom: 10px;
             margin-top: 20px;
@@ -109,7 +111,6 @@
     <div id="directoryItem" class="container py-3 d-none">
         <div class="row">
             <div class="col px-3">
-                <h1 id="dir-title">&para;</h1>
             </div>
         </div>
         <div class="row">
@@ -120,7 +121,9 @@
                     <strong id="dir-statement-title" class="d-none">Statement</strong>
                     <p id="dir-statement" class="d-none">&para;</p>
                     <strong id="dir-programs-title" class="d-none">Programs</strong>
-                    <section id="dir-tags" class="mb-4"><ul></ul></section>
+                    <section id="dir-tags" class="mb-4">
+                        <ul></ul>
+                    </section>
                 </section>
                 <!-- <p>Contact <span id="artistName"><a href="/">the artist</a></span> for more information.</p> -->
             </div>
@@ -147,240 +150,236 @@
                             <i class="fab fa-youtube"></i>
                         </a>
                     </p>
-                    <div id="backToDir" class="py-2 my-4 btn btn-outline waves-light d-block">
+                    <!--<div id="backToDir" class="py-2 my-4 btn btn-outline waves-light d-block">
                         <a href="ArtsEducationDirectory.aspx">Back to Directory</a>
-                    </div>
+                    </div>-->
                 </section>
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
-        $("#siteLinks .slm-dragdrop-source .link-item a").addClass(
-            "list-group-item siteLinks-item");
-        $("#siteLinks .item a").addClass("list-group-item siteLinks-item");
-        // Hides Empty Resources
-        $('#siteLinks').each(function () {
-            var $this = $(this);
-            //find element with '.siteLinks-item' class if none then hide
-            var hasResources = $this.find('.siteLinks-item').length > 0;
-            if (!hasResources) {
-                $this.hide();
-            }
-        });
+        // Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
+        String.prototype.toTitleCase = function () {
+            var i, j, str, lowers, uppers;
+            str = this.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
 
-        var images = [
-            "hero1.jpg",
-            "hero2.jpg",
-            "hero3.jpg",
-            "hero4.jpg",
-            "hero5.jpg",
-            "hero6.jpg",
-            "hero7.jpg",
-            "hero8.jpg",
-            "hero9.jpg",
-        ];
-        $("#agencyInfo").css({
-            "background": "linear-gradient(0deg,rgba(233, 236, 239, 0.51),#f8f9fa),url(/Style%20Library/V6/img/HomeHero/" +
-                images[Math.floor(Math.random() * images.length)] +
-                ") no-repeat bottom center",
-            "background-size": "cover"
-        });
-        $("#fullPageContent h1").each(function () {
-            var $this = $(this);
-            $this.html($this.html().replace(/&nbsp;/g, ''));
-        });
-    </script>
-    <script type="text/javascript">
-    /**
-     *  Spservices to get Artist information
-     */
-$(document).ready(function () {
-    /* Dynamically Load Item */
-    URL = location.href.toLowerCase();
-    newID = URL.split('=')[1].replace("#", "");
+            // Certain minor words should be left lowercase unless
+            // they are the first or last words in the string
+            lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
+                'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'
+            ];
+            for (i = 0, j = lowers.length; i < j; i++) str = str.replace(new RegExp('\\s' + lowers[i] + '\\s', 'g'),
+                function (txt) {
+                    return txt.toLowerCase();
+                }); // Certain words such as initialisms or acronyms should be left uppercase
+            uppers = ['Id', 'Tv'];
+            for (i = 0, j = uppers.length; i < j; i++) str = str.replace(new RegExp('\\b' + uppers[i] + '\\b', 'g'),
+                uppers[i].toUpperCase());
+            return str;
+        }
+        /**
+         *  Spservices to get Artist information
+         */
+        $(document).ready(function () {
+            /* Dynamically Load Item */
+            URL = location.href.toLowerCase();
+            newID = URL.split('=')[1].replace("#", "");
 
-    // newID2 = dirInfo.Artist.lookupId;
+            // newID2 = dirInfo.Artist.lookupId;
 
-        newData = $().SPServices.SPGetListItemsJson({
-            webURL: "/Arts/ArtsEducation/",
-            listName: "Artists",
-            viewName: "",
-            CAMLQuery: "<Query><Where><Eq><FieldRef Name='ID'/><Value Type='Text'>" +
-                newID + "</Value></Eq></Where></Query>",
-            CAMLViewFields: "",
-            CAMLRowLimit: "",
-            CAMLQueryOptions: "",
-            changeToken: "",
-            contains: "",
-            mapping: {
-                ows_ID: {
-                    mappedName: "ID",
-                    objectType: "Text"
-                },
-                ows_Title: {
-                    mappedName: "Title",
-                    objectType: "Text"
-                },
-                ows_Description: {
-                    mappedName: "Description",
-                    objectType: "Text"
-                },
-                ows_Statement: {
-                    mappedName: "Statement",
-                    objectType: "Text"
-                },
-                ows_Phone: {
-                    mappedName: "Phone",
-                    objectType: "Text"
-                },
-                ows_Fax: {
-                    mappedName: "Fax",
-                    objectType: "Text"
-                },
-                ows_Email: {
-                    mappedName: "Email",
-                    objectType: "URL"
-                },
-                ows_Website: {
-                    mappedName: "Website",
-                    objectType: "URL"
-                },
-                ows_Youtube: {
-                    mappedName: "Youtube",
-                    objectType: "URL"
-                },
-                ows_Facebook: {
-                    mappedName: "Facebook",
-                    objectType: "URL"
-                },
-                ows_Instagram: {
-                    mappedName: "Instagram",
-                    objectType: "URL"
-                },
-                ows_Twitter: {
-                    mappedName: "Twitter",
-                    objectType: "URL"
-                },
-                ows_Services: {
-                    mappedName: "Services",
-                    objectType: "Text"
-                },
-            }, // name, mappedName, objectType,
-            mappingOverrides: null,
-            debug: false
-        })
+            newData = $().SPServices.SPGetListItemsJson({
+                webURL: "/Arts/ArtsEducation/",
+                listName: "Artists",
+                viewName: "",
+                CAMLQuery: "<Query><Where><Eq><FieldRef Name='ID'/><Value Type='Text'>" +
+                    newID + "</Value></Eq></Where></Query>",
+                CAMLViewFields: "",
+                CAMLRowLimit: "",
+                CAMLQueryOptions: "",
+                changeToken: "",
+                contains: "",
+                mapping: {
+                    ows_ID: {
+                        mappedName: "ID",
+                        objectType: "Text"
+                    },
+                    ows_Title: {
+                        mappedName: "Title",
+                        objectType: "Text"
+                    },
+                    ows_Description: {
+                        mappedName: "Description",
+                        objectType: "Text"
+                    },
+                    ows_Statement: {
+                        mappedName: "Statement",
+                        objectType: "Text"
+                    },
+                    ows_Phone: {
+                        mappedName: "Phone",
+                        objectType: "Text"
+                    },
+                    ows_Fax: {
+                        mappedName: "Fax",
+                        objectType: "Text"
+                    },
+                    ows_Email: {
+                        mappedName: "Email",
+                        objectType: "URL"
+                    },
+                    ows_Website: {
+                        mappedName: "Website",
+                        objectType: "URL"
+                    },
+                    ows_Youtube: {
+                        mappedName: "Youtube",
+                        objectType: "URL"
+                    },
+                    ows_Facebook: {
+                        mappedName: "Facebook",
+                        objectType: "URL"
+                    },
+                    ows_Instagram: {
+                        mappedName: "Instagram",
+                        objectType: "URL"
+                    },
+                    ows_Twitter: {
+                        mappedName: "Twitter",
+                        objectType: "URL"
+                    },
+                    ows_Services: {
+                        mappedName: "Services",
+                        objectType: "Text"
+                    },
+                }, // name, mappedName, objectType,
+                mappingOverrides: null,
+                debug: false
+            })
 
-        // build page elements from data
+            // build page elements from data
 
-        f1 = $.when(newData).done(function () {
+            f1 = $.when(newData).done(function () {
 
-            dirInfo = this.data[0];
+                dirInfo = this.data[0];
 
-            //console.log(dirInfo)
+                //console.log(dirInfo)
 
-            // build artist info
-            if (dirInfo.Description) {
-                $('#dir-description').html(dirInfo.Description).removeClass('d-none');
-                $('#dir-description-title').removeClass('d-none').addClass('dirT');
-            }
-            if (dirInfo.Statement) {
-                $('#dir-statement').html(dirInfo.Statement).removeClass('d-none');
-                $('#dir-statement-title').removeClass('d-none').addClass('dirT');
-            }
+                // build artist info
+                if (dirInfo.Description) {
+                    $('#dir-description').html(dirInfo.Description).removeClass('d-none');
+                    $('#dir-description-title').removeClass('d-none').addClass('dirT');
+                }
+                if (dirInfo.Statement) {
+                    $('#dir-statement').html(dirInfo.Statement).removeClass('d-none');
+                    $('#dir-statement-title').removeClass('d-none').addClass('dirT');
+                }
 
-            // build contact
-            if (dirInfo.Title) {
-                $('#dir-title').html(dirInfo.Title).removeClass('d-none');
-            }
-            if (dirInfo.Phone) {
-                $('#dir-phone').html('<i class="fal fa-phone"></i> ' + dirInfo.Phone).removeClass('d-none');
-            }
-            if (dirInfo.Email) {
-                $('#dir-email').html('<i class="fal fa-envelope"></i> <a href="mailto:' + dirInfo.Email + '">' + dirInfo.Email + '</a>').removeClass('d-none');
-            }
-            if (dirInfo.Website) {
-                $('#dir-website').html('<i class="fal fa-globe"></i> <a href="' + dirInfo.Website.toString().split(',')[0] + '" target="_blank">' + dirInfo.Website.toString().split(',')[0] + '</a>').removeClass('d-none');
-            }
-            if (dirInfo.Facebook) {
-                $('#dir-fb').attr('href', dirInfo.Facebook.toString().split(',')[0]).removeClass('d-none');
-            }
-            if (dirInfo.Twitter) {
-                $('#dir-tw').attr('href', dirInfo.Twitter.toString().split(',')[0]).removeClass('d-none');
-            }
-            if (dirInfo.Instagram) {
-                $('#dir-ig').attr('href', dirInfo.Instagram.toString().split(',')[0]).removeClass('d-none');
-            }
-            if (dirInfo.Youtube) {
-                $('#dir-yt').attr('href', dirInfo.Youtube.toString().split(',')[0]).removeClass('d-none');
-            }
+                // build contact
+                if (dirInfo.Title) {
+                    var title = dirInfo.Title.toTitleCase();
+                    $('.broward-titles-bg-white').html('<h1 class="broward-titles">' + title + '</h1>');
+                    $('.breadcrumbCurrentNode').html(title);
+                    document.title = title;
+                }
+                if (dirInfo.Phone) {
+                    $('#dir-phone').html('<i class="fal fa-phone"></i> ' + dirInfo.Phone).removeClass(
+                        'd-none');
+                }
+                if (dirInfo.Email) {
+                    $('#dir-email').html('<i class="fal fa-envelope"></i> <a href="mailto:' + dirInfo
+                        .Email + '">' + dirInfo.Email + '</a>').removeClass('d-none');
+                }
+                if (dirInfo.Website) {
+                    $('#dir-website').html('<i class="fal fa-globe"></i> <a href="' + dirInfo.Website
+                        .toString().split(',')[0] + '" target="_blank">' + dirInfo.Website
+                        .toString().split(',')[0] + '</a>').removeClass('d-none');
+                }
+                if (dirInfo.Facebook) {
+                    $('#dir-fb').attr('href', dirInfo.Facebook.toString().split(',')[0]).removeClass(
+                        'd-none');
+                }
+                if (dirInfo.Twitter) {
+                    $('#dir-tw').attr('href', dirInfo.Twitter.toString().split(',')[0]).removeClass(
+                        'd-none');
+                }
+                if (dirInfo.Instagram) {
+                    $('#dir-ig').attr('href', dirInfo.Instagram.toString().split(',')[0]).removeClass(
+                        'd-none');
+                }
+                if (dirInfo.Youtube) {
+                    $('#dir-yt').attr('href', dirInfo.Youtube.toString().split(',')[0]).removeClass(
+                        'd-none');
+                }
 
-        });
-/**
-     * Spservices for program information
-     *
-     */
+            });
+            /**
+             * Spservices for program information
+             *
+             */
 
-    /* Dynamically Load Item */
+            /* Dynamically Load Item */
 
-    $.when(f1).done( function(){
+            $.when(f1).done(function () {
 
-    URL = location.href.toLowerCase();
-    newID = URL.split('=')[1].replace("#", "");
+                URL = location.href.toLowerCase();
+                newID = URL.split('=')[1].replace("#", "");
 
-        newData2 = $().SPServices.SPGetListItemsJson({
-            webURL: "/Arts/ArtsEducation/",
-            listName: "Services",
-            viewName: "",
-            CAMLQuery: "",
-            CAMLViewFields: "",
-            CAMLRowLimit: "",
-            CAMLQueryOptions: "",
-            changeToken: "",
-            contains: "",
-            mapping: {
-                ows_ID: {
-                    mappedName: "ID",
-                    objectType: "Text"
-                },
-                ows_Title: {
-                    mappedName: "Title",
-                    objectType: "Text"
-                },
-                ows_Artist: {
-                    mappedName: "Artist",
-                    objectType: "Lookup"
-                },
-            }, // name, mappedName, objectType,
-            mappingOverrides: null,
-            debug: false
-        })
+                newData2 = $().SPServices.SPGetListItemsJson({
+                    webURL: "/Arts/ArtsEducation/",
+                    listName: "Services",
+                    viewName: "",
+                    CAMLQuery: "",
+                    CAMLViewFields: "",
+                    CAMLRowLimit: "",
+                    CAMLQueryOptions: "",
+                    changeToken: "",
+                    contains: "",
+                    mapping: {
+                        ows_ID: {
+                            mappedName: "ID",
+                            objectType: "Text"
+                        },
+                        ows_Title: {
+                            mappedName: "Title",
+                            objectType: "Text"
+                        },
+                        ows_Artist: {
+                            mappedName: "Artist",
+                            objectType: "Lookup"
+                        },
+                    }, // name, mappedName, objectType,
+                    mappingOverrides: null,
+                    debug: false
+                })
 
-        // build page elements from data
-        f2 = $.when(newData2).done(function () {
-            dirInfo2 = this.data;
-            //console.log(dirInfo2)
-            // build related programs
-            //console.log(dirInfo2)
+                // build page elements from data
+                f2 = $.when(newData2).done(function () {
+                    dirInfo2 = this.data;
+                    //console.log(dirInfo2)
+                    // build related programs
+                    //console.log(dirInfo2)
 
-                for (i = 0; i < dirInfo2.length; i++) {
-                    //console.log(dirInfo2[i].Artist)
-                    if (dirInfo2[newID - 1].Artist) {
-                        //console.log(dirInfo2[i].Artist.lookupId, newID, dirInfo2[i].Title)
-                        if (dirInfo2[i].Artist.lookupId == newID) {
-                            //console.log(dirInfo2[i].Title)
-                            $('#dir-tags ul').append('<li><a href="AIE.aspx?=' + dirInfo2[i].ID + '">' + dirInfo2[i].Title + '</a></li>')
-                            $('strong#dir-programs-title').removeClass('d-none').addClass('dirT')
+                    for (i = 0; i < dirInfo2.length; i++) {
+                        //console.log(dirInfo2[i].Artist)
+                        if (dirInfo2[newID - 1].Artist) {
+                            //console.log(dirInfo2[i].Artist.lookupId, newID, dirInfo2[i].Title)
+                            if (dirInfo2[i].Artist.lookupId == newID) {
+                                //console.log(dirInfo2[i].Title)
+                                $('#dir-tags ul').append('<li><a href="AIE.aspx?=' + dirInfo2[i]
+                                    .ID + '">' + dirInfo2[i].Title + '</a></li>')
+                                $('strong#dir-programs-title').removeClass('d-none').addClass(
+                                    'dirT')
+                            }
                         }
                     }
-                }
-                console.log('loop done')
-            })
+                    console.log('loop done')
+                })
             });
             // show it all...
             $('#directoryItem').removeClass('d-none');
         });
-
     </script>
 </body>
 
