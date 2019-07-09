@@ -110,68 +110,46 @@
 </head>
 
 <body>
-    <div id="timeline" class="timeline-text pb-5">
-        <div class="tl-item pb-5">
-            <div class="date">OCT 12, 2018</div>
-            <div class="line-first my-5">
-                <div class="circle"></div>
-            </div>
-            <div class="mb-2">
-                <a href="" class="park">Quiet Waters Park</a>
-            </div>
-            <div>Opened Woofing Waters Dog Park & Marina</div>
-        </div>
-
-        <div class="tl-item pb-5">
-            <div class="date">JUN 23, 2018</div>
-            <div class="line my-5">
-                <div class="circle"></div>
-            </div>
-            <div class="mb-2">
-                <a href="" class="new park">Washburn Park</a>
-            </div>
-            <div>Opening Ceremony</div>
-        </div>
-
-        <div class="tl-item pb-5">
-            <div class="date">JUN 20, 2018</div>
-            <div class="line my-5">
-                <div class="circle"></div>
-            </div>
-            <div class="mb-2">
-                <a href="" class="park">Lafayette Hart Park</a>
-            </div>
-            <div>Ribbon-Cutting Ceremony - Park Improvements</div>
-        </div>
-
-        <div class="tl-item pb-5">
-            <div class="date">NOV 2, 2018</div>
-            <div class="line my-5">
-                <div class="circle"></div>
-            </div>
-            <div class="mb-2">
-                <a href="" class="park">Tree Tops Park</a>
-            </div>
-            <div>Memorial Fitness Zone Opening</div>
-        </div>
-
-        <div class="tl-item pb-5">
-            <div class="date">SEP 28, 2018</div>
-            <div class="line-last my-5">
-                <div class="circle"></div>
-            </div>
-            <div class="mb-2">
-                <a href="" class="park">Vista View Park</a>
-            </div>
-            <div>Memorial Fitness Zone Opening</div>
-        </div>
-    </div>
+    <div id="timeline-container" class="container px-0"></div>
 
     <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
     <script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"></script>
 
     <script type="text/javascript">
+        // ajax timeline list
+        $.ajax({
+            url: "/Parks/_api/web/lists/GetByTitle('Timeline')/items?$select=*, ParkName/Title&$expand=ParkName&$orderby=Date asc",
+            method: "GET",
+            headers: {
+                "Accept": "application/json; odata=verbose"
+            },
+            success: function (data) {
+                var tlResults = data.d.results;
+                console.log(tlResults)
+
+                // build timeline fragment
+                $fraggle = $('<div id="timeline" class="timeline-text pb-5"></div>');
+                // loop to build fragments
+                $.each(tlResults, function (index, tl) {
+                    let date = moment(tl.Date).format('LL');
+                    let park = tl.ParkName.Title != null ? tl.ParkName.Title : '';
+                    let parkId = tl.ParkNameId;
+                    let title = tl.Title;
+                    // do things to first, last & new park items
+                    // ..
+
+                    // build tl-item & append to fragment
+                    $fraggle.append('<div class="tl-item pb-5"><div class="date">' + date +
+                        '</div><div class="line my-5"><div class="circle"></div></div><div class="mb-2"><a href="/Parks/pages/park.aspx?=' + parkId + '" class="park">' +
+                        park + '</a></div><div>' + title + '</div></div>');
+                })
+                // append timeline to timeline-container
+                $fraggle.appendTo('#timeline-container');
+                $('.line').first().addClass('line-first');
+                $('.line').last().addClass('line-last');
+            }
+        })
     </script>
 </body>
 
