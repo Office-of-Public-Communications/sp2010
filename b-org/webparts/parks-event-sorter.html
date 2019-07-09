@@ -543,11 +543,23 @@
 					})
 				}
 			})
+		}).then(function(){
+			// if url param contains park or date, sort
+			//console.log(window.location.search.length > 0)
+			if(window.location.search.length > 0){
+				$('#parkSelect').val(window.location.search.split('=')[1]);
+				$('#parkSelect').change();
+			}
+		}).then(function(){
+			$('#parkSelect').change(sortEvents());
+			console.log('change on load ran')
 		})
 
-
 		// dropdown sort functionality
-		$('#dateSelect, #parkSelect').change(function () {
+		$('#dateSelect, #parkSelect').change(sortEvents());
+
+		function sortEvents() {
+			console.log('sort events ran')
 
 			var parkValue = $('#parkSelect').val();
 			var dateValue = $('#dateSelect').val();
@@ -693,7 +705,7 @@
 					}
 				})
 			}
-		})
+		}
 	</script>
 </body>
 

@@ -119,7 +119,7 @@
     <script type="text/javascript">
         // ajax timeline list
         $.ajax({
-            url: "/Parks/_api/web/lists/GetByTitle('Timeline')/items?$select=*, ParkName/Title&$expand=ParkName&$orderby=Date asc",
+            url: "/Parks/_api/web/lists/GetByTitle('Timeline')/items?$select=*, ParkName/Title&$expand=ParkName&$orderby=Date desc",
             method: "GET",
             headers: {
                 "Accept": "application/json; odata=verbose"
