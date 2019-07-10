@@ -1,0 +1,156 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+    <style>
+        .in-progress:before {
+            content: '\f017 ';
+            font-family: 'Font Awesome 5 Pro';
+            color: #FFD600;
+        }
+
+        .completed:before {
+            content: '\f00c ';
+            font-family: 'Font Awesome 5 Pro';
+            color: #00c853;
+        }
+
+        .park {
+            font-weight: 700;
+        }
+
+        @media screen and (min-width: 769px) {
+            #timeline {
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .tl-item {
+                flex: 0 0 auto;
+                vertical-align: top;
+                width: 25%;
+            }
+
+            .timeline-text {
+                text-align: center;
+            }
+
+            .line {
+                height: 3px;
+                background-color: #ef5350;
+                width: 100%;
+                position: relative;
+            }
+
+            .line-first {
+                height: 3px;
+                background: #ef5350;
+                background: -moz-linear-gradient(left, #ef5350 0%, #ef5350 50%, #fff 50%, #fff 100%);
+                background: -webkit-linear-gradient(left, #ef5350 0%, #ef5350 50%, #fff 50%, #fff 100%);
+                background: linear-gradient(to left, #ef5350 0%, #ef5350 50%, #fff 50%, #fff 100%);
+                width: 100%;
+                position: relative;
+            }
+
+            .line-last {
+                height: 3px;
+                background: #ef5350;
+                background: -moz-linear-gradient(left, #fff 0%, #fff 50%, #ef5350 50%, #ef5350 100%);
+                background: -webkit-linear-gradient(left, #fff 0%, #fff 50%, #ef5350 50%, #ef5350 100%);
+                background: linear-gradient(to left, #fff 0%, #fff 50%, #ef5350 50%, #ef5350 100%);
+                width: 100%;
+                position: relative;
+            }
+
+            .circle {
+                height: 24px;
+                width: 24px;
+                background-color: white;
+                border: 3px solid #ef5350;
+                border-radius: 15px;
+                -moz-border-radius: 15px;
+                -webkit-border-radius: 15px;
+                position: absolute;
+                left: 46%;
+                top: -10px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            #timeline {
+                margin-left: 20px;
+            }
+
+            .tl-item {
+                border-left: 3px solid #ef5350;
+                padding-left: 20px;
+            }
+
+            .tl-item:before {
+                content: '';
+                display: block;
+                height: 24px;
+                width: 24px;
+                background-color: white;
+                border: 3px solid #ef5350;
+                border-radius: 15px;
+                -moz-border-radius: 15px;
+                -webkit-border-radius: 15px;
+                position: absolute;
+                left: 40px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="timeline-container" class="container pr-5"></div>
+
+    <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
+    <script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"></script>
+
+    <script type="text/javascript">
+        // ajax timeline list
+        $.ajax({
+            url: "/CommunicationsTechnology/911Projects/_api/web/lists/GetByTitle('Timeline')/items?$select=*&$orderby=Date desc&$top=5000",
+            method: "GET",
+            headers: {
+                "Accept": "application/json; odata=verbose"
+            },
+            success: function (data) {
+                var tlResults = data.d.results;
+                console.log(tlResults)
+
+                // build timeline fragment
+                $fraggle = $('<div id="timeline" class="timeline-text pb-5"></div>');
+                // loop to build fragments
+                $.each(tlResults, function (index, tl) {
+                    let date = moment(tl.Date).format('MMMM YYYY');
+                    let park = tl.Title != null ? tl.Title : '';
+                    let parkId = tl.ParkNameId;
+                    let title = tl.Title;
+                    let status = tl.Status.toLowerCase().split(' ').join('-');
+                    console.log(status)
+                    // do things to first, last & new park items
+                    // ..
+
+                    // build tl-item & append to fragment
+                    $fraggle.append('<div class="tl-item pb-5"><div class="date">' + date +
+                        '</div><div class="line my-5"><div class="circle"></div></div><div class="mb-2"><p style="text-transform:uppercase;font-weight:400" class="' +
+                        status + '"> ' + tl.Status + '</p><p class="park">' +
+                        park + '</p></div></div>');
+                })
+                // append timeline to timeline-container
+                $fraggle.appendTo('#timeline-container');
+                $('.line').first().addClass('line-first');
+                $('.line').last().addClass('line-last');
+            }
+        })
+    </script>
+</body>
+
+</html>

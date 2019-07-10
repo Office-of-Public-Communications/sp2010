@@ -1,0 +1,712 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+	xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+	<style>
+		#filterOptions select {
+			border: none;
+			border-radius: 4px;
+			box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .16), 0 2px 5px 0 rgba(0, 0, 0, .12);
+			font-family: Arquette;
+			padding: 12px;
+		}
+
+		#resultBtns .btn {
+			padding: .85rem 2rem;
+		}
+
+		.day {
+			font-size: 1.8rem;
+			font-weight: 400;
+		}
+
+		.pkImg {
+			max-height: 150px;
+			width: 100%;
+			object-fit: cover;
+		}
+	</style>
+</head>
+
+<body>
+	<div aria-label="Park Main Content" id="parkContent">
+		<div class="container">
+			<div class="row mb-5" id="filterOptions">
+				<div class="col-12 col-md-6">
+					<div class="d-md-block typeOption my-2">
+						<select id="parkSelect" class="browser-default col-12 my-0 mdb-select termSelect">
+							<option value="0">Any Park</option>
+							<!-- Inject Parks here -->
+						</select>
+					</div>
+				</div>
+				<div class="col-12 col-md-6">
+					<div class="d-md-block typeOption my-2">
+						<select id="dateSelect" class="browser-default col-12 my-2 mdb-select secSelect">
+							<option value="0">Any Day</option>
+							<option value="1">Today</option>
+							<option value="2">Tomorrow</option>
+							<option value="3">This Weekend</option>
+							<option value="4">This Week</option>
+							<option value="5">Next Week</option>
+							<option value="6">This Month</option>
+							<option value="7">Next Month</option>
+							<!--<option value="">Pick a Date...</option>-->
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="mb-5 row">
+				<div id="featEvents" class="container"></div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
+	<script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"></script>
+	<script type="text/javascript">
+		// Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
+		String.prototype.toTitleCase = function () {
+			var i, j, str, lowers, uppers;
+			str = this.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
+				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+			});
+
+			// Certain minor words should be left lowercase unless
+			// they are the first or last words in the string
+			lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
+				'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'
+			];
+			for (i = 0, j = lowers.length; i < j; i++) str = str.replace(new RegExp('\\s' + lowers[i] + '\\s', 'g'),
+				function (txt) {
+					return txt.toLowerCase();
+				});
+				// Certain words such as initialisms or acronyms should be left uppercase
+			uppers = ['Id', 'Tv'];
+			for (i = 0, j = uppers.length; i < j; i++) str = str.replace(new RegExp('\\b' + uppers[i] + '\\b', 'g'),
+				uppers[i].toUpperCase());
+			return str;
+		}
+
+		var todayStart = new Date();
+		todayStart.setHours(0, 0, 0, 0);
+		var todayStartISO = todayStart.toISOString();
+
+
+		// get list of parks & build park dropdown
+			$.ajax({
+				url: "/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,Image/Title&$expand=Image/Name&$orderby=Title asc",
+				method: "GET",
+				headers: {
+					"Accept": "application/json; odata=verbose"
+				},
+				success: function (data) {
+					parkItems = data.d.results;
+					//console.log(parkItems)
+
+					pkResArr = [];
+
+					$.each(parkItems, function (index, park) {
+						pkResArr.push({pkid: park.Id , pkimg: park.ImageId})
+					})
+					//console.log(pkResArr);
+					$.each(parkItems, function (index, park) {
+						if (park.Title != 'TBD'){
+							$('#parkSelect > option:last-child').after($('<option value="' + park.Id + '">' + park.Title + '</option>'))
+						}
+					});
+				}
+			})
+			.then( function(){
+			// get park images
+				return $.ajax({
+					url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$select=*,EncodedAbsUrl,Park/Title&$expand=Park/Id&$top=5000",
+					method: "GET",
+					headers: {
+						"Accept": "application/json; odata=verbose"
+					},
+					success: function (data) {
+						imgResults = data.d.results;
+						//console.log(imgResults)
+						imgResArr = [];
+						// all images that are chosen ones
+						//console.log(imgResults)
+						//if(imgResults.Image){
+						$.each(imgResults, function (index, img) {
+							imgResArr.push({url: img.EncodedAbsUrl , id: img.Id})
+						})
+						//}
+						//console.log(imgResArr);
+						//return imgResults;
+					}
+				})
+			})
+			.then( function(){
+
+				// get events
+				return $.ajax({
+					url:
+					"/Parks/_api/web/lists/GetByTitle('eventImages')/items?$top=3000&$select=*,EncodedAbsUrl",
+					method: "GET",
+					headers: {
+					"Accept": "application/json; odata=verbose"
+					},
+					success: function (data) {
+						eventImgResults = data.d.results;
+						//console.log(eventImgResults)
+					}
+				})
+			})
+			.then( function(){
+
+			// get events
+			return $.ajax({
+				url: "/Parks/_api/web/lists/GetByTitle('Events')/items?$top=3000&$select=*,Park/Title,Recurring/Title,FeaturedImage/Title&$expand=Park/Id,Recurring,FeaturedImage/Id&$orderby=Date asc",//&$filter=Date ge datetime'" + todayStartISO + "'",
+				method: "GET",
+				headers: {
+					"Accept": "application/json; odata=verbose"
+				},
+				success: function (data) {
+					eventResults = data.d.results;
+
+					$fraggle = $('<div id="eventSearchResults" class="row"></div>');
+
+					//console.log(eventResults)
+
+					// removed expired events
+					function isNotOld(i){
+						return (i.Recurring.results.length > 0 && (i.EndDate >= todayStartISO || !i.EndDate)) || i.Date >= todayStartISO
+					}
+					var filteredResults = eventResults.filter(isNotOld);
+					//console.log(filteredResults)
+
+					// sort array by date
+					// var sortedResults = filteredResults.sort(function(a, b) {
+					// 	return (a.Date < b.Date) ? -1 : ((a.Date> b.Date) ? 1 : 0);
+					// });
+					//console.log(sortedResults)
+
+					var f1 = $.each(filteredResults, function (index, event) {
+
+						var imgId = event.FeaturedImageId;
+						// var date = moment(event.Date).format('ddd, MMM D, YYYY');
+						// var day = moment(event.Date).format('D');
+						// var month = moment(event.Date).format('MMM');
+						var park = event.Park.Title;
+						var today = moment(new Date).toIsoString;
+						var title = event.Title.toTitleCase();
+						var imgUrl = '';
+
+						// run moment recur.js on recurring events & push next date to event array
+						function recurGenerator(){
+						//if(event.Recurring.results.length > 0){
+
+							recurArr = event.Recurring.results;
+							$.each(recurArr, function(index, recur){
+
+								// variables
+								var whatDays = [];
+								var whatWeeks = [];
+								var everyday = false;
+								var startDate = moment(event.Date);
+								var endDate = moment(event.EndDate);
+								var upcoming;
+								var today = moment(new Date());
+
+								if (recur.Title == 'Every Monday') {
+									whatDays.push('Monday');
+								}
+								if (recur.Title == 'Every First Monday') {
+									whatDays.push('Monday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Monday') {
+									whatDays.push('Monday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Monday') {
+									whatDays.push('Monday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Monday') {
+									whatDays.push('Monday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Tuesday') {
+									whatDays.push('Tuesday');
+								}
+								if (recur.Title == 'Every First Tuesday') {
+									whatDays.push('Tuesday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Tuesday') {
+									whatDays.push('Tuesday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Tuesday') {
+									whatDays.push('Tuesday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Tuesday') {
+									whatDays.push('Tuesday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Wednesday') {
+									whatDays.push('Wednesday');
+								}
+								if (recur.Title == 'Every First Wednesday') {
+									whatDays.push('Wednesday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Wednesday') {
+									whatDays.push('Wednesday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Wednesday') {
+									whatDays.push('Wednesday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Wednesday') {
+									whatDays.push('Wednesday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Thursday') {
+									whatDays.push('Thursday');
+								}
+								if (recur.Title == 'Every First Thursday') {
+									whatDays.push('Thursday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Second Thursday') {
+									whatDays.push('Thursday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Third Thursday') {
+									whatDays.push('Thursday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Fourth Thursday') {
+									whatDays.push('Thursday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Friday') {
+									whatDays.push('Friday');
+								}
+								if (recur.Title == 'Every First Friday') {
+									whatDays.push('Friday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Friday') {
+									whatDays.push('Friday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Friday') {
+									whatDays.push('Friday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Friday') {
+									whatDays.push('Friday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Saturday') {
+									whatDays.push('Saturday');
+								}
+								if (recur.Title == 'Every First Saturday') {
+									whatDays.push('Saturday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Saturday') {
+									whatDays.push('Saturday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Saturday') {
+									whatDays.push('Saturday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Saturday') {
+									whatDays.push('Saturday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Every Sunday') {
+									whatDays.push('Sunday');
+								}
+								if (recur.Title == 'Every First Sunday') {
+									whatDays.push('Sunday');
+									whatWeeks.push('0');
+								}
+								if (recur.Title == 'Every Second Sunday') {
+									whatDays.push('Sunday');
+									whatWeeks.push('1');
+								}
+								if (recur.Title == 'Every Third Sunday') {
+									whatDays.push('Sunday');
+									whatWeeks.push('2');
+								}
+								if (recur.Title == 'Every Fourth Sunday') {
+									whatDays.push('Sunday');
+									whatWeeks.push('3');
+								}
+								if (recur.Title == 'Everyday') {
+									everyday = true;
+								}
+
+								if (everyday === true) {
+									//console.log('it true')
+									var upcoming = moment(startDate).recur(endDate ? endDate :
+										false).every(1).day();
+									upcoming.fromDate(startDate);
+									upcoming.endDate(endDate);
+									upcomingDates = upcoming.next(1, 'LL');
+									//console.log(upcomingDates)
+								}
+								// begins today or later and has an end date
+								if (startDate >= today && endDate != undefined) {
+									// has days but no weeks
+									if (whatDays.length > 0 && whatWeeks.length < 1) {
+										var upcoming = moment(startDate).recur(endDate ? endDate :
+											false).every(whatDays).daysOfWeek();
+										upcoming.fromDate(startDate);
+										upcoming.endDate(endDate);
+										upcomingDates = upcoming.next(1, 'LL');
+										//console.log(upcomingDates)
+									}
+
+									// has days and weeks
+									if (whatDays.length > 0 && whatWeeks.length > 0) {
+										var upcoming = moment(startDate).recur(endDate ? endDate :
+												false).every(whatDays).daysOfWeek().every(whatWeeks)
+											.weeksOfMonthByDay();
+										upcoming.fromDate(startDate);
+										upcoming.endDate(endDate);
+										upcomingDates = upcoming.next(1, 'LL');
+										//console.log(upcomingDates)
+									}
+								}
+								// began before today
+								if (startDate < today) {
+									// has days but no weeks
+									if (whatDays.length > 0 && whatWeeks.length < 1) {
+										//console.log('heyo')
+										var upcoming = moment(today).recur().every(whatDays)
+											.daysOfWeek();
+										upcomingDates = upcoming.next(1, 'LL');
+										//console.log(upcomingDates)
+									}
+
+									// has days and weeks
+									if (whatDays.length > 0 && whatWeeks.length > 0) {
+										var upcoming = moment(today).recur().every(whatDays)
+											.daysOfWeek().every(whatWeeks).weeksOfMonthByDay();
+										upcomingDates = upcoming.next(1, 'LL');
+										//console.log(upcomingDates)
+									}
+								}
+								// ~~push next occurrence of recurring event to event array~~ must build card for each occurrence, pushing would only overwrite date each loop through resulting in one date for events that may have more than one day of recurrence
+								for (k = 0; k < upcomingDates.length; k++) {
+									var date = upcomingDates[k];
+									var id = event.ID;
+									//console.log(event.Date)
+									var isoDate = moment(date).startOf('day').toISOString();
+									//console.log(event.Date)
+									event.Date = isoDate;
+									recurDeets = event.Recurring.results;
+									recurDeet = [];
+									//console.log(recurDeets[k].Title)
+									// make string out of recurring deets for use in frag();
+									$.each(recurDeets, function(index, deet){
+										// if event is recurring && has end date, show date range instead
+										if(deet.Title == 'Everyday' && event.EndDate.length != null){
+											//console.log(event);
+											var endDate = moment(event.EndDate).format('LL');
+											var range = moment(event.Date).format('LL').split(',')[0] + '-' + endDate.split(' ')[1] + ' ' + endDate.split(' ')[2];
+											//console.log(range)
+											recurDeet.push('Everyday, ' + range);
+											// $('#date').html(moment(dirInfo2.StartDate).format('LL').split(',')[0] + '-' +
+											// moment(dirInfo2.EndDate).format('LL').split(' ')[1] + ' ' + moment(dirInfo2.EndDate).format('LL').split(' ')[2]);
+
+										} else {
+											recurDeet.push(deet.Title);
+										}
+									});
+									deet = recurDeet.join(', ');
+									frag();
+									//console.log('frag done ' + event.Title)
+								}
+							});
+						};
+
+						// if no image is selected, get first image for this park
+						if (imgId == null) {
+							var filterResults = pkResArr.filter(function(e){
+								return e.pkid == event.ParkId;
+							})
+							//console.log(filterResults[0].pkimg);
+							var imgID = filterResults[0].pkimg;
+							//console.log(imgID)
+							var filtrResults = imgResArr.filter(function(e){
+								return e.id == imgID;
+							})
+							if(filtrResults[0] != undefined){
+								//console.log(filtrResults[0].url)
+								eventImgUrl = filtrResults[0].url;
+							}
+							if(filtrResults[0] == undefined){
+								eventImgUrl = '/Parks/ParksImages/undefined.jpg'
+							}
+							// if recurring, run recurring date generator & build there
+							if(event.Recurring.results.length > 0){
+								//console.log('recur ' + event.Title)
+								recurGenerator();
+							}
+							// if one timer, build here
+							if(event.Recurring.results.length == 0){
+								frag();
+							}
+						}
+
+						// if image is selected, get it
+						//console.log(imgId)
+						if (imgId != null) {
+							function f2() {
+								//console.log(imgId, event)
+								// get selected image URL
+								//event.imgUrl = imgResult[0].EncodedAbsUrl;
+								// if recurring, run recurring date generator & build there
+								var filtrResults = eventImgResults.filter(function(e){
+									//console.log(e.Id)
+									return e.Id == imgId;
+								})
+								eventImgUrl = filtrResults[0].EncodedAbsUrl;
+								//console.log(eventImgUrl)
+							}
+							f2();
+							$.when(f2).done(
+								function(){
+									// if recurring, run recurring date generator & build there
+									if(event.Recurring.results.length > 0){
+										recurGenerator();
+									}
+									// if one timer, build here
+									if(event.Recurring.results.length == 0){
+										frag();
+									}
+								}
+							);
+						}
+						// build fragment
+						function frag() {
+							// date if recurring
+							if(event.Recurring.results.length > 0){
+								var date = deet;
+								var deetIcon = 'sync';
+							}
+							// date if not recurring
+							if(event.Recurring.results.length == 0){
+								var date = moment(event.Date).format('ddd, MMM D, YYYY');
+								var deetIcon = 'calendar';
+							}
+							var day = moment(event.Date).format('D');
+							var month = moment(event.Date).format('MMM');
+
+							$fraggle.append($(
+								'<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-park="' +
+								event.ParkId + '" data-date="' + moment(event.Date).format('LL') +
+								'"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><a href="/Parks/Pages/Event.aspx?=' + event.Id + '"><img class="card-img-top pkImg lazyload" data-src="' + eventImgUrl +
+								'" alt="Card image cap"></a></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' +
+								month + '<br/><span class="day">' + day +
+								'</span></div><div class="col-9 pl-3"><a href="/Parks/Pages/Event.aspx?=' +
+								event.Id +
+								'"><h5 class="pt-3 eventTitle"><strong style="letter-spacing: -.25px;">' +
+								title +
+								' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5></a><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-' + deetIcon + '"></i> ' +
+								date +
+								'</small><small class="my-auto pr-3 text-muted"><i class="fal fa-tree"></i> <a href="/parks/Pages/Park.aspx?=' +
+								event.ParkId + '">' + park +
+								'</a></small></div></div></div></div>'
+							))
+						}
+					});
+					// append fragment to DOM
+					$.when(f1).done(function () {
+
+						$fraggle.appendTo('#featEvents');
+
+						// sort array by date
+						var cardList = $('.event');
+						//console.log(cardList)
+						cardList.sort(function(a,b){
+							return moment($(a).data('date')) - moment($(b).data('date'));
+						});
+						//console.log(sortedResults)
+						cardList.appendTo('#eventSearchResults')
+					})
+				}
+			})
+		}).then(function(){
+			// if url param contains park or date, sort
+			//console.log(window.location.search.length > 0)
+			if(window.location.search.length > 0){
+				$('#parkSelect').val(window.location.search.split('=')[1]);
+				//$('#parkSelect').change();
+			}
+		}).then(function(){
+			$('#parkSelect').change(sortEvents());
+			console.log($('#parkSelect').val())
+		})
+
+		// dropdown sort functionality
+		$('#dateSelect, #parkSelect').change(function(){sortEvents()});
+
+		function sortEvents() {
+			console.log($('#parkSelect').val())
+
+			var parkValue = $('#parkSelect').val();
+			var dateValue = $('#dateSelect').val();
+
+			$('.event').hide();
+			// if($('#eventSearchResults').children().css('display', '').length == 0){$('#featEvents').html('No events match your filters. Check out...')}
+
+			// if 'any' park & 'any' date -> show all
+			if (parkValue === '0' && dateValue === '0') {
+				$('.event').show();
+				//console.log('any park && any date')
+			}
+
+			// if 'any' date -> filter by park
+			if (parkValue !== '0' && dateValue === '0') {
+				$('.event').each(function (i, el) {
+					if ($(el).attr('data-park') == parkValue) {
+						$(el).show();
+					}
+				})
+				//console.log('any date, sort by park')
+			}
+			// if 'any' park -> filter by date
+			if (parkValue === '0' && dateValue !== '0') {
+				$('.event').each(function (i, el) {
+					dateSort(el);
+				})
+				//console.log('any park, sort by date')
+			}
+			// filter by park && date
+			if (parkValue !== '0' && dateValue !== '0') {
+				// sort by event
+				$('.event').each(function (i, el) {
+
+					if ($(el).attr('data-park') === parkValue) {
+						//console.log($(el).attr('data-park'))
+						dateSort(el);
+					}
+				})
+				//console.log('sort by park && sort by park')
+			}
+
+			function dateSort(el){
+				$(el).each(function(i, el){
+					// filter by date
+					var dateValue = $('#dateSelect').val();
+					var td = moment().format('LL');
+					var tm = moment().add(1, 'days').format('LL');
+					var tws = moment().startOf('isoWeek');
+					var twe = moment().endOf('isoWeek')
+
+					switch (dateValue) {
+						// any day
+						case '0':
+							$(el).show();
+							break;
+							// today
+						case '1':
+							$(el).each(function (i, el) {
+								var dd = $(el).attr('data-date');
+								if (dd == td) {
+									$(el).show();
+								}
+							})
+							break;
+							// tomorrow
+						case '2':
+							$(el).each(function (i, el) {
+								var dd = $(el).attr('data-date');
+								if (dd == tm) {
+									$(el).show();
+								}
+							})
+							break;
+							// this weekend
+						case '3':
+							$(el).each(function (i, el) {
+								var dd = moment($(el).attr('data-date')).format(
+									'LL');
+								var d = moment();
+								var sun = d.endOf('isoWeek').format('LL');
+								var sat = moment(sun).subtract(1, 'days').format('LL');
+								//console.log(moment(sun).subtract(1, 'days').format('LL'));
+								console.log(dd, sat, sun)
+								if (moment(dd).isSame(sat, 'day') || moment(dd)
+									.isSame(sun, 'day')) {
+									//console.log(dd, sun, sat)
+								}
+								if (moment(dd).isSame(sat, 'day') || moment(dd)
+									.isSame(sun, 'day')) {
+									$(el).show();
+								}
+							})
+							break;
+							// this week
+						case '4':
+							$(el).each(function (i, el) {
+								var dd = moment($(el).attr('data-date'));
+								if (dd.isAfter(tws) && dd.isBefore(twe)) {
+									$(el).show();
+								}
+							})
+							break;
+							// next week
+						case '5':
+							$(el).each(function (i, el) {
+								var dd = moment($(el).attr('data-date'));
+								var nws = moment().add(1, 'weeks').startOf(
+									'isoWeek');
+								var nwe = moment().add(1, 'weeks').endOf(
+									'isoWeek')
+								if (dd.isAfter(nws) && dd.isBefore(nwe)) {
+									$(el).show();
+								}
+							})
+							break;
+							// this month
+						case '6':
+							$(el).each(function (i, el) {
+								var dd = moment($(el).attr('data-date'));
+								var tms = moment().startOf('month');
+								var tme = moment().endOf('month');
+								if (dd.isAfter(tms) && dd.isBefore(tme)) {
+									$(el).show();
+								}
+							})
+							break;
+							// next month
+						case '7':
+							$(el).each(function (i, el) {
+								var dd = moment($(el).attr('data-date'));
+								var nms = moment().add(1, 'months').startOf(
+									'month');
+								var nme = moment().add(1, 'months').endOf(
+									'month');
+								if (dd.isAfter(nms) && dd.isBefore(nme)) {
+									$(el).show();
+								}
+							})
+							break;
+						default:
+							$(el).show();
+					}
+				})
+			}
+		}
+	</script>
+</body>
+
+</html>

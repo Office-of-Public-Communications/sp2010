@@ -1,0 +1,957 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+    <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+    <style>
+        h1,
+        h3,
+        h5 {
+            font-family: Arquette;
+            color: black;
+            font-weight: 700;
+        }
+
+        .byLetter {
+            overflow-x: scroll;
+            white-space: nowrap;
+        }
+
+        .byLetter a {
+            display: inline-block;
+            text-align: center;
+            padding: 14px;
+            text-decoration: none;
+        }
+
+        #dir-title {
+            font-size: 2.5rem;
+        }
+
+        #description h1 {
+            font-weight: 700;
+        }
+
+        /*
+        #dir-description {
+			white-space: pre-wrap;
+		}
+        */
+        /* #dir-statement {
+            white-space: pre-wrap;
+        } */
+
+        h2#dir-artist {
+            font-size: 1.35rem;
+            font-weight: 400;
+            /*color: #0277BD;*/
+        }
+
+        span#dir-year {
+            margin-right: 20px;
+        }
+
+        img#dir-img.contactImg {
+            width: 100%;
+            border-radius: 2px;
+        }
+
+        .contactInfoButton {
+            text-align: center;
+            border: 1px solid #eaeaea;
+            background-color: #eaeaea;
+            display: block;
+            border-radius: 2px;
+        }
+
+        #addressInfo ul {
+            padding: 0;
+        }
+
+        #addressInfo ul li {
+            list-style: none;
+        }
+
+        .tags {
+            padding: 4px 10px;
+            background-color: #f4f4f4;
+            border-radius: 2px;
+            margin: 4px;
+            display: inline-block;
+        }
+
+        #mapid {
+            height: 150px;
+            width: 100%;
+            border-radius: 2px;
+        }
+
+        #backToDir a::before {
+            content: "\f104";
+            padding-right: 10px;
+            margin-bottom: -5px;
+            font-family: 'FontAwesomeSolid';
+            font-size: 1rem;
+            top: 1px;
+            position: relative;
+        }
+
+        #infoTabs {
+            border-radius: 6px;
+            padding-top: 5px;
+            background-color: #f5f5f5;
+        }
+
+        #infoTabs li {
+            width: 120px;
+            text-align: center;
+        }
+
+        #Attractions-tab.active,
+        #Events-tab.active,
+        #Rentals-tab.active {
+            background-color: #fff;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+        }
+
+        .today {
+            font-weight: 600;
+            color: #00c853;
+        }
+
+        .parkCarousel img {
+            height: 200px;
+            display: block;
+        }
+
+        /* Datatable styles */
+        .dataTables_length label {
+            margin-right: 1rem;
+            padding-top: 1rem;
+        }
+
+        .dataTables_filter.md-form {
+            margin-top: .55rem;
+        }
+
+        .dataTables_filter.md-form input {
+            font-weight: 300;
+        }
+
+        .dataTables_wrapper .row {
+            margin-bottom: 1.5rem;
+        }
+
+        div.dataTables_wrapper div.dataTables_info {
+            padding-top: 0;
+            padding-bottom: 1rem;
+        }
+
+        .dataTables_paginate {
+            float: right;
+        }
+
+        .dataTables_filter {
+            float: right;
+        }
+
+        .dataTables_wrapper td.row {
+            margin-bottom: 0rem;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:active,
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+        .dataTables_wrapper .dataTables_paginate .paginate_button:focus {
+            outline: none !important;
+            border: none;
+            background-color: white !important;
+            background: none !important;
+            box-shadow: 0 0 0 0 !important;
+        }
+
+        div.dataTables_wrapper div.dataTables_info {
+            white-space: normal;
+        }
+
+        .select-wrapper input.select-dropdown {
+            margin-bottom: 0px;
+            padding-top: 15px;
+        }
+
+        div.dataTables_wrapper div.dataTables_length label {
+            margin-bottom: 0px;
+            padding-top: 25px;
+        }
+
+        .select-dropdown {
+            margin-top: 27px;
+        }
+
+        .select-wrapper span.caret {
+            margin-top: 15px;
+        }
+
+        .pagination .page-link:focus {
+            background-color: #007bff;
+        }
+
+        .browardT td,
+        div.dataTables_wrapper div.dataTables_length label,
+        #socialTable_info {
+            font-size: 1rem;
+            font-family: Arquette;
+            line-height: 1rem;
+        }
+
+        .browardT th {
+            font-size: 1.1rem;
+            font-weight: 500;
+            font-family: Arquette;
+        }
+
+        #socialTable.table a {
+            color: #0277BD;
+        }
+
+        @media only screen and (max-width:768px) {
+            #rfaTable_filter {
+                width: 100%
+            }
+
+            #rfaTable_filter input {
+                width: 100%
+            }
+
+            .dataTables_wrapper .row {
+                margin-bottom: .5rem;
+            }
+        }
+
+        #tabsWebPart>div.tabs-wrapper>ul {
+            background-color: #1C2A48;
+            color: white;
+            font-family: Arquette;
+            font-size: 1rem !important;
+        }
+
+        #tabsWebPart {
+            color: #333;
+            font-family: Arquette;
+        }
+
+        .table {
+            color: #333;
+            font-family: Arquette;
+        }
+
+        #tabsWebPart>div.tabs-wrapper a,
+        #tabsWebPart .nav a:active,
+        #tabsWebPart .nav a:visited,
+        #tabsWebPart .nav a:link {
+            color: white !important;
+        }
+
+        #tabsWebPart p {
+            font-family: Arquette;
+            font-size: 1rem !important;
+            font-weight: 300;
+            color: #333;
+        }
+
+        #tabsWebPart .btn {
+            padding: .85rem 1rem;
+        }
+
+        #pubInfo .modal-header {
+            background-color: #039BE5;
+            color: white;
+        }
+
+        #pubInfo .btn-pub {
+            background-color: #ffa000;
+            color: #333 !important;
+        }
+
+        .fa-layers {
+            vertical-align: 27.5%;
+        }
+
+        #sRowItems .fa-star {
+            position: absolute;
+            right: 7px;
+        }
+
+        img.carousel-cell {
+            padding: 3px;
+        }
+
+        /* flickity styles */
+
+        /* no circle */
+        .flickity-button {
+            background: transparent;
+        }
+
+        /* big previous & next buttons */
+        .flickity-prev-next-button {
+            width: 40px;
+            height: 40px;
+        }
+
+        /* icon color */
+        .flickity-button-icon {
+            fill: white;
+        }
+
+        /* hide disabled button */
+        .flickity-button:disabled {
+            display: none;
+        }
+
+        div#directoryItem {
+            font-family: Arquette;
+            font-size: 1rem;
+        }
+
+        .eventDetails {
+            line-height: 1.47rem;
+        }
+
+        #alertContainer {
+            background-color: rgba(255, 152, 2, 0.12);
+            ;
+            cursor: pointer;
+            /*border: 1px solid #FF9802;*/
+        }
+
+        #alertText {
+            font-family: Arquette;
+            padding-top: 6px;
+            color: #1C2A48;
+            font-weight: 500;
+        }
+
+        .close {
+            color: #1C2A48;
+            padding-top: 2px;
+        }
+
+        @media only screen and (max-width:1299px) {
+            .mobileDays {
+                display: block;
+            }
+
+            .desktopDays {
+                display: none;
+            }
+        }
+
+        @media only screen and (min-width:1300px) {
+            .mobileDays {
+                display: none;
+            }
+
+            .desktopDays {
+                display: block;
+            }
+        }
+
+        div#mapid {
+            z-index: 1;
+        }
+
+        .datesTimes {
+            font-size: 14px;
+        }
+
+        .woof {
+            font-size: 14px;
+        }
+
+        .button-icon {
+            font-size: 1rem;
+        }
+    </style>
+    <!-- Flickity styles -->
+    <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+    <!-- /Flickity styles -->
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.2/dist/leaflet.css"
+        integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+        crossorigin="" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js"
+        integrity="sha512-2fA79E27MOeBgLjmBrtAgM/20clVSV8vJERaW/EcnnWCVGwQRazzKtQS1kIusCZv1PtaQxosDZZ0F1Oastl55w=="
+        crossorigin=""></script>
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
+    <!-- Mapbox styles -->
+    <!-- <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' /> -->
+</head>
+
+<body>
+    <div class="style1">
+        <!-- Directory Web Part - Item View -->
+        <div id="directoryItem" class="container pb-3 d-none">
+
+            <div id="alert-row" class="row d-none">
+                <div class="col">
+                    <div id="alertContainer" class="alert alert-orange alert-dismissable fade show d-block w-100"
+                        role="alert">
+                        <div type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </div>
+                        <p id="alertText">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="images" class="mb-5">
+                <!-- Flickity HTML init -->
+                <div class="parkCarousel d-none">
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-md-8 col-12 px-3">
+                    <!--<h1 id="dir-title">&para;</h1>-->
+                    <strong id="dir-description-title" class="d-none">
+                        Overview</strong>
+                    <p id="dir-description" class="d-none">&para;</p>
+                    <div class="row">
+                        <div class="col">
+                            <!--Accordion wrapper-->
+                            <div class="accordion md-accordion" id="accordionFeatures" role="tablist"
+                                aria-multiselectable="true">
+
+                                <!-- Accordion card -->
+                                <div class="card" style="border-bottom:none">
+
+                                    <!-- Card header -->
+                                    <div class="card-header px-0" role="tab" id="featuresHeading">
+                                        <a data-toggle="collapse" data-parent="#accordionFeatures" href="#collapseOne1"
+                                            aria-expanded="true" aria-controls="collapseOne1">
+                                            <h5 class="mb-0"
+                                                style="font-weight:700!important; font-size:1rem!important;">Things To
+                                                Do<i class="fas fa-angle-down rotate-icon"></i>
+                                            </h5>
+                                        </a>
+                                    </div>
+
+                                    <!-- Card body -->
+                                    <div id="collapseOne1" class="collapse show" role="tabpanel"
+                                        aria-labelledby="featuresHeading" data-parent="#accordionFeatures">
+                                        <div class="card-body px-0 pt-0" id="featuresList">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- Accordion card -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul id="dir-statement" class="features-1 mb-0"
+                                style="list-style: none; padding-inline-start: 0px;"></ul>
+                        </div>
+                        <div class="col-md-6">
+                            <strong id="dir-statement-title" class="d-none amenities"> </strong>
+                            <ul id="dir-statement" class="features-2"
+                                style="list-style: none; padding-inline-start: 0px;">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div id="dir-map" class="col-md-4">
+                    <div id="mapid" class="map"></div>
+                    <div id="addressInfo" class="mt-3">
+                        <ul>
+                            <li>
+                                <strong>Address</strong>
+                            </li>
+                            <li id="dir-located"></li>
+                            <li id="dir-address1"></li>
+                            <li id="dir-address2"></li>
+                            <li id="dir-csz"></li>
+                        </ul>
+                    </div>
+                    <div id="phone" class="my-3">
+                        <strong>Phone</strong>
+                        <div id="phoneNumber"></div>
+                    </div>
+                    <div id="email" class="my-3">
+                        <strong>Email</strong>
+                        <div id="emailAddress"></div>
+                    </div>
+                    <strong id="dir-statement-title" class="">Hours</strong>
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <ul style="list-style: none; padding-inline-start: 0px; padding-left: 0px;">
+                                <!-- Mobile Text -->
+                                <li id="monday" class="mobileDays">Mon</li>
+                                <li id="tuesday" class="mobileDays">Tue</li>
+                                <li id="wednesday" class="mobileDays">Wed</li>
+                                <li id="thursday" class="mobileDays">Thu</li>
+                                <li id="friday" class="mobileDays">Fri</li>
+                                <li id="saturday" class="mobileDays">Sat</li>
+                                <li id="sunday" class="mobileDays">Sun</li>
+                                <!-- Desktop Text -->
+                                <li id="monday" class="desktopDays">Monday</li>
+                                <li id="tuesday" class="desktopDays">Tuesday</li>
+                                <li id="wednesday" class="desktopDays">Wednesday</li>
+                                <li id="thursday" class="desktopDays">Thursday</li>
+                                <li id="friday" class="desktopDays">Friday</li>
+                                <li id="saturday" class="desktopDays">Saturday</li>
+                                <li id="sunday" class="desktopDays">Sunday</li>
+                                <li id="office">Office</li>
+                                <li id="aquatics" class="aquaticsTitle"></li>
+                            </ul>
+                        </div>
+                        <div class="col-8">
+                            <ul style="list-style: none; padding-inline-start: 0px;">
+                                <li id="monday" class="hours"></li>
+                                <li id="tuesday" class="hours"></li>
+                                <li id="wednesday" class="hours"></li>
+                                <li id="thursday" class="hours"></li>
+                                <li id="friday" class="hours"></li>
+                                <li id="saturday" class="hours"></li>
+                                <li id="sunday" class="hours"></li>
+                                <li id="office" class="hours"></li>
+                                <li id="aquatics" class="hours"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <strong>Events</strong>
+                    <div class="row">
+                        <div class="col-md-5 col-6 pl-2 pr-0">
+                            <div><a class="btn btn-md btn-warning" href="" style="color:black!important;"><i
+                                        class="fal fa-calendar-alt"></i> Park Events</a></div>
+                        </div>
+                        <div class="col-md-5 col-6 pl-0">
+                            <div><a class="btn btn-md btn-warning" href="" style="color:black!important;"><i
+                                        class="fal fa-calendar-alt"></i> All Events</a></div>
+                        </div>
+                    </div>
+                    <div class="my-2"><strong>Gate Fee</strong>
+                        <div id="fee">No</div>
+                    </div>
+                    <div class="mt-3"><strong>Pet Friendly</strong>
+                        <div id="pet">Yes</div>
+                    </div>
+                    <div class="mt-3"><strong>Acreage</strong>
+                        <div id="acreage"></div>
+                    </div>
+                    <div class="mt-3"><strong>Neighboring Parks</strong>
+                        <div id="neighbors"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Flickity-->
+        <script type="text/javascript" src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+        <!--Datatable & Moment-->
+        <script type="text/javascript" defer src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js">
+        </script>
+        <script type="text/javascript" src="/Style%20Library/Haylee-Dev/js/broward/Library/moment.min.js"></script>
+        <script type="text/javascript" defer
+            src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
+        <script type="text/javascript">
+            function getJsonDataAsync(url) {
+                // returning the $.ajax object is what makes the next part work...
+                return $.ajax({
+                    url: url,
+                    method: "GET",
+                    contentType: "application/json",
+                    headers: {
+                        accept: "application/json;odata=verbose"
+                    }
+                });
+            }
+
+            /* Dynamically Load Item */
+            URL = location.href.toLowerCase();
+            newID = URL.split('=')[1].replace("#", "");
+
+            gallery = [];
+
+            lt = '';
+            lg = '';
+
+            $(document).ready(function () {
+
+                var requestURI1 = "/parks/_api/web/lists/getbytitle('Parks')/items?$filter=ID eq (" + newID +
+                    ")&$select=*,City/Title, Features/Title, NeighboringParks/Title&$expand=City/ID, Features/Title, NeighboringParks/ID"
+                var requestURI2 = "/parks/_api/web/lists/getbytitle('Features')/items"
+
+                newData2 = getJsonDataAsync(requestURI1),
+                    newFeatures = getJsonDataAsync(requestURI2)
+                // build page elements from data
+
+                f1 = $.when(newData2, newFeatures).done(function (resp1, resp2) {
+                    dirInfo2 = resp1[0].d.results[0]
+                    features = resp2[0].d.results
+                    //console.log(dirInfo2, features)
+
+                    // build title & description
+                    if (dirInfo2.Title) {
+                        $('.broward-titles-bg-white').html('<h1 class="broward-titles">' + dirInfo2
+                            .Title +
+                            '</h1>');
+                        $('.layoutCrumb').html(dirInfo2.Title);
+                        document.title = dirInfo2.Title;
+                        $('.divider-broward').removeClass('py-3').addClass('pt-3 pb-2');
+                        $('.divider-broward').next().removeClass('pt-3');
+                    }
+                    /*$('#dir-subtitle').html(dirInfo2.Artist.lookupValue);*/
+                    if (dirInfo2.Overview) {
+                        $('#dir-description').html(dirInfo2.Overview).removeClass(
+                            'd-none');
+                        $('#dir-description-title').removeClass('d-none').addClass(
+                            'd-block');
+                    }
+                    // add links to & show buttons if there's a link in list, if not don't show
+                    // rentals
+                    if (dirInfo2.Webtrac) {
+                        $('#reserve').attr('href',
+                                'https://webtrac.broward.org/wbwsc/webtrac.wsc/wbsearch.html?xxmod=FR&xxfacilitylocation=' +
+                                dirInfo2.Webtrac)
+                            .removeClass('d-none');
+                    }
+                    // campsites
+                    if (dirInfo2.CampLink) {
+                        $('#camp').attr('href', dirInfo2.CampLink.split(',')[0]).removeClass('d-none');
+                    }
+                    if (dirInfo2.PetFriendly === true) {
+                        $('#pet').html('Yes')
+                    } else if (dirInfo2.PetFriendly === false) {
+                        $('#pet').html('No')
+                    }
+                    if (dirInfo2.GateFee === true) {
+                        if (window.location.search.split('=')[1].toString() == '19') {
+                            $('#fee').prev().html('Parking Fees (per vehicle)')
+                            $('#fee').html(
+                                'All day - $10<br/>After 2PM - $6<br>July 4 - $20<br/>Special events - $15'
+                            )
+                        } else {
+                            $('#fee').html(
+                                '$1.50/person weekends and holidays (children 5 and under free)')
+                        }
+                    }
+
+                    $.each(dirInfo2.Features.results, function (ind, parkFeatures) {
+                        $.each(features, function (ind1, featureLink) {
+                            if (featureLink.Title == parkFeatures.Title) {
+                                //console.log($(this)[0].Link , featureLink.Webtrac)
+                                if ($(this)[0].Link && !featureLink.Webtrac) {
+                                    $('#featuresList').append($(
+                                        '<div class="py-2 d-flex justify-content-between" style="border-bottom:1px solid #dee2e6"><h6 class="my-auto mx-0 text-dark">' +
+                                        parkFeatures.Title +
+                                        '</h6><a class="btn btn-sm  btn-outline-info z-depth-0 align-baseline" href="' +
+                                        $(this).Link +
+                                        '"><i class="fal fa-info-circle button-icon align-middle"></i> <span class="d-none d-md-inline-block align-middle"> More Info</span></a></div>'
+                                        ))
+                                } else if (featureLink.Webtrac && !($(this)[0].Link)) {
+                                    $('#featuresList').append($(
+                                        '<div class="py-2 d-flex justify-content-between" style="border-bottom:1px solid #dee2e6"><h6 class="my-auto mx-0 text-dark">' +
+                                        parkFeatures.Title +
+                                        '</h6><a class="btn btn-sm btn-info light-blue darken-1 align-baseline" href="' +
+                                        $(this).Link +
+                                        '"><i class="fal fa-calendar-check button-icon align-middle"></i> <span class="d-none d-md-inline-block align-middle"> Reserve</span></a></div>'
+                                        ))
+                                } else if (featureLink.Webtrac && $(this)[0].Link) {
+                                    $('#featuresList').append($(
+                                        '<div class="py-2 d-flex" style="border-bottom:1px solid #dee2e6"><h6 class="my-auto mr-auto ml-0 text-dark">' +
+                                        parkFeatures.Title +
+                                        '</h6><a class="btn btn-sm btn-info light-blue darken-1 align-baseline" href="' +
+                                        $(this).Link +
+                                        '"><i class="fal fa-calendar-check button-icon align-middle"></i> <span class="d-none d-md-inline-block align-middle"> Reserve</span></a><a class="btn btn-sm btn-outline-info z-depth-0 align-baseline" href="' +
+                                        $(this).Link +
+                                        '"><i class="fal fa-info-circle button-icon align-middle"></i> <span class="d-none d-md-inline-block align-middle"> More Info</span></a></div>'
+                                        ))
+                                } else {
+                                    $('#featuresList').append($(
+                                        '<div class="py-3 d-flex justify-content-between" style="border-bottom:1px solid #dee2e6"><h6 class="my-auto mx-0 text-dark">' +
+                                        parkFeatures.Title + '</h6></div>'))
+                                }
+                            }
+                        })
+                    });
+
+                    $('#dir-statement.features').removeClass('d-none');
+                    $('#dir-statement-title.features').removeClass('d-none').addClass('d-block mt-3');
+
+                    $('li#monday.hours').html(dirInfo2.Monday);
+                    $('li#tuesday.hours').html(dirInfo2.Tuesday);
+                    $('li#wednesday.hours').html(dirInfo2.Wednesday);
+                    $('li#thursday.hours').html(dirInfo2.Thursday);
+                    $('li#friday.hours').html(dirInfo2.Friday);
+                    $('li#saturday.hours').html(dirInfo2.Saturday);
+                    $('li#sunday.hours').html(dirInfo2.Sunday);
+                    $('li#office.hours').html(dirInfo2.OfficeHours);
+
+                    var hasAquatics = ["5", "7", "28", "37"];
+                    var parkNum = window.location.search.split('=')[1].toString();
+
+                    if ($.inArray(parkNum, hasAquatics) !== -1) {
+                        //add aquatic park hours
+                        //append 'aquatics' & hours
+                        //console.log('show me the waters!!!!!!!!!!!!!!!!!!!!!!!');
+                        $('li#aquatics.aquaticsTitle').html(
+                            '<a href="#" title="Aquatics Hours Info" id="page-contact" class="" data-toggle="modal" data-target="#aquaticsModal">Aquatics&nbsp;<i class="fal fa-info-circle"></i></a><div class="modal fade" id="aquaticsModal" tabindex="-1" role="dialog" aria-labelledby="aquaticsModal" aria-hidden="true"><div id="aquaticsModal" class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><p class="heading lead" id="ParkName">Aquatic Park Dates of Operation</p><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><div class="container px-0"><div class="row datesTimes"><div class="col-md-6"><div class="row"><div class="col-3"><ul style="list-style: none; padding-inline-start: 0px; padding-left: 0px; font-weight: 700;"><li>Jan</li><li>Feb</li><li>Mar</li><li>Apr</li><li>May</li><li>Jun</li></ul></div><div class="col-9"><ul id="aquDatesCol1" style="list-style: none; padding-inline-start: 0px; padding-left: 0px;"></ul></div></div></div><div class="col-md-6"><div class="row"><div class="col-3"><ul style="list-style: none; padding-inline-start: 0px; padding-left: 0px; font-weight: 700;"><li>Jul</li><li>Aug</li><li>Sep</li><li>Oct</li><li>Nov</li><li>Dec</li></ul></div><div class="col-9"><ul id="aquDatesCol2" style="list-style: none; padding-inline-start: 0px; padding-left: 0px;"></ul></div></div></div></div><div class="row"><div class="col woof pt-3 pb-2 d-none">* K9 Dogs-Only Days</div></div></div></div></div></div></div>'
+                        );
+                        //$('#aquaticsModal').modal();
+                        $('li#aquatics.hours').html('10:00AM-5:20PM');
+
+                        switch (parkNum) {
+                            case '5':
+                                // CB Smith
+                                $('#aquDatesCol1').html(
+                                    '<li id="janAquDate">Closed</li><li id="febAquDate">Closed</li><li id="marAquDate">22-31</li><li id="aprAquDate">Sat-Sun</li><li id="mayAquDate">Fri-Sun & Memorial Day</li><li id="junAquDate">1, 5-30</li>'
+                                );
+                                $('#aquDatesCol2').html(
+                                    '<li id="julAquDate">Open</li><li id="augAquDate">1-13, 17-18, 24-25</li><li id="sepAquDate">Sat-Sun & Labor Day</li><li id="octAquDate">Sat-Sun</li><li id="novAquDate">Closed</li><li id="decAquDate">Closed</li>'
+                                );
+                                break;
+                            case '7':
+                                // Central Broward
+                                $('#aquDatesCol1').html(
+                                    '<li id="janAquDate">Closed</li><li id="febAquDate">Closed</li><li id="marAquDate">22-31</li><li id="aprAquDate">Sat-Sun</li><li id="mayAquDate">Fri-Sun & Memorial Day</li><li id="junAquDate">1, 5-30</li>'
+                                );
+                                $('#aquDatesCol2').html(
+                                    '<li id="julAquDate">Open</li><li id="augAquDate">1-13, 17-18, 24-25</li><li id="sepAquDate">Sat-Sun & Labor Day</li><li id="octAquDate">Closed</li><li id="novAquDate">Closed</li><li id="decAquDate">Closed</li>'
+                                );
+                                break;
+                            case '28':
+                                // Quiet Waters
+                                $('#aquDatesCol1').html(
+                                    '<li id="janAquDate">Closed</li><li id="febAquDate">Closed</li><li id="marAquDate">22-31</li><li id="aprAquDate">Sat-Sun</li><li id="mayAquDate">Fri-Sun & Memorial Day</li><li id="junAquDate">1, 5-30</li>'
+                                );
+                                $('#aquDatesCol2').html(
+                                    '<li id="julAquDate">Open</li><li id="augAquDate">1-13, 17-18, 24-25</li><li id="sepAquDate">Sat-Sun & Labor Day</li><li id="octAquDate">5-6*</li><li id="novAquDate">Closed</li><li id="decAquDate">Closed</li>'
+                                );
+                                $('.woof').removeClass('d-none')
+                                break;
+                            case '37':
+                                // TY
+                                $('#aquDatesCol1').html(
+                                    '<li id="janAquDate">Closed</li><li id="febAquDate">Closed</li><li id="marAquDate">22-31</li><li id="aprAquDate">Sat-Sun</li><li id="mayAquDate">Fri-Sun & Memorial Day</li><li id="junAquDate">1, 5-30</li>'
+                                );
+                                $('#aquDatesCol2').html(
+                                    '<li id="julAquDate">Open</li><li id="augAquDate">1-13, 17-18, 24-25</li><li id="sepAquDate">Sat-Sun & Labor Day</li><li id="octAquDate">5, 6, 12*, 13*, 19*, 20*</li><li id="novAquDate">Closed</li><li id="decAquDate">Closed</li>'
+                                );
+                                $('.woof').removeClass('d-none')
+                                break;
+                            default:
+                                //console.log('aquatics info not available')
+                        }
+                        //append modal
+                    }
+
+                    d = new Date();
+                    today = d.getDay();
+
+                    switch (today) {
+                        case 0:
+                            $('li#sunday').addClass('today');
+                            break;
+                        case 1:
+                            $('li#monday').addClass('today');
+                            break;
+                        case 2:
+                            $('li#tuesday').addClass('today');
+                            break;
+                        case 3:
+                            $('li#wednesday').addClass('today');
+                            break;
+                        case 4:
+                            $('li#thursday').addClass('today');
+                            break;
+                        case 5:
+                            $('li#friday').addClass('today');
+                            break;
+                        case 6:
+                            $('li#saturday').addClass('today');
+                            break;
+                        default: // do nothing
+                            break;
+                    }
+
+                    // build location info
+
+
+                    var gMapInfo = 'https://maps.google.com/?q=' + dirInfo2.Address + dirInfo2.City
+                        .Title +
+                        ', FL ' + dirInfo2.Zip;
+
+                    gMapLink = gMapInfo.split('undefined').join('')
+                        .split(' ').join('+').split(
+                            '++').join('+').toLowerCase();
+
+                    $('#dir-address1, #dir-address2, #dir-csz').wrap(
+                        '<a href="' + gMapLink +
+                        '" target="_blank"></a>');
+
+                    if (dirInfo2.Address && dirInfo2.City.Title &&
+                        dirInfo2.Zip) {
+                        $('#dir-address1').html(dirInfo2.Address);
+                        $('#dir-csz').html(dirInfo2.City.Title +
+                            ", FL " +
+                            dirInfo2.Zip);
+                    }
+                    if (dirInfo2.Phone) {
+                        $('#phoneNumber').html(dirInfo2.Phone);
+                    }
+                    if (dirInfo2.Email) {
+                        $('#emailAddress').html(dirInfo2.Email.split(':')[1]).wrapInner('<a href="' +
+                            dirInfo2.Email + '"></a>')
+                    }
+                    if (dirInfo2.Acreage) {
+                        $('#acreage').html(dirInfo2.Acreage)
+                    }
+                    if (dirInfo2.NeighboringParks.results.length > 0) {
+                        var neighbors = dirInfo2.NeighboringParks.results;
+                        console.log(neighbors);
+                        var allNeighbors = [];
+                        //var parkIds = [];
+                        $.each(neighbors, function (index, neighbor) {
+                            console.log(dirInfo2.NeighboringParksId.results[index]);
+                            allNeighbors.push(neighbor.Title);
+                            //parkIds.push(dirInfo2.NeighboringParksId.results[index]);
+                            $('#neighbors').append('<span data-id="' + index + '">' +
+                                allNeighbors[index] + '</span><br>');
+                            $('#neighbors span[data-id="' + index + '"]').wrap(
+                                '<a href="/Parks/Pages/park.aspx?=' + dirInfo2
+                                .NeighboringParksId.results[index] + '"></a>');
+                        })
+                        console.log(allNeighbors)
+                    }
+
+                    lt = dirInfo2.Latitude;
+                    lg = dirInfo2.Longitude;
+                    initMap();
+
+                    $('#directoryItem').removeClass('d-none');
+
+                    if (dirInfo2.Rentals) {
+                        //console.log(dirInfo2.Rentals);
+                    }
+                });
+
+                $.when(f1).done(function () {
+                    // Lightbox
+                    $.ajax({
+                        url: "/Parks/_api/web/lists/GetByTitle('ParksImages')/items?$select=FileRef/FileRef, Title/Title, Park/ID&$expand=Park/ID",
+                        method: "GET",
+                        headers: {
+                            "Accept": "application/json; odata=verbose"
+                        },
+
+                        success: function (data) {
+                            var thisImagesResults = data.d.results;
+                            f2 = $.each(thisImagesResults, function (ind, imageItem) {
+                                tilePicture = imageItem.FileRef;
+                                linkTitle = imageItem.Title;
+                                park = imageItem.Park.ID ? imageItem.Park.ID :
+                                false;
+                                // if picture is from this park, append to carousel
+                                if (park == dirInfo2.ID) {
+                                    // build flickity slider
+                                    $('.parkCarousel').append(
+                                        '<img class="carousel-cell" src="' +
+                                        tilePicture + '" alt="' + linkTitle +
+                                        '"/>'
+                                    );
+
+                                }
+                            });
+
+                            $.when(f2).done(function () {
+                                if ($('.carousel-cell').length > 4) {
+                                    flick = $('.parkCarousel').flickity({
+                                        // options
+                                        imagesLoaded: true,
+                                        cellAlign: 'left',
+                                        wrapAround: true,
+                                        prevNextButtons: false,
+                                        pageDots: false,
+                                        autoPlay: true
+                                    })
+                                }
+                                return;
+                            })
+                            // only show flickity if enough pictures (4 or 5)
+                            if ($('.carousel-cell').length > 4) {
+                                $('.parkCarousel').removeClass('d-none');
+                                flick.flickity('resize');
+                            }
+                        }
+                    })
+                })
+            });
+        </script>
+        <script>
+            URL = location.href.toLowerCase();
+            newID = URL.split('=')[1].replace("#", "");
+
+            $(document).ready(function () {
+
+                newData3 = $().SPServices.SPGetListItemsJson({
+                    webURL: "/Parks/",
+                    listName: "Parks",
+                    viewName: "",
+                    CAMLQuery: "<Query><Where><Eq><FieldRef Name='ID' /><Value Type='Text'>" + newID +
+                        "</Value></Eq></Where></Query>",
+                    CAMLViewFields: "",
+                    CAMLRowLimit: "",
+                    CAMLQueryOptions: "",
+                    changeToken: "",
+                    contains: "",
+                    mapping: {
+                        ows_ID: {
+                            mappedName: "ID",
+                            objectType: "Text"
+                        },
+                        ows_Alert: {
+                            mappedName: "Alert",
+                            objectType: "Text"
+                        },
+                    }, // name, mappedName, objectType,
+                    mappingOverrides: null,
+                    debug: false
+                })
+
+                // build page elements from data
+                $.when(newData3).done(function () {
+
+                    dirInfo3 = this.data[0];
+
+                    //console.log(dirInfo3)
+                    // build title & description
+                    if (dirInfo3.Alert) {
+                        $('#alertText').html(dirInfo3.Alert);
+                        $('#alert-row').removeClass('d-none')
+                        $('.alert').alert()
+                    }
+                })
+            });
+            webpartMove = $("#webpartContent")
+            webpartMove.detach();
+            webpartMove.appendTo("#fullPageContent");
+        </script>
+        <!-- Init map -->
+        <script defer type="text/javascript" src="/Style%20Library/V7/js/broward/Parks/initMap.js"></script>
+        <!-- Google Maps -->
+        <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVF9fnqaUvGIJY-HmXtOCpWV5Yu798fXQ">
+        </script>
+        <!-- Leaflet maps -->
+        <!-- <script src='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js'></script> -->
+
+
+    </div>
+
+
+</body>
+
+</html>

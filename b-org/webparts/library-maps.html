@@ -1,0 +1,223 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+    <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+    <link href="/Style%20Library/Haylee-Dev/Library/css/LibraryLocations_styles.css" rel="stylesheet">
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.2/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js" integrity="sha512-2fA79E27MOeBgLjmBrtAgM/20clVSV8vJERaW/EcnnWCVGwQRazzKtQS1kIusCZv1PtaQxosDZZ0F1Oastl55w==" crossorigin=""></script>
+    <!-- Mapbox styles -->
+    <!-- <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' /> -->
+    <style>
+        p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+        font-family: Arquette;
+        color: black;
+        font-size: 1rem;
+    }
+
+    #locationList .ms-WPBody a:link,
+    #locationList .ms-WPBody a:visited,
+    #locationList a:active,
+    #locationList a:link,
+    #locationList a:visited,
+        {
+        color: #0277BD;
+    }
+
+    #locationList h5 {
+        color: #0277BD;
+    }
+</style>
+</head>
+
+<body>
+    <div class="row py-3 mx-1 my-2">
+        <div class="col-md-7 col-12 py-0 pl-md-0 mt-md-0 map-container">
+            <div id="map"></div>
+        </div>
+        <div class="col-md-5 col-12 pr-0 mt-5 mt-md-0">
+            <div id="locationList" class="scrollbar scrollbar-morpheus-den">
+            </div>
+        </div>
+    </div>
+    <script src="/Style%20Library/Haylee-Dev/js/broward/Library/moment.min.js"></script>
+    <!-- <script src="/Style%20Library/V7/js/broward/Library/js/libraryLocations_script.js"></script> -->
+    <!-- <script src="/Style%20Library/V7/js/broward/Library/libraryLocations_map.js"></script> -->
+    <script src="/Style%20Library/V7/js/broward/Library/initMap-library.js"></script>
+    <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByVibsaiiXYvyTkywDbK5Yciy_JPJ3Spc&callback=initMap"></script> -->
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
+    <!-- Mapbox -->
+    <!-- <script src='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js'></script> -->
+    <script type="text/javascript">
+        // Get Todays Day of the week
+        var days = [
+            'Sunday', //Sunday starts at 0
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday'
+        ];
+
+        d = new Date();
+        today = d.getDay();
+        todaysDate = days[today];
+
+        var locations = [];
+
+        $(document).ready(function () {
+            $().SPServices({
+                operation: "GetListItems",
+                async: false,
+                listName: "LibraryLocations",
+                webURL: "/library/",
+                CAMLViewFields: "<ViewFields><FieldRef Name='ID' /><FieldRef Name='Title' /><FieldRef Name='AddressLine1' /><FieldRef Name='AddressLine2' /><FieldRef Name='DirectionsLink' /><FieldRef Name='Longitude' /><FieldRef Name='Latitude' /><FieldRef Name='Telephone' /><FieldRef Name='Monday' /><FieldRef Name='Tuesday' /><FieldRef Name='Wednesday' /><FieldRef Name='Thursday' /><FieldRef Name='Friday' /><FieldRef Name='Saturday' /><FieldRef Name='Sunday' /></ViewFields>",
+                completefunc: function (xData, Status) {
+                    $(xData.responseXML).SPFilterNode("z:row").each(function () {
+
+                        newData = $(xData.responseXML).SPFilterNode("z:row").SPXmlToJson({
+                            mapping: {
+                                ows_ID: {
+                                    mappedName: "LocationID",
+                                    objectType: "Text"
+                                },
+                                ows_Title: {
+                                    mappedName: "Location",
+                                    objectType: "Text"
+                                },
+                                ows_AddressLine1: {
+                                    mappedName: "AddressLine1",
+                                    objectType: "Text"
+                                },
+                                ows_AddressLine2: {
+                                    mappedName: "AddressLine2",
+                                    objectType: "Text"
+                                },
+                                ows_DirectionsLink: {
+                                    mappedName: "DirectionsLink",
+                                    objectType: "Text"
+                                },
+                                ows_Telephone: {
+                                    mappedName: "Telephone",
+                                    objectType: "Text"
+                                },
+                                ows_Longitude: {
+                                    mappedName: "Longitude",
+                                    objectType: "Text"
+                                },
+                                ows_Latitude: {
+                                    mappedName: "Latitude",
+                                    objectType: "Text"
+                                },
+                                ows_Monday: {
+                                    mappedName: "Monday",
+                                    objectType: "Text"
+                                },
+                                ows_Tuesday: {
+                                    mappedName: "Tuesday",
+                                    objectType: "Text"
+                                },
+                                ows_Wednesday: {
+                                    mappedName: "Wednesday",
+                                    objectType: "Text"
+                                },
+                                ows_Thursday: {
+                                    mappedName: "Thursday",
+                                    objectType: "Text"
+                                },
+                                ows_Friday: {
+                                    mappedName: "Friday",
+                                    objectType: "Text"
+                                },
+                                ows_Saturday: {
+                                    mappedName: "Saturday",
+                                    objectType: "Text"
+                                },
+                                ows_Sunday: {
+                                    mappedName: "Sunday",
+                                    objectType: "Text"
+                                },
+                                ows_Closed: {
+                                    mappedName: "Closed",
+                                    objectType: "Text"
+                                },
+
+                            }, // name, mappedName, objectType
+                        })
+                    })
+                    for (i = 0; i < newData.length; i++) {
+                        locationInfo = newData[i];
+                        timeNow = moment().format('h:mmA');
+
+                        //Closing Time
+                        closeTime = locationInfo[todaysDate].split('-')[1];
+                        if (closeTime == "NOON") {
+                            closeTime = "12:00PM";
+                        };
+                        closeTimeFull = moment(closeTime, 'h:mmA');
+
+                        //Opening Time
+                        openTime = locationInfo[todaysDate].split('-')[0].toUpperCase();
+                        if (openTime == "NOON") {
+                            openTime = "12:00PM";
+                        };
+                        openTimeFull = moment(openTime, 'h:mmA');
+
+                        if ((moment(timeNow, 'hh:mmA').isBetween(openTimeFull, closeTimeFull,
+                                'minute', '[)')) && (locationInfo.Closed !== "1")) {
+                            branchOpenClose = $(
+                                '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px">  Open Today Until ' +
+                                '<span class="notranslate">' + closeTime + '</span></p>')
+                        } else if (moment(moment(timeNow, 'hh:mmA').isBetween(closeTimeFull,
+                                openTimeFull, 'minute', '[)')) || (locationInfo.Closed == "1")) {
+                            branchOpenClose = $(
+                                '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px"> CLOSED NOW </p>'
+                            )
+                        }
+
+                        branchInfo = "/library/Pages/BranchDetails.aspx?branchInfo=" + locationInfo
+                            .LocationID;
+                        DirectionsLink = locationInfo.DirectionsLink;
+                        getDirections = getDirections = 'https://www.google.com/maps/dir//' +
+                            locationInfo.AddressLine1 + locationInfo.AddressLine2;
+                        $("#locationList")
+                            .append($('<a href=""><h5 style="font-size:1rem; font-weight:700">' +
+                                locationInfo.Location + '</h5></a>').attr("href", branchInfo))
+                            .append($('<p style="line-height:1.2rem;">' + locationInfo.Telephone +
+                                    '<br>' + locationInfo.AddressLine1 + '<br>' + locationInfo.AddressLine2 +
+                                    '<br><br></p>')
+                                .append($(branchOpenClose))
+                                .append($('<a>').html('Get Directions').attr({
+                                    href: getDirections,
+                                    target: "_blank"
+                                })))
+                            .append($('<hr>'));
+
+                        locations.push({
+                            info: '<h5 style="font-size:1rem;">' + locationInfo.Location +
+                                '</h5><p>' + locationInfo.Telephone + '<br>' + locationInfo
+                                .AddressLine1 + '<br>' + locationInfo.AddressLine2 +
+                                '<br><br><a href="' + getDirections +
+                                '" target="_blank">Get Directions</a></p>',
+                            lt: locationInfo.Latitude,
+                            lg: locationInfo.Longitude
+                        })
+                    }
+                    initMap();
+                }
+
+            })
+        });
+    </script>
+</body>
+
+
+</html>

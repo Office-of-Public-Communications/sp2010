@@ -1,0 +1,547 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+    <script type="text/javascript" src="/Style%20Library/v7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
+    <style>
+        div#directoryItem {
+            font-family: Arquette;
+            font-size: 1rem;
+            color: #000;
+        }
+
+        h1,
+        h3,
+        h5 {
+            font-weight: 700;
+        }
+
+        .byLetter {
+            overflow-x: scroll;
+            white-space: nowrap;
+        }
+
+        .byLetter a {
+            display: inline-block;
+            text-align: center;
+            padding: 14px;
+            text-decoration: none;
+        }
+
+        #description h1 {
+            font-weight: 700;
+        }
+
+        #dir-description {
+            white-space: pre-wrap;
+        }
+
+        img#dir-img.contactImg {
+            width: 100%;
+            border-radius: 2px;
+        }
+
+        .contactInfoButton {
+            text-align: center;
+            border: 1px solid #eaeaea;
+            background-color: #eaeaea;
+            display: block;
+            border-radius: 2px;
+        }
+
+        #addressInfo ul {
+            padding: 0;
+        }
+
+        #addressInfo ul li {
+            list-style: none;
+        }
+
+        .tags {
+            padding: 4px 10px;
+            background-color: #f4f4f4;
+            border-radius: 2px;
+            margin: 4px;
+            display: inline-block;
+        }
+
+        #mapid {
+            height: 150px;
+            width: 100%;
+            border-radius: 2px;
+        }
+
+        #backToDir a::before {
+            content: "\f104";
+            padding-right: 10px;
+            margin-bottom: -5px;
+            font-family: 'FontAwesomeSolid';
+            font-size: 1rem;
+            top: 1px;
+            position: relative;
+        }
+    </style>
+    <!-- Image gallery styles -->
+    <link rel="stylesheet" href="/Style%20Library/v7/plugins/JustifiedGallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/Style%20Library/v7/plugins/SwipeBox/css/swipebox.css">
+    <!-- /Image gallery styles -->
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.2/dist/leaflet.css"
+        integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+        crossorigin="" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js"
+        integrity="sha512-2fA79E27MOeBgLjmBrtAgM/20clVSV8vJERaW/EcnnWCVGwQRazzKtQS1kIusCZv1PtaQxosDZZ0F1Oastl55w=="
+        crossorigin=""></script>
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
+</head>
+
+<body>
+    <!-- Directory Web Part - Item View -->
+    <div id="directoryItem" class="container py-3 d-none">
+        <div class="row">
+            <div class="col-10 offset-1 col-sm-6 offset-sm-3 offset-md-0 col-md-4 col-lg-3 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <img id="dir-img" src="" class="contactImg mb-3 d-none">
+                        <section id="contactInfo dir-contact" class="my-2">
+                            <a class="btn btn-outline light-blue darken-1 waves-effect  py-2 my-2 swipebox d-none"
+                                id="dir-gallery" href="#">
+                                <i class="fal fa-images"></i>&nbsp;Images
+                            </a>
+                            <a class="btn btn-outline light-blue darken-1 waves-effect py-2 my-2 d-none"
+                                id="dir-website" href="">
+                                <i class="fal fa-link"></i>&nbsp;Website
+                            </a>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-lg-6 px-3">
+                <section id="description" class="mb-3">
+                    <a href="" id="dir-artist-link">
+                        <h2 id="dir-artist" class="d-none">
+                            &para;</h2>
+                    </a>
+                    <strong id="dir-description-title" class="d-none">
+                        <i class="fal fa-info-circle"></i> Description</strong>
+                    <p id="dir-description" class="d-none">&para;</p>
+                    <strong id="dir-statement-title" class="d-none">
+                        <i class="fal fa-quote-left"></i> Artist Statement</strong>
+                    <p id="dir-statement" class="d-none">&para;</p>
+                    <strong id="dir-year-title" class="d-none">
+                        <i class="fal fa-calendar"></i> Year</strong>
+                    <span id="dir-year" class="d-none">&para;</span>
+                    <strong id="dir-dimension-title" class="d-none">
+                        <i class="fal fa-expand-arrows"></i> Dimensions</strong>
+                    <span id="dir-dimension" class="d-none">&para;</span>
+                </section>
+                <strong class="d-block">
+                    <i class="fal fa-tag"></i> Related</strong>
+                <section id="dir-tags" class="mb-4">
+
+                </section>
+            </div>
+            <div id="dir-map" class="col-lg-3">
+                <div id="mapid" class="map d-none"></div>
+                <div id="addressInfo" class="mt-3">
+                    <ul>
+                        <li>
+                            <i class="fal fa-map"></i>
+                            <strong>&nbsp;Address</strong>
+                        </li>
+                        <li id="dir-located"></li>
+                        <li id="dir-address1"></li>
+                        <li id="dir-address2"></li>
+                        <li id="dir-csz"></li>
+                    </ul>
+                </div>
+                <!--<div id="backToDir" class="py-2 my-5 btn btn-outline waves-light d-block">
+                    <a href="default.aspx">Back to Directory</a>
+                </div>-->
+            </div>
+        </div>
+
+    </div>
+
+    <!--Image Gallery-->
+    <script type="text/javascript" src="/Style%20Library/v7/plugins/SwipeBox/js/jquery.swipebox.js" defer></script>
+    <script type="text/javascript" src="/Style%20Library/v7/plugins/JustifiedGallery/jquery.justifiedGallery.min.js"
+        defer></script>
+
+    <!-- directory item webpart -->
+    <script type="text/javascript">
+        // Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
+        String.prototype.toTitleCase = function () {
+            var i, j, str, lowers, uppers;
+            str = this.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+
+            // Certain minor words should be left lowercase unless
+            // they are the first or last words in the string
+            lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
+                'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'
+            ];
+            for (i = 0, j = lowers.length; i < j; i++) str = str.replace(new RegExp('\\s' + lowers[i] + '\\s', 'g'),
+                function (txt) {
+                    return txt.toLowerCase();
+                }); // Certain words such as initialisms or acronyms should be left uppercase
+            uppers = ['Id', 'Tv'];
+            for (i = 0, j = uppers.length; i < j; i++) str = str.replace(new RegExp('\\b' + uppers[i] + '\\b', 'g'),
+                uppers[i].toUpperCase());
+            return str;
+        }
+
+        // spservices
+        /* Dynamically Load Item */
+
+        URL = location.href.toLowerCase();
+        newID = URL.split('=')[1].replace("#", "");
+
+        gallery = [];
+
+        lt = '';
+        lg = '';
+
+        $(document).ready(function () {
+
+            $().SPServices({
+                operation: "GetListItems",
+                listName: "Directory",
+                webURL: "/Arts/",
+                CAMLQuery: "<Query><Where><Eq><FieldRef Name='ID'/><Value Type='Text'>" +
+                    newID + "</Value></Eq></Where></Query>",
+                CAMLViewFields: "<ViewFields Properties='True' />",
+                completefunc: function (xData, Status) {
+
+                    $(xData.responseXML).SPFilterNode("z:row").each(function () {
+                        json = $(this).attr("ows_Description");
+                        //console.log(json)
+                    })
+                }
+            })
+
+            newData2 = $().SPServices.SPGetListItemsJson({
+                webURL: "/Arts/",
+                listName: "Directory",
+                viewName: "",
+                CAMLQuery: "<Query><Where><Eq><FieldRef Name='ID'/><Value Type='Text'>" +
+                    newID + "</Value></Eq></Where></Query>",
+                CAMLViewFields: "",
+                CAMLRowLimit: "",
+                CAMLQueryOptions: "",
+                changeToken: "",
+                contains: "",
+                mapping: {
+                    ows_ID: {
+                        mappedName: "ID",
+                        objectType: "Text"
+                    },
+                    ows_DirectoryType: {
+                        mappedName: "DirectoryType",
+                        objectType: "Lookup"
+                    },
+                    ows_Title: {
+                        mappedName: "Title",
+                        objectType: "Text"
+                    },
+                    ows_Description: {
+                        mappedName: "Description",
+                        objectType: "Text"
+                    },
+                    ows_Phone: {
+                        mappedName: "Phone",
+                        objectType: "Text"
+                    },
+                    ows_AddressLine1: {
+                        mappedName: "AddressLine1",
+                        objectType: "Text"
+                    },
+                    ows_AddressLine2: {
+                        mappedName: "AddressLine2",
+                        objectType: "Text"
+                    },
+                    ows_ZIP: {
+                        mappedName: "ZIP",
+                        objectType: "Text"
+                    },
+                    ows_Medium: {
+                        mappedName: "Medium",
+                        objectType: "Lookup"
+                    },
+                    ows_Email: {
+                        mappedName: "Email",
+                        objectType: "Text"
+                    },
+                    ows_Artist: {
+                        mappedName: "Artist",
+                        objectType: "Lookup"
+                    },
+                    ows_Located: {
+                        mappedName: "Located",
+                        objectType: "Lookup"
+                    },
+                    ows_City: {
+                        mappedName: "City",
+                        objectType: "Lookup"
+                    },
+                    ows_Image: {
+                        mappedName: "Image",
+                        objectType: "URL"
+                    },
+                    ows_DateTime: {
+                        mappedName: "DateTime",
+                        objectType: "Text"
+                    },
+                    ows_Website: {
+                        mappedName: "Website",
+                        objectType: "URL"
+                    },
+                    ows_Statement: {
+                        mappedName: "Statement",
+                        objectType: "Text"
+                    },
+                    ows_Year: {
+                        mappedName: "Year",
+                        objectType: "Text"
+                    },
+                    ows_Dimensions: {
+                        mappedName: "Dimensions",
+                        objectType: "Text"
+                    },
+                }, // name, mappedName, objectType,
+                mappingOverrides: null,
+                debug: false
+            })
+
+            // build page elements from data
+
+            f1 = $.when(newData2).done(function () {
+                dirInfo2 = this.data[0];
+
+                // build title & description
+                if (dirInfo2.Title) {
+                    var title = dirInfo2.Title.toTitleCase();
+                    $('.broward-titles-bg-white').html('<h1 class="broward-titles">' + title +
+                        '</h1>');
+                    $('.breadcrumbCurrentNode').html(title);
+                    document.title = title;
+                    gallery.push(dirInfo2.ID);
+                }
+                /*$('#dir-subtitle').html(dirInfo2.Artist.lookupValue);*/
+                if (dirInfo2.Description) {
+                    $('#dir-description').html(dirInfo2.Description).removeClass(
+                        'd-none');
+                    $('#dir-description-title').removeClass('d-none').addClass(
+                        'd-block mt-3');
+                }
+                if (dirInfo2.Statement) {
+                    $('#dir-statement').html(dirInfo2.Statement).removeClass(
+                        'd-none');
+                    $('#dir-statement-title').removeClass('d-none').addClass(
+                        'd-block mt-3');
+                }
+                if (dirInfo2.Year) {
+                    $('#dir-year').html(dirInfo2.Year).removeClass(
+                        'd-none');
+                    $('#dir-year-title').removeClass('d-none');
+                }
+                if (dirInfo2.Dimensions) {
+                    $('#dir-dimension').html(dirInfo2.Dimensions).removeClass(
+                        'd-none');
+                    $('#dir-dimension-title').removeClass('d-none');
+                }
+
+                // build location info
+
+                if (dirInfo2.Located || dirInfo2.AddressLine1) {
+                    gMapInfo = 'https://maps.google.com/?q=' + dirInfo2.AddressLine1 +
+                        ', FL ' + dirInfo2.ZIP;
+
+                    gMapLink = gMapInfo.split('undefined').join('')
+                        .split(' ').join('+').split(
+                            '++').join('+').toLowerCase();
+
+                    $('#dir-address1, #dir-address2, #dir-csz').wrap(
+                        '<a href="' + gMapLink +
+                        '" target="_blank"></a>');
+                    if (dirInfo2.Located) {
+                        $('#dir-located').html(dirInfo2.Located.lookupValue)
+                            .removeClass('d-none');
+                    }
+                    if (dirInfo2.AddressLine1 && dirInfo2.City.lookupValue &&
+                        dirInfo2.ZIP) {
+                        $('#dir-address1').html(dirInfo2.AddressLine1);
+                        $('#dir-address2').html(dirInfo2.AddressLine2);
+                        $('#dir-csz').html(dirInfo2.City.lookupValue +
+                            ", FL " +
+                            dirInfo2.ZIP);
+                    }
+                }
+
+                // build contact card element
+                if (dirInfo2.Image) {
+                    $('#dir-img').attr('src', dirInfo2.Image.split(',')[0])
+                        .attr(
+                            'alt', dirInfo2.Image.split(',')[1]).removeClass(
+                            'd-none');
+                    $('#dir-call').removeClass('mt-4').addClass(
+                        'mt-2');
+                } else if (!dirInfo2.Image) {
+                    var images = [
+                        "hero1.jpg",
+                        "hero2.jpg",
+                        "hero3.jpg",
+                        "hero4.jpg",
+                        "hero5.jpg",
+                        "hero6.jpg",
+                        "hero7.jpg",
+                        "hero8.jpg",
+                        "hero9.jpg",
+                    ];
+                    $('#dir-img').attr('src',
+                        '/Style%20Library/v7/img/HomeHero/' +
+                        images[Math.floor(Math.random() * images.length)]
+                    ).removeClass('d-none');
+                    $('#dir-call').removeClass('mt-4').addClass(
+                        'mt-2');
+                }
+                if (dirInfo2.Phone) {
+                    $('#dir-call').attr('href', 'tel:+01-' + dirInfo2.Phone)
+                        .removeClass('d-none').addClass('d-block');
+                }
+                if (dirInfo2.Email) {
+                    $('#dir-email').attr('href', 'mailto:' + dirInfo2.Email)
+                        .removeClass('d-none').addClass('d-block');
+                }
+                if (dirInfo2.Website) {
+                    $('#dir-website').attr('href', dirInfo2.Website.split(
+                        ',')[
+                        0]).attr('target', '_blank').removeClass(
+                        'd-none').addClass(
+                        'd-block');
+                }
+
+                // build related tags
+                if (dirInfo2.Artist || dirInfo2.Located || dirInfo2.Medium ||
+                    dirInfo2.DirectoryType) {
+                    if (dirInfo2.Artist) {
+                        $('#dir-tags').append('<a href="artist.aspx?=' +
+                            dirInfo2.Artist
+                            .lookupId +
+                            '" class="tags">' +
+                            dirInfo2.Artist.lookupValue +
+                            '</a>');
+                        $('#dir-artist').html(dirInfo2.Artist.lookupValue).removeClass('d-none')
+                        $('#dir-artist-link').attr('href',
+                            'artist.aspx?=' + dirInfo2.Artist.lookupId);
+                    }
+
+                    if (dirInfo2.Located) {
+                        $('#dir-tags').append('<a href="default.aspx?=' +
+                            dirInfo2
+                            .Located.lookupValue.split(' ').join(
+                                '+').trim()
+                            .toLowerCase() +
+                            '" class="tags">' + dirInfo2.Located.lookupValue +
+                            '</a>');
+                    }
+
+                    if (dirInfo2.Medium) {
+                        $('#dir-tags').append('<a href="default.aspx?=' +
+                            dirInfo2.Medium
+                            .lookupValue.split(' ').join('+').trim()
+                            .toLowerCase() +
+                            '" class="tags">' +
+                            dirInfo2
+                            .Medium.lookupValue +
+                            '</a>');
+                    }
+
+                    if (dirInfo2.DirectoryType) {
+                        $('#dir-tags').append('<a href="default.aspx" class="tags">' +
+                            dirInfo2
+                            .DirectoryType.lookupValue + '</a>')
+                    }
+                }
+
+                if (dirInfo2.Located || dirInfo2.AddressLine1) {
+
+                    if (dirInfo2.Located !== undefined) {
+                        locatedRequest = dirInfo2.Located.lookupValue +
+                            ',+fl';
+                    }
+                    var addressRequest =
+                        dirInfo2.AddressLine1 + '+' +
+                        '+' +
+                        dirInfo2.City.lookupValue + ',+FL';
+                    if (addressRequest) {
+                        console.log(addressRequest)
+
+                        var urlify = addressRequest.split('undefined').join(
+                            '').split(' ').join('+').split('++').join(
+                            '+').toLowerCase();
+                        console.log(urlify)
+                        $.get(location.protocol +
+                                '//nominatim.openstreetmap.org/search?format=json&q=' +
+                                urlify,
+                                function (data) {
+                                    console.log(data.length > 0)
+                                    if (data.length > 0) {
+                                        console.log(data)
+                                        lt = data[0].lat;
+                                        lg = data[0].lon;
+                                    }
+                                })
+                            .then(function () {
+                                initMap();
+                            });
+                    }
+                    $('#directoryItem').removeClass('d-none');
+                };
+            });
+            $.when(f1).done(function () {
+                // Lightbox
+                $().SPServices({
+                    operation: "GetListItems",
+                    listName: "PublicArt",
+                    webURL: "/Arts/",
+                    CAMLViewFields: "<ViewFields><FieldRef Name='RequiredField' /><FieldRef Name='Title' /><FieldRef Name='Artwork' /></ViewFields>",
+                    completefunc: function (xData, Status) {
+                        lb = [];
+                        $(xData.responseXML).SPFilterNode("z:row").each(function (i) {
+                            tilePicture = $(this).attr("ows_RequiredField");
+                            linkTitle = $(this).attr("ows_Title");
+                            art = $(this).attr("ows_Artwork") ? $(this).attr(
+                                    "ows_Artwork").split(";#")[0].toString() :
+                                false;
+                            // `Artwork` items from `Artist`  = `Artwork` items from `PublicArt`
+                            gallery.indexOf(art) > -1 ? lb.push({
+                                    href: "" + "/" + tilePicture + "",
+                                    title: linkTitle
+                                }) && $('#dir-gallery').removeClass('d-none')
+                                .addClass(
+                                    'd-block') : false;
+                        });
+                        $('#dir-gallery').click(function (e) {
+                            e.preventDefault();
+                            $.swipebox(lb, {
+                                removeBarsOnMobile: false,
+                                hideCloseButtonOnMobile: false, // true will hide the close button on mobile devices
+                                hideBarsDelay: 0, // delay before hiding bars on desktop
+                                videoMaxWidth: 1140, // videos max width
+                                loopAtEnd: true // true will return to the first image after the last image is reached
+                            });
+                        });
+                    }
+                })
+            })
+        })
+    </script>
+    <!-- Init map -->
+    <script defer type="text/javascript" src="/Style%20Library/v7/js/broward/Arts/artsMap.js"></script>
+</body>
+
+</html>

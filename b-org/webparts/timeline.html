@@ -1,0 +1,158 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+    <style>
+        .new:before {
+            content: 'New Park';
+            font-size: .6rem;
+            font-weight: 400;
+            padding: 3px 5px;
+            color: white;
+            background-color: #46a54b;
+            border-radius: 5px;
+            margin-right: 10px;
+            text-transform: uppercase;
+            bottom: 2px;
+            position: relative;
+            letter-spacing: 1px;
+        }
+
+        .park {
+            font-weight: 700;
+        }
+
+        @media screen and (min-width: 769px) {
+            #timeline {
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .tl-item {
+                flex: 0 0 auto;
+                vertical-align: top;
+                width: 25%;
+            }
+
+            .timeline-text {
+                text-align: center;
+            }
+
+            .line {
+                height: 3px;
+                background-color: #46a54b;
+                width: 100%;
+                position: relative;
+            }
+
+            .line-first {
+                height: 3px;
+                background: #46a54b;
+                background: -moz-linear-gradient(left, #46a54b 0%, #46a54b 50%, #fff 50%, #fff 100%);
+                background: -webkit-linear-gradient(left, #46a54b 0%, #46a54b 50%, #fff 50%, #fff 100%);
+                background: linear-gradient(to left, #46a54b 0%, #46a54b 50%, #fff 50%, #fff 100%);
+                width: 100%;
+                position: relative;
+            }
+
+            .line-last {
+                height: 3px;
+                background: #46a54b;
+                background: -moz-linear-gradient(left, #fff 0%, #fff 50%, #46a54b 50%, #46a54b 100%);
+                background: -webkit-linear-gradient(left, #fff 0%, #fff 50%, #46a54b 50%, #46a54b 100%);
+                background: linear-gradient(to left, #fff 0%, #fff 50%, #46a54b 50%, #46a54b 100%);
+                width: 100%;
+                position: relative;
+            }
+
+            .circle {
+                height: 24px;
+                width: 24px;
+                background-color: white;
+                border: 3px solid #46a54b;
+                border-radius: 15px;
+                -moz-border-radius: 15px;
+                -webkit-border-radius: 15px;
+                position: absolute;
+                left: 46%;
+                top: -10px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            #timeline {
+                margin-left: 20px;
+            }
+
+            .tl-item {
+                border-left: 3px solid #46a54b;
+                padding-left: 20px;
+            }
+
+            .tl-item:before {
+                content: '';
+                display: block;
+                height: 24px;
+                width: 24px;
+                background-color: white;
+                border: 3px solid #46a54b;
+                border-radius: 15px;
+                -moz-border-radius: 15px;
+                -webkit-border-radius: 15px;
+                position: absolute;
+                left: 24px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="timeline-container" class="container pr-5"></div>
+
+    <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
+    <script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"></script>
+
+    <script type="text/javascript">
+        // ajax timeline list
+        $.ajax({
+            url: "/Parks/_api/web/lists/GetByTitle('Timeline')/items?$select=*, ParkName/Title&$expand=ParkName&$orderby=Date desc&$top=5000",
+            method: "GET",
+            headers: {
+                "Accept": "application/json; odata=verbose"
+            },
+            success: function (data) {
+                var tlResults = data.d.results;
+                console.log(tlResults)
+
+                // build timeline fragment
+                $fraggle = $('<div id="timeline" class="timeline-text pb-5"></div>');
+                // loop to build fragments
+                $.each(tlResults, function (index, tl) {
+                    let date = moment(tl.Date).format('LL');
+                    let park = tl.ParkName.Title != null ? tl.ParkName.Title : '';
+                    let parkId = tl.ParkNameId;
+                    let title = tl.Title;
+                    let isNew = tl.New === true ? 'new' : '';
+                    console.log(isNew)
+                    // do things to first, last & new park items
+                    // ..
+
+                    // build tl-item & append to fragment
+                    $fraggle.append('<div class="tl-item pb-5"><div class="date">' + date +
+                        '</div><div class="line my-5"><div class="circle"></div></div><div class="mb-2"><a href="/Parks/pages/park.aspx?=' + parkId + '" class="park ' + isNew + '">' +
+                        park + '</a></div><div>' + title + '</div></div>');
+                })
+                // append timeline to timeline-container
+                $fraggle.appendTo('#timeline-container');
+                $('.line').first().addClass('line-first');
+                $('.line').last().addClass('line-last');
+            }
+        })
+    </script>
+</body>
+
+</html>

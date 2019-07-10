@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<title>Squoosh API demo</title>
+<meta charset="utf-8">
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: Helvetica;
+}
+#container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+#header {
+  position: relative;
+  flex: 0 0;
+  padding: 20px;
+  background-color: #333;
+  padding-bottom: 2em;
+  color: #aaa;
+  transition: background-color 0.4s ease-in-out
+}
+.drop-valid #header {
+  background-color: #373;
+}
+#header img {
+  height: 100px;
+  margin: 4px;
+}
+#header button {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2em;
+  line-height: 2em;
+  text-align: center;
+  font-weight: bold;
+}
+#container:not(.has-images) #header:before {
+  content: 'Drop a couple of images here'
+}
+iframe {
+  flex: 1 1;
+  border: 0;
+}
+</style>
+
+<body>
+<file-drop multiple id="container">
+  <header id="header">
+    <button id="apply">Apply settings from the right side to all images</button>
+  </header>
+  <iframe id="ifr"></iframe>
+    
+</file-drop>
+<script type="module">
+  import {FileDropElement} from "https://unpkg.com/file-drop-element@0.2.0/dist/filedrop.mjs?module";
+  import squoosh from "https://deploy-preview-353--squoosh.netlify.com/squoosh.mjs";
+  
+  const images = new Map();
+  function downloadFile(url, name) {
+    const a = document.createElement('a')
+    a.href = url;
+    a.download = name;
+    a.hidden = true;
+    document.body.append(a);
+    a.click();
+  }
+
+  async function initSquoosh() {
+    const {setFile, getBlob} = await squoosh(document.all.ifr, "https://deploy-preview-353--squoosh.netlify.com/");
+
+    document.all.header.onclick = async ev => {
+      const file = images.get(ev.target.src);
+      if(!file) {
+        return;
+      }
+      await setFile(file, file.name);
+    };
+
+    document.all.apply.onclick = async ev => {
+      ev.stopPropagation()
+      for(const file of images.values()) {
+        await setFile(file, file.name);
+        const compressed = await getBlob(1);
+        const url = URL.createObjectURL(compressed);
+        downloadFile(url, file.name);
+      }
+    }
+  }
+  
+  document.querySelector('file-drop').addEventListener("filedrop", ev => {
+    ev.target.classList.add('has-images');
+    ev.files.forEach(file => {
+      const imgUrl = URL.createObjectURL(file, {type: file.type});
+      const img = document.createElement('img');
+      img.src = imgUrl;
+      document.all.header.append(img);
+      const copy = new File([file], file.name, {type: file.type});
+
+      images.set(imgUrl, copy);
+      initSquoosh();
+    });
+    
+  });
+</script>
+  
+  
+<!-- include the Glitch button to show what the webpage is about and
+      to make it easier for folks to view source and remix -->
+<!-- <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+<script src="https://button.glitch.me/button.js"></script> -->
