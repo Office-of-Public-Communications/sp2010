@@ -548,18 +548,18 @@
 			//console.log(window.location.search.length > 0)
 			if(window.location.search.length > 0){
 				$('#parkSelect').val(window.location.search.split('=')[1]);
-				$('#parkSelect').change();
+				//$('#parkSelect').change();
 			}
 		}).then(function(){
 			$('#parkSelect').change(sortEvents());
-			console.log('change on load ran')
+			console.log($('#parkSelect').val())
 		})
 
 		// dropdown sort functionality
-		$('#dateSelect, #parkSelect').change(sortEvents());
+		$('#dateSelect, #parkSelect').change(function(){sortEvents()});
 
 		function sortEvents() {
-			console.log('sort events ran')
+			console.log($('#parkSelect').val())
 
 			var parkValue = $('#parkSelect').val();
 			var dateValue = $('#dateSelect').val();
