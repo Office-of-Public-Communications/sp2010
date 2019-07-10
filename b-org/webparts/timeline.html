@@ -3,7 +3,7 @@
 
 <head>
     <style>
-        .newPark:before {
+        .new:before {
             content: 'New Park';
             font-size: .6rem;
             font-weight: 400;
@@ -110,7 +110,7 @@
 </head>
 
 <body>
-    <div id="timeline-container" class="container px-0"></div>
+    <div id="timeline-container" class="container pr-5"></div>
 
     <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/Style%20Library/V7/js/vendor/moment/moment.min.js"></script>
@@ -119,7 +119,7 @@
     <script type="text/javascript">
         // ajax timeline list
         $.ajax({
-            url: "/Parks/_api/web/lists/GetByTitle('Timeline')/items?$select=*, ParkName/Title&$expand=ParkName&$orderby=Date desc",
+            url: "/Parks/_api/web/lists/GetByTitle('Timeline')/items?$select=*, ParkName/Title&$expand=ParkName&$orderby=Date desc&$top=5000",
             method: "GET",
             headers: {
                 "Accept": "application/json; odata=verbose"
@@ -136,12 +136,14 @@
                     let park = tl.ParkName.Title != null ? tl.ParkName.Title : '';
                     let parkId = tl.ParkNameId;
                     let title = tl.Title;
+                    let isNew = tl.New === true ? 'new' : '';
+                    console.log(isNew)
                     // do things to first, last & new park items
                     // ..
 
                     // build tl-item & append to fragment
                     $fraggle.append('<div class="tl-item pb-5"><div class="date">' + date +
-                        '</div><div class="line my-5"><div class="circle"></div></div><div class="mb-2"><a href="/Parks/pages/park.aspx?=' + parkId + '" class="park">' +
+                        '</div><div class="line my-5"><div class="circle"></div></div><div class="mb-2"><a href="/Parks/pages/park.aspx?=' + parkId + '" class="park ' + isNew + '">' +
                         park + '</a></div><div>' + title + '</div></div>');
                 })
                 // append timeline to timeline-container
