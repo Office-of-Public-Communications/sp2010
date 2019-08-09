@@ -1,235 +1,259 @@
 <html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
-  xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 
 <head>
-  <title></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="/Style%20Library/V7/css/vendor/mdb/bootstrap.min.css">
-  <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
+    <style type="text/css">
+        .subsiteSelect {
+            width: 100% !important;
+            display: block;
+            padding: 17px 0px 17px 10px !important;
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .16), 0 2px 5px 0 rgba(0, 0, 0, .12);
+            font-family: Arquette;
+        }
+
+        option[attr=selected] {
+            padding-left: 17px;
+        }
+
+        input#getFile {
+            padding: 15px 0px 15px 17px !important;
+            max-width: 100%;
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .16), 0 2px 5px 0 rgba(0, 0, 0, .12);
+            font-family: Arquette;
+        }
+
+        input#addFileButton {
+            font-family: arquette;
+            font-size: 1rem;
+            padding: 19px 0px 18px !important;
+            max-width: 100%;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .16), 0 2px 5px 0 rgba(0, 0, 0, .12);
+            font-family: Arquette;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="container py-5">
+        <div class="row my-5">
+            <div class="col-4">
+                <p>1. Select Location</p>
+                <select class="browser-default mdb-select subsiteSelect">
+                    <option value="" selected>Select Location</option>
+                    <!-- Inject subsites here -->
+                </select>
+            </div>
+            <div class="col-4">
+                <p>2. Choose image (300kb max)</p>
+                <!-- call SP upload function -->
+                <input class="" id="getFile" type="file" accept="image/*">
+            </div>
+            <div class="col-4">
+                <p>3. Upload</p>
+                <!--<input id="displayName" type="text" value="Enter a unique name"><br>-->
+                <input class="mx-0 py-3 btn-block btn-primary" id="addFileButton" type="button" value="Upload"
+                    onclick="uploadFile()">
+            </div>
+        </div>
+    </div>
 
-  <!-- call SP upload function -->
-  <input id="getFile" type="file" accept="image/*"><br>
-  <input id="displayName" type="text" value="Enter a unique name"><br>
-  <input id="addFileButton" type="button" value="Upload" onclick="uploadFile()">
+    <script type="text/javascript">
+        'use strict';
 
-  <script type="text/javascript">
-    'use strict';
+        jQuery(document).ready(function () {
 
-    // Check for FileReader API (HTML5) support.
-    if (!window.FileReader) {
-      alert('This browser does not support the FileReader API.');
-    }
-
-    document.getElementById("getFile").addEventListener("change", function (event) {
-      compress(event);
-    });
-
-    var blob;
-    var buffer;
-
-    // compress image using FileReader & Canvas APIs
-    function compress(e) {
-      const width = 500;
-      const height = 300;
-      const fileName = e.target.files[0].name;
-      const reader = new FileReader();
-
-      console.log(e);
-
-      reader.readAsDataURL(e.target.files[0]);
-      reader.onload = event => {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = () => {
-          const elem = document.createElement('canvas');
-          elem.setAttribute('id', 'canvas');
-          //console.log(elem);
-          elem.width = width;
-          elem.height = height;
-          const ctx = elem.getContext('2d');
-          // img.width and img.height will contain the original dimensions
-          ctx.drawImage(img, 0, 0, width, height);
-
-          ctx.canvas.toBlob((blob) => {
-            console.log(blob); //output image as a blob
-            const file = new File([blob], fileName, {
-              type: 'image/jpeg',
-              lastModified: Date.now()
-            }); //output image as a file
-          }, 'image/jpeg', 0.7);
-
-          var imageData = ctx.getImageData(0, 0, width, height);
-          var typedArray = imageData.data; // Uint8ClampedArray
-          buffer = imageData.data.buffer; // ArrayBuffer
-        }
-        reader.onerror = error => console.log(error);
-      };
-    }
-
-    // Upload the file.
-    // You can upload files up to 2 GB with the REST API.
-    function uploadFile() {
-
-      // Define the folder path for this example.
-      // TODO: this needs to automate based on where the user came from
-      var serverRelativeUrlToFolder = '/Sandbox/v6/MattDEV/PublishingImages';
-
-      // Get test values from the file input and text input page controls.
-      var fileInput = jQuery('#getFile');
-      var newName = jQuery('#displayName').val();
-
-      // Get the server URL.
-      var serverUrl = _spPageContextInfo.webAbsoluteUrl;
-
-      // Initiate method calls using jQuery promises.
-      // Get the local file as an array buffer.
-      var getFile = getFileBuffer();
-      getFile.done(function (arrayBuffer) {
-
-        // Add the file to the SharePoint folder.
-        var addFile = addFileToFolder(arrayBuffer);
-        addFile.done(function (file, status, xhr) {
-
-          // Get the list item that corresponds to the uploaded file.
-          var getItem = getListItem(file.d.ListItemAllFields.__deferred.uri);
-          getItem.done(function (listItem, status, xhr) {
-
-            // Change the display name and title of the list item.
-            var changeItem = updateListItem(listItem.d.__metadata);
-            changeItem.done(function (data, status, xhr) {
-              alert('file uploaded and updated');
-            });
-            changeItem.fail(onError);
-          });
-          getItem.fail(onError);
+            // Check for FileReader API (HTML5) support.
+            if (!window.FileReader) {
+                alert('This browser does not support the FileReader API.');
+            }
         });
-        addFile.fail(onError);
-      });
-      getFile.fail(onError);
 
-      // Get the local file as an array buffer.
-      function getFileBuffer() {
-        var deferred = jQuery.Deferred();
-        var reader = new FileReader();
-        reader.onloadend = function (e) {
-          deferred.resolve(e.target.result);
-          console.log(e.target.result)
-        }
-        reader.onerror = function (e) {
-          deferred.reject(e.target.error);
-        }
-        //reader.readAsArrayBuffer(fileInput[0].files[0]);
-        reader.readAsArrayBuffer(blob);
-        return deferred.promise();
-      }
-
-      // Add the file to the file collection in the Shared Documents folder.
-      function addFileToFolder(arrayBuffer) {
-
-        // Get the file name from the file input control on the page.
-        var parts = fileInput[0].value.split('\\');
-        var fileName = parts[parts.length - 1];
-
-        // Construct the endpoint.
-        var fileCollectionEndpoint = String.format(
-          "{0}/_api/web/getfolderbyserverrelativeurl('{1}')/files" +
-          "/add(overwrite=true, url='{2}')",
-          serverUrl, serverRelativeUrlToFolder, fileName);
-
-        // Send the request and return the response.
-        // This call returns the SharePoint file.
-        return jQuery.ajax({
-          url: fileCollectionEndpoint,
-          type: "POST",
-          data: arrayBuffer,
-          processData: false,
-          headers: {
-            "accept": "application/json;odata=verbose",
-            "X-RequestDigest": jQuery("#__REQUESTDIGEST").val(),
-            "content-length": arrayBuffer.byteLength
-          }
-        });
-      }
-
-      // Get the list item that corresponds to the file by calling the file's ListItemAllFields property.
-      function getListItem(fileListItemUri) {
-
-        // Send the request and return the response.
-        return jQuery.ajax({
-          url: fileListItemUri,
-          type: "GET",
-          headers: {
-            "accept": "application/json;odata=verbose"
-          }
-        });
-      }
-
-      // Change the display name and title of the list item.
-      function updateListItem(itemMetadata) {
-
-        // Define the list item changes. Use the FileLeafRef property to change the display name.
-        // For simplicity, also use the name as the title.
-        // The example gets the list item type from the item's metadata, but you can also get it from the
-        // ListItemEntityTypeFullName property of the list.
-        var body = String.format("{{'__metadata':{{'type':'{0}'}},'FileLeafRef':'{1}','Title':'{2}'}}",
-          itemMetadata.type, newName, newName);
-
-        // Send the request and return the promise.
-        // This call does not return response content from the server.
-        return jQuery.ajax({
-          url: itemMetadata.uri,
-          type: "POST",
-          data: body,
-          headers: {
-            "X-RequestDigest": jQuery("#__REQUESTDIGEST").val(),
-            "content-type": "application/json;odata=verbose",
-            "content-length": body.length,
-            "IF-MATCH": itemMetadata.etag,
-            "X-HTTP-Method": "MERGE"
-          }
-        });
-      }
-    }
-
-    // Display error messages.
-    function onError(error) {
-      alert(error.responseText);
-    }
-
-    // url for testing: https://browardauthor/Sandbox/v6/MattDEV/PublishingImages/_api/web/getfilebyserverrelativeurl('/<folder name>/<file name>')
-    // get folder --> use this to POST images
-    /*$.ajax({
-            // need to make a variable for getFolderByServer.. folder url based on what directory user selects
-            url: "/_api/web/getFolderByServerRelativeUrl('/PublishingImages')/Files('uploadTest')",
-            // should MIME type and/or headers change? see upload function
-            method: "POST",
+        $.ajax({
+            url: "/_api/web/lists/GetByTitle('AgencyContact')/items?$top=5000&$orderby=Title asc",
+            method: "GET",
             headers: {
-                    "Accept": "application/json; odata=verbose"
+                "Accept": "application/json; odata=verbose"
             },
             success: function (data) {
-                    var results = data.d.results;
-                    console.log(results);
-            }
-    });*/
+                var subsites = data.d.results;
+                console.log(subsites)
 
-    // site structure --> use this to create dropdown & create variable for determining folder to put images into
-    /*$.ajax({
+                $.each(subsites, function (index, subsite) {
+                    $('.subsiteSelect').append($('<option value="' + subsite.AgencyURL + '">' +
+                        subsite.Title + '</option>'))
+                });
+            }
+        })
+
+        // Upload the file.
+        // You can upload files up to 2 GB with the REST API.
+        function uploadFile() {
+
+            // Define the folder path for this example.
+            var serverRelativeUrlToFolder = '/AgencyImages';
+
+            // Get test values from the file input and text input page controls.
+            var fileInput = jQuery('#getFile');
+            var newName = $('.subsiteSelect option:selected').html();
+            console.log(newName);
+
+            // Get file size
+            var fsize = $('#getFile')[0].files[0].size; // must be smaller than 300000 (300kb)
+            var flimit = 300000;
+
+            // Get the server URL.
+            var serverUrl = _spPageContextInfo.siteAbsoluteUrl;
+            var serverUrl = 'https://browardauthor';
+            //console.log(serverUrl);
+
+            // Initiate method calls using jQuery promises.
+            // Get the local file as an array buffer.
+            var getFile = getFileBuffer();
+
+            if (fsize < 300000) {
+                getFile.done(function (arrayBuffer) {
+
+                    // Add the file to the SharePoint folder.
+                    var addFile = addFileToFolder(arrayBuffer);
+                    addFile.done(function (file, status, xhr) {
+
+                        // Get the list item that corresponds to the uploaded file.
+                        var getItem = getListItem(file.d.ListItemAllFields.__deferred.uri);
+                        getItem.done(function (listItem, status, xhr) {
+
+                            // Change the display name and title of the list item.
+                            var changeItem = updateListItem(listItem.d.__metadata);
+                            changeItem.done(function (data, status, xhr) {
+                                alert(
+                                    'Success! Your file has been uploaded. Please wait for approval process to complete (this is usually done on Fridays).');
+                            });
+                            changeItem.fail(onError);
+                        });
+                        getItem.fail(onError);
+                    });
+                    addFile.fail(onError);
+                });
+                getFile.fail(onError);
+            } else {
+                alert('Uh oh... The image you are uploading exceeds the ' + flimit / 1000 +
+                    'kb file size limit. Please optimize and/or resize your image and try again.')
+            }
+
+            // Get the local file as an array buffer.
+            function getFileBuffer() {
+                var deferred = jQuery.Deferred();
+                var reader = new FileReader();
+                reader.onloadend = function (e) {
+                    deferred.resolve(e.target.result);
+                }
+                reader.onerror = function (e) {
+                    deferred.reject(e.target.error);
+                }
+                reader.readAsArrayBuffer(fileInput[0].files[0]);
+                return deferred.promise();
+            }
+
+            // Add the file to the file collection in the Shared Documents folder.
+            function addFileToFolder(arrayBuffer) {
+
+                // Get the file name from the file input control on the page.
+                var parts = fileInput[0].value.split('\\');
+                console.log(parts)
+                var fileExt = parts[parts.length - 1].split('.')[1];
+                console.log(fileExt)
+                var fileName = $('.subsiteSelect option:selected').html() + '.' + fileExt;
+
+                // Construct the endpoint.
+                var fileCollectionEndpoint = String.format(
+                    "{0}/_api/web/getfolderbyserverrelativeurl('{1}')/files" +
+                    "/add(overwrite=true, url='{2}')",
+                    serverUrl, serverRelativeUrlToFolder, fileName);
+
+                // Send the request and return the response.
+                // This call returns the SharePoint file.
+                return jQuery.ajax({
+                    url: fileCollectionEndpoint,
+                    type: "POST",
+                    data: arrayBuffer,
+                    processData: false,
+                    headers: {
+                        "accept": "application/json;odata=verbose",
+                        "X-RequestDigest": jQuery("#__REQUESTDIGEST").val(),
+                        "content-length": arrayBuffer.byteLength
+                    }
+                });
+            }
+
+            // Get the list item that corresponds to the file by calling the file's ListItemAllFields property.
+            function getListItem(fileListItemUri) {
+
+                // Send the request and return the response.
+                return jQuery.ajax({
+                    url: fileListItemUri,
+                    type: "GET",
+                    headers: {
+                        "accept": "application/json;odata=verbose"
+                    }
+                });
+            }
+
+            // Change the display name and title of the list item.
+            function updateListItem(itemMetadata) {
+
+                // Define the list item changes. Use the FileLeafRef property to change the display name.
+                // For simplicity, also use the name as the title.
+                // The example gets the list item type from the item's metadata, but you can also get it from the
+                // ListItemEntityTypeFullName property of the list.
+                var body = String.format("{{'__metadata':{{'type':'{0}'}},'FileLeafRef':'{1}','Title':'{2}'}}",
+                    itemMetadata.type, newName, newName);
+
+                // Send the request and return the promise.
+                // This call does not return response content from the server.
+                return jQuery.ajax({
+                    url: itemMetadata.uri,
+                    type: "POST",
+                    data: body,
+                    headers: {
+                        "X-RequestDigest": jQuery("#__REQUESTDIGEST").val(),
+                        "content-type": "application/json;odata=verbose",
+                        "content-length": body.length,
+                        "IF-MATCH": itemMetadata.etag,
+                        "X-HTTP-Method": "MERGE"
+                    }
+                });
+            }
+        }
+
+        // Display error messages.
+        function onError(error) {
+            alert(
+                'Uh oh. Something seems to have gone wrong. Please make sure your image follows the guidelines and try uploading it again. If you have further issues, please contact OPC.');
+            console.log(error.responseText)
+        }
+
+        // site structure --> use this to create dropdown & create variable for determining folder to put images into
+        $.ajax({
             // need to make a variable for getFolderByServer.. folder url based on what directory user selects
             url: "/_api/site/rootWeb/webinfos",
             // should MIME type and/or headers change? see upload function
             method: "GET",
             headers: {
-                    "Accept": "application/json; odata=verbose"
+                "Accept": "application/json; odata=verbose"
             },
             success: function (data) {
-                    var results = data.d.results;
-                    console.log(results);
+                var results = data.d.results;
+                //console.log(results);
             }
-    });*/
-  </script>
+        });
+    </script>
 </body>
 
 </html>

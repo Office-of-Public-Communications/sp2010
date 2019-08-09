@@ -1,0 +1,197 @@
+.ACCStyles a,
+.ACCStyles2 a,
+.ACCStyles3 a {
+    text-decoration: none;
+}
+
+.ACCStyles .accordion .card,
+.ACCStyles2 .accordion .card,
+.ACCStyles3 .accordion .card {
+    border-bottom: 1px #81D4FA solid !important;
+}
+
+.ACCStyles span,
+.ACCStyles2 span,
+.ACCStyles3 span {
+    position: relative;
+    float: right;
+    margin-bottom: 2.5rem;
+
+}
+
+.ACCStyles span:after,
+.ACCStyles2 span:after,
+.ACCStyles3 span:after {
+    content: "\f067";
+    font-family: "Font Awesome 5 pro";
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 100%;
+    color: black;
+    display: block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    background: #4FC3F7;
+    border-radius: 50%;
+    vertical-align: middle;
+    text-align: center;
+    -webkit-transition: all .35s;
+    -o-transition: all .35s;
+    transition: all .35s;
+}
+
+.ACCStyles span.down:after,
+.ACCStyles2 span.down:after,
+.ACCStyles3 span.down:after {
+    -ms-transform: rotate(135deg);
+    -moz-transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+}
+
+.pageACC>div {
+    padding-left: 0px;
+}
+
+/* IE/Sharepoint Table fix*/
+@media screen and (min-width: 540px) and (max-width: 589px) {
+    .pageACC {
+        max-width: 520px;
+    }
+
+    .pageACC card {
+        max-width: 520px;
+    }
+}
+
+@media screen and (min-width: 590px) and (max-width: 639px) {
+    .pageACC {
+        max-width: 570px;
+    }
+
+    .pageACC card {
+        max-width: 570px;
+    }
+}
+
+@media screen and (min-width: 620px) and (max-width: 689px) {
+    .pageACC {
+        max-width: 620px;
+    }
+
+    .pageACC card {
+        max-width: 620px;
+    }
+}
+
+@media screen and (min-width: 690px) and (max-width: 739px) {
+    .pageACC {
+        max-width: 670px;
+    }
+
+    .pageACC card {
+        max-width: 670px;
+    }
+}
+
+@media screen and (min-width: 740px) and (max-width: 789px) {
+    .pageACC {
+        max-width: 720px;
+    }
+
+    .pageACC card {
+        max-width: 720px;
+    }
+}
+
+@media screen and (min-width: 790px) and (max-width: 839px) {
+    .pageACC {
+        max-width: 770px;
+    }
+
+    .pageACC card {
+        max-width: 770px;
+    }
+}
+
+@media screen and (min-width: 840px) and (max-width: 889px) {
+    .pageACC {
+        max-width: 820px;
+    }
+
+    .pageACC card {
+        max-width: 820px;
+    }
+}
+
+@media screen and (min-width: 890px) and (max-width: 939px) {
+    .pageACC {
+        max-width: 870px;
+    }
+
+    .pageACC card {
+        max-width: 870px;
+    }
+}
+
+@media screen and (min-width: 940px) and (max-width: 989px) {
+    .pageACC {
+        max-width: 920px;
+    }
+
+    .pageACC card {
+        max-width: 920px;
+    }
+}
+
+@media screen and (min-width: 990px) and (max-width: 1039px) {
+    .pageACC {
+        max-width: 970px;
+    }
+
+    .pageACC card {
+        max-width: 970px;
+    }
+}
+
+@media screen and (min-width: 1040px) and (max-width: 1089px) {
+    .pageACC {
+        max-width: 1020px;
+    }
+
+    .pageACC card {
+        max-width: 1020px;
+    }
+}
+
+@media screen and (min-width: 1090px) and (max-width: 1139px) {
+    .pageACC {
+        max-width: 1070px;
+    }
+
+    .pageACC card {
+        max-width: 1070px;
+    }
+}
+
+@media screen and (min-width: 1140px) and (max-width: 1199px) {
+    .pageACC {
+        max-width: 1120px;
+    }
+
+    .pageACC card {
+        max-width: 1120px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .pageACC {
+        max-width: 1170px;
+    }
+
+    .pageACC card {
+        max-width: 1170px;
+    }
+}
