@@ -1,0 +1,143 @@
+<html
+  dir="ltr"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:mso="urn:schemas-microsoft-com:office:office"
+  xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882"
+>
+  <head>
+    <style>
+      #filterOptions select {
+        border: none;
+        border-radius: 4px;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16),
+          0 2px 5px 0 rgba(0, 0, 0, 0.12);
+        font-family: Arquette;
+        padding: 12px;
+      }
+
+      #resultBtns .btn {
+        padding: 0.85rem 2rem;
+      }
+
+      .day {
+        font-size: 1.8rem;
+        font-weight: 400;
+      }
+
+      .pkImg {
+        max-height: 300px;
+        max-width: 300px;
+        width: 100%;
+        object-fit: cover;
+      }
+
+      h5.eventTitle:hover {
+        text-decoration: underline;
+      }
+      .eventcard {
+        max-width: 300px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div aria-label="Parks Main Content" id="parkContent">
+      <div id="featEvents" class="container"></div>
+    </div>
+
+    <script
+      type="text/javascript"
+      src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="/Style%20Library/V7/js/vendor/moment/moment.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"
+    ></script>
+    <script type="text/javascript">
+      // Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
+      String.prototype.toTitleCase = function() {
+        var i, j, str, lowers, uppers;
+        str = this.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
+          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+
+        // Certain minor words should be left lowercase unless
+        // they are the first or last words in the string
+        lowers = [
+          "A",
+          "An",
+          "The",
+          "And",
+          "But",
+          "Or",
+          "For",
+          "Nor",
+          "As",
+          "At",
+          "By",
+          "For",
+          "From",
+          "In",
+          "Into",
+          "Near",
+          "Of",
+          "On",
+          "Onto",
+          "To",
+          "With"
+        ];
+        for (i = 0, j = lowers.length; i < j; i++)
+          str = str.replace(
+            new RegExp("\\s" + lowers[i] + "\\s", "g"),
+            function(txt) {
+              return txt.toLowerCase();
+            }
+          ); // Certain words such as initialisms or acronyms should be left uppercase
+        uppers = ["Id", "Tv"];
+        for (i = 0, j = uppers.length; i < j; i++)
+          str = str.replace(
+            new RegExp("\\b" + uppers[i] + "\\b", "g"),
+            uppers[i].toUpperCase()
+          );
+        return str;
+      };
+
+          $fraggle = $(
+            '<div id="eventSearchResults" class="row justify-content-md-center"></div>'
+          );
+
+            var f2 = $.ajax({
+              url:
+                "/Animal/_api/web/lists/GetByTitle('FeaturedPets')/items?$select=*,EncodedAbsUrl", // + " and ",
+              method: "GET",
+              async: false,
+              headers: {
+                Accept: "application/json; odata=verbose"
+              },
+              success: function(data) {
+                imgResult = data.d.results;
+                console.log(imgResult);
+              }
+            });
+            $.when(f2).done(frag());
+
+            function frag() {
+              $fraggle.append(
+                $(
+                  '<div class="event col-12 col-md-auto p-3 my-1"><div class="eventcard container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><a href=""><img class="card-img-top pkImg lazyload" data-src="' +
+                    imgResult[0].EncodedAbsUrl +
+                    '" alt="Card image cap"></a></div></div><div class="container"><div class="row"><div class="col-9 pl-3"><a href=""><h5 class="pt-3 eventTitle"><strong style="letter-spacing: -.25px;">Paws McFeline</strong></h5></a></div></div></div></div>'
+                )
+              );
+              //debugger;
+            }
+          $.when(frag).done(function() {
+            $fraggle.appendTo("#featEvents");
+          });
+    </script>
+  </body>
+</html>
