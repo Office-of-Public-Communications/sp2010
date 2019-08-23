@@ -25,7 +25,7 @@
       }
 
       .pkImg {
-        max-height: 300px;
+        max-height: 200px;
         max-width: 300px;
         width: 100%;
         object-fit: cover;
@@ -41,21 +41,13 @@
   </head>
 
   <body>
-    <div aria-label="Parks Main Content" id="parkContent">
-      <div id="featEvents" class="container"></div>
+    <div aria-label="Featured Pets Main Content" id="petsContent">
+      <div id="featPets" class="container"></div>
     </div>
 
     <script
       type="text/javascript"
       src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="/Style%20Library/V7/js/vendor/moment/moment.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"
     ></script>
     <script type="text/javascript">
       // Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
@@ -106,38 +98,35 @@
         return str;
       };
 
-          $fraggle = $(
-            '<div id="eventSearchResults" class="row justify-content-md-center"></div>'
-          );
+      $fraggle = $(
+        '<div id="eventSearchResults" class="row justify-content-md-center"></div>'
+      );
 
-            var f2 = $.ajax({
-              url:
-                "/Animal/_api/web/lists/GetByTitle('FeaturedPets')/items?$select=*,EncodedAbsUrl", // + " and ",
-              method: "GET",
-              async: false,
-              headers: {
-                Accept: "application/json; odata=verbose"
-              },
-              success: function(data) {
-                imgResult = data.d.results;
-                console.log(imgResult);
-              }
-            });
-            $.when(f2).done(frag());
-
-            function frag() {
+      var f2 = $.ajax({
+        url:
+          "/Animal/_api/web/lists/GetByTitle('FeaturedPets')/items?$select=*,EncodedAbsUrl",
+        method: "GET",
+        async: false,
+        headers: {
+          Accept: "application/json; odata=verbose"
+        },
+        success: function(data) {
+          imgResult = data.d.results;
+          console.log(imgResult)
+          $.each(imgResult, function(index, img){
+            if(img.Featured){
               $fraggle.append(
                 $(
-                  '<div class="event col-12 col-md-auto p-3 my-1"><div class="eventcard container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><a href=""><img class="card-img-top pkImg lazyload" data-src="' +
-                    imgResult[0].EncodedAbsUrl +
-                    '" alt="Card image cap"></a></div></div><div class="container"><div class="row"><div class="col-9 pl-3"><a href=""><h5 class="pt-3 eventTitle"><strong style="letter-spacing: -.25px;">Paws McFeline</strong></h5></a></div></div></div></div>'
+                  '<div class="event col-12 col-md-auto p-3 my-1"><div class="eventcard container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><a href=""><img class="card-img-top pkImg lazyload" data-src="' + img.EncodedAbsUrl + '" alt="Card image cap"></a></div></div><div class="container"><div class="row"><div class="col-9 pl-3"><a href=""><h5 class="pt-3 eventTitle"><strong style="letter-spacing: -.25px;">' + img.Title + '</strong></h5></a></div></div><div class="row"><a href="' + img.Link.Url + '" target="_blank"><div class="col"><div type="button" class="btn btn-sm btn-info light-blue darken-1 float-right mt-2">More About Me</div></a></div></div></div></div>'
                 )
               );
-              //debugger;
             }
-          $.when(frag).done(function() {
-            $fraggle.appendTo("#featEvents");
-          });
+          })
+        }
+      });
+      $.when(f2).done(function() {
+        $fraggle.appendTo("#featPets");
+      });
     </script>
   </body>
 </html>
