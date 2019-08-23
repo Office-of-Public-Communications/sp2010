@@ -1,0 +1,499 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Service Finder</title>
+
+    <style type="text/css">
+        .filter-label {
+            text-transform: uppercase;
+            font-size: .75rem;
+        }
+
+        .near {
+            text-transform: uppercase;
+            background-color: #1C2A48;
+            font-weight: 500;
+            font-size: .95rem;
+        }
+
+        .service-card {
+            border: none;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);
+        }
+
+        .service-card hr {
+            margin-top: 0;
+        }
+
+        #title.county:after {
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            bottom: .2rem;
+            content: "County\00A0Operated";
+            font-size: .8rem;
+            text-transform: uppercase;
+            color: #FF9802;
+            padding: .3rem .5rem .3rem;
+            border-radius: .4rem;
+            /*background: #FFCC80;*/
+            margin-left: 4px;
+            font-weight: 300;
+            border: 1px solid #FFB74D;
+        }
+
+        #title.partner:after {
+            position: relative;
+            bottom: .15rem;
+            content: "County-Funded\00A0Partner";
+            font-size: .8rem;
+            text-transform: uppercase;
+            color: #999;
+            padding: .15rem .4rem .25rem;
+            border: 1px solid #eaeaea;
+            border-radius: .4rem;
+            margin-left: 4px;
+            font-weight: 300;
+        }
+
+        .icon {
+            color: white;
+        }
+
+        .icon-bg {
+            color: #039be5;
+        }
+
+        #find-a-service select {
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .16), 0 2px 5px 0 rgba(0, 0, 0, .12);
+            font-family: Arquette;
+            padding: 12px;
+            height: auto;
+        }
+
+        h5#title {
+            font-size: 1.6rem !important;
+            margin-top: .3rem !important;
+            margin-bottom: 1rem !important;
+            color: #039BE5 !important;
+
+        }
+        #categories {
+            margin-bottom: 4.5rem;
+            white-space: nowrap;
+            overflow-x: scroll;
+        }
+        #categories::-webkit-scrollbar {
+            display: none;
+        }
+        #categories a {
+            font-size: .7rem !important;
+            text-transform: uppercase;
+            background-color: white;
+            border: 1px solid grey;
+        }
+        #categories col {
+            display: inline-block;
+            float: none;
+            padding-right: 17px; /* Increase/decrease this value for cross-browser compatibility */
+            box-sizing: content-box; /* So the width will be 100% + 17px */
+        }
+
+        .call-btn {
+            background-color: #0277BD;
+        }
+
+        .chip {
+            text-transform: uppercase;
+            font-size: 11px;
+            height: 26px;
+            line-height: 26px;
+            transition: none;
+            /* margin-right: 2px !important;
+            margin-top: 2px !important; */
+        }
+        .svcImg {
+            width: 100%;
+            object-fit: cover;
+            border-top-left-radius: calc(.25rem - 1px);
+            border-bottom-left-radius: calc(.25rem - 1px);
+            overflow: hidden;
+        }
+        .fill {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .fill img {
+            flex-shrink: 0;
+            min-width: 100%;
+            min-height: 100%
+        }
+        .service-cta {
+            position: absolute;
+            right: 1rem;
+            bottom: 1rem;
+        }
+    </style>
+    <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+    <!--  Find A Service Dropdown -->
+    <section id="find-a-service">
+        <div class="container">
+            <h2 class="find-title my-4">Find a Service</h2>
+            <div class="row">
+                <div class="filter-options col-md-4">
+                    <label id="service-label" class="filter-label">Filter by Category</label>
+                    <select id="serviceTypes-select" class="browser-default form-control mdb-select" name="services"
+                        onchange="updateServices()" aria-labelledby="service-label">
+
+                        <option value="All Services">All Categories</option>
+                        <option value="Substance Abuse">Substance Abuse</option>
+                        <option value="Mental Health Care">Mental Health Care</option>
+                        <option value="Medical Care">Medical Care</option>
+                        <option value="Addiction Recovery">Addiction Recovery</option>
+                        <option value="Detoxification">Detoxification</option>
+                        <option value="Outpatient Programs">Outpatient Programs</option>
+                        <option value="Residential Programs">Residential Programs</option>
+                        <option value="Sexual Assault">Sexual Assault</option>
+                        <option value="Rape">Rape</option>
+                        <option value="Child Abuse">Child Abuse</option>
+                        <option value="Children's Advocacy">Children's Advocacy</option>
+                        <option value="Child Abuse">Child Abuse</option>
+                        <option value="Human Trafficking">Human Trafficking</option>
+                        <option value="...">...</option>
+                    </select>
+
+                </div>
+                <div class="filter-options col-md-4">
+                    <label id="location-label" class="filter-label">filter by location</label>
+                    <select id="locations-select" class="browser-default form-control mdb-select" name="locations"
+                        onchange="updateLocations()" aria-labelledby="location-label">
+                        <option value="All Locations">All Locations</option>
+                        <!--<option value="Fort Lauderdale">Fort Lauderdale</option>
+                        <option value="Hollywood">Hollywood</option>
+                        <option value="Plantation">Plantation</option>
+                        <option value="...">...</option>-->
+                    </select>
+
+                </div>
+                <div class="col-md-4">
+
+                </div>
+                <!--<div class="col-md-4">
+                    <span class="float-right btn near my-4"><i class="fal fa-street-view"></i> Services Near me</span>
+                </div>-->
+            </div>
+            <ul id="services-list"></ul>
+        </div>
+    </section>
+    <!--  Service Cards -->
+    <section id="service-cards" class="px-3">
+        <div class="container service-card card">
+            <div class="row">
+                <div class="col-3 p-0">
+                    <img class="svcImg lazyload" data-src="https://placehold.it/300" alt="Card image">
+                </div>
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-md-10 pt-3 pb-2 px-4">
+                            <h5 id="title" class="county"><a href="#">Broward Addiction Recovery Center</a>
+                            </h5>
+                            <p>123 Penny Lane Fort Lauderdale, FL 33301 <a href="">View Map</a></p>
+                        </div>
+                        <!--
+                        <div class="col-md-2">
+                            <span class="float-right distance align-bottom"><i class="fal fa-map-marker-alt"></i> 1.3
+                                mi</span>
+                        </div>-->
+                    </div>
+                    <hr />
+                    <div id="categories" class="row mb-3 pt-2">
+                        <div class="col">
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Substance Abuse</div>
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Mental Health Care</div>
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Medical Care</div>
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Addiction Recovery</div>
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Detoxification</div>
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Outpatient Programs</div>
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Residential Programs</div>
+
+                            <!--<a href="#" id="test-category-badge"class="font-weight-normal z-depth-0 badge badge-light p-2 mb-1">Default</a>
+							<a href="#" class="font-weight-normal z-depth-0 badge badge-light p-2 mb-1">Primary</a>
+							<a href="#" class="font-weight-normal z-depth-0 badge badge-light p-2 mb-1">Secondary</a>
+							<a href="#" class="font-weight-normal z-depth-0 badge badge-light p-2 mb-1">Success</a>
+							<a href="#" class="font-weight-normal z-depth-0 badge badge-light p-2 mb-1">Danger</a>
+							<a href="#" class="font-weight-normal z-depth-0 badge badge-light p-2 mb-1">Warning</a>
+							<a href="#" class="font-weight-normal z-depth-0 badge badge-light p-2 mb-1">Info</a>
+							<a href="#" class="font-weight-normal z-depth-0 badge badge-light p-2 mb-1">Light</a>
+							<a href="#" class="font-weight-normal z-depth-0 badge badge-light p-2 mb-1">Dark</a>-->
+                        </div>
+                    </div>
+                    <!--
+                    <p>Services will begin at the new flagship Broward Addiction Recovery Center (BARC) building on
+                        August 29th, with expanded service hours beginning Sunday, September 2nd. The new building is
+                        located at 325 SW 28th Street, Fort Lauderdale, FL 33315.
+                        <a href="#"><span class="cta-btn more">More Info...</span></a></p>
+                    -->
+                    <div class="d-flex flex-row justify-content-end align-items-end">
+                        <a href="#">
+                            <span class="btn btn-flat cta-btn">Get Directions</span>
+                        </a>
+                        <a href="#">
+                            <span class="btn call-btn">Call Now</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container service-card p-3 my-3 card">
+            <div class="row">
+                <div class="service-image col-3"></div>
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <h5 id="title" class="partner"><a href="#">Nancy J. Cotterman Center</a>
+                            </h5>
+                        </div>
+                        <div class="col-md-2">
+                            <!--<span class="float-right distance"><i class="fal fa-map-marker-alt"></i> 2.7 mi</span>-->
+                        </div>
+                    </div>
+                    <hr />
+                    <div id="categories" class="row mb-3 pt-2">
+                        <div class="col">
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Sexual Assault</div>
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Rape</div>
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Crisis Intervention</div>
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Children's Advocacy</div>
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Child Abuse</div>
+                            <div href="#" class="font-weight-normal z-depth-0 chip mr-1">Human Trafficking</div>
+                        </div>
+                    </div>
+                    <!--<p>It is the mission of the Nancy J. Cotterman Center (NJCC) to improve and enhance the quality of
+                        life for victims of sexual assault and child abuse through effective forensically sensitive
+                        interventions, implemented by professionals specializing in the fields of sexual assault and
+                        child abuse.
+                        <a href="#"><span class="cta-btn more">More Info...</span></a></p>-->
+
+                    <div class="d-flex flex-row justify-content-end">
+                        <a href="#">
+                            <span class="btn btn-flat cta-btn">Get Directions</span>
+                        </a>
+                        <a href="#">
+                            <span class="btn call-btn">Call Now</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                url: "/HumanServices/_api/web/lists/GetByTitle('Cities')/items?$top=5000&$orderby=Title asc",
+                method: "GET",
+                headers: {
+                    "Accept": "application/json; odata=verbose"
+                },
+                success: function (data) {
+                    var cities = data.d.results;
+                    console.log(cities)
+
+                    $.each(cities, function (index, city) {
+                        $('#locations-select').append($('<option value="' + city.Title + '">' + city.Title + '</option>'))
+                    });
+                }
+            })
+
+            $.ajax({
+                url: "/HumanServices/_api/web/lists/GetByTitle('hs-finder')/items?$select=*,City/Title&$expand=City/ID&$top=5000&$orderby=Title asc",
+                method: "GET",
+                headers: {
+                    "Accept": "application/json; odata=verbose"
+                },
+                success: function (data) {
+                    var locations = data.d.results;
+                    console.log(locations)
+
+                    $.each(locations, function (index, location) {
+                        $('#serviceTypes-select').append($('<option value="' + location.Title + '">' + location.Title + '</option>'))
+                    })
+
+                    $.each(locations, function (index, location) {
+                        console.log(location.Agency);
+                        $('#service-cards').append('<div class="container service-card card my-3"><div class="row"><div class="col-md-3 p-0 fill"><img class="svcImg lazyload" data-src="https://source.unsplash.com/600x600/?sunrise" alt="Card image"></div><div class="col-md-9 pb-3 px-4"><div class="row"><div class="col-md-10 pt-3 pb-2"><h5 id="title" class="county"><a href="#">' + location.Agency + '</a></h5><p>' + location.Address + ' ' + location.City.Title + ', FL ' + location.ZIP + ' <a href="#"><span class="cta-btn more">View Map</span></a></p></div><div class="col-md-2"><!--<span class="float-right distance align-bottom"><i class="fal fa-map-marker-alt-slash" style="color:grey"></i></span>--></div></div><hr /><div id="categories" class="row pt-2 mr-0"><div class="col"><div href="#" class="font-weight-normal z-depth-0 chip mr-1">Substance Abuse</div><div href="#" class="font-weight-normal z-depth-0 chip mr-1">Mental Health Care</div><div href="#" class="font-weight-normal z-depth-0 chip mr-1">Medical Care</div><div href="#" class="font-weight-normal z-depth-0 chip mr-1">Addiction Recovery</div><div href="#" class="font-weight-normal z-depth-0 chip mr-1">Detoxification</div><div href="#" class="font-weight-normal z-depth-0 chip mr-1">Outpatient Programs</div><div href="#" class="font-weight-normal z-depth-0 chip mr-1">Residential Programs</div></div></div><div class="service-cta d-flex flex-row justify-content-end"><a href="#"><span class="btn btn-flat cta-btn">Get Directions</span></a><a href="#"><span class="btn call-btn">Call Now</span></a></div></div></div></div>')
+                    })
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        "use strict";
+
+        var services, locations, servicetypes;
+        /**
+         * Fetch locations and service types as soon as the page is loaded.
+         */
+
+        document.addEventListener("DOMContentLoaded", function (event) {
+            fetchLocations();
+            fetchServiceTypes();
+        });
+        /**
+         * Fetch all locations and set their HTML.
+         */
+
+        function fetchLocations() {
+            // TODO: pull in location info from spservices here
+            /*DBHelper.fetcLocations(function (error, locations) {
+                if (error) {
+                    // Got an error
+                    console.error(error);
+                } else {
+                    self.locations = locations;
+                    fillLocationsHTML();
+                }
+            });*/
+        };
+        /**
+         * Set locations HTML.
+         */
+
+
+        function fillLocationsHTML() {
+            var locations = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.locations;
+            // TODO: create dropdowns from data - verify this works
+            var select = document.getElementById("locations-select");
+            locations.forEach(function (location) {
+                var option = document.createElement("option");
+                option.innerHTML = location;
+                option.value = location;
+                select.append(option);
+            });
+        };
+        /**
+         * Fetch all service types and set their HTML.
+         */
+
+
+        function fetchServiceTypes() {
+            // TODO: pull in service type info from spservices here
+            /*DBHelper.fetchServiceTypes(function (error, serviceTypes) {
+                if (error) {
+                    // Got an error!
+                    console.error(error);
+                } else {
+                    self.serviceTypes = serviceTypes;
+                    filServiceTypesHTML();
+                }
+            });*/
+        };
+        /**
+         * Set service types HTML.
+         */
+
+
+        function fillServiceTypesHTML() {
+            var serviceTypes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.serviceTypes;
+            // TODO: create dropdowns from data - verify this works
+            var select = document.getElementById("serviceTypes-select");
+            serviceTypes.forEach(function (serviceType) {
+                var option = document.createElement("option");
+                option.innerHTML = serviceType;
+                option.value = serviceType;
+                select.append(option);
+            });
+        };
+        /**
+         * Update page for current services.
+         */
+
+
+        function updateServices() {
+            // TODO: update services on page based on dropdown selection - verify this works - will probably require spservices
+            var sSelect = document.getElementById("serviceTypes-select");
+            var lSelect = document.getElementById("locations-select");
+            var sIndex = sSelect.selectedIndex;
+            var lIndex = lSelect.selectedIndex;
+            var serviceType = sSelect[sIndex].value;
+            var location = lSelect[lIndex].value;
+            /*DBHelper.fetchServiceByServiceTypeAndLocation(serviceType, location, function (error, services) {
+                if (error) {
+                    // Got an error!
+                    console.error(error);
+                } else {
+                    resetServices(services);
+                    fillServicesHTML();
+                }
+            });*/
+        };
+        /**
+         * Clear current services, their HTML and remove their map markers.
+         */
+
+
+        function resetServices(services) {
+            // TODO: verify this works
+            // Remove all services
+            self.services = [];
+            var ul = document.getElementById("services-list");
+            ul.innerHTML = "";
+        };
+        /**
+         * Create all services HTML and add them to the webpage.
+         */
+
+
+        function fillServicesHTML() {
+            var services = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.services;
+            // TODO: verify this works
+            var ul = document.getElementById("services-list");
+            services.forEach(function (service) {
+                ul.append(createServiceHTML(service));
+            });
+        };
+        /**
+         * Create service HTML.
+         */
+
+
+        function createServiceHTML(service) {
+            // TODO: restructure to match HTML structure & verify this works
+            var li = document.createElement("li");
+            var name = document.createElement("h1");
+            name.innerHTML = service.name;
+            li.append(name);
+            var location = document.createElement("p");
+            location.className = "location";
+            location.innerHTML = service.location;
+            li.append(location);
+            var address = document.createElement("p");
+            address.innerHTML = service.address;
+            li.append(address);
+            var more = document.createElement("button");
+            more.className = "more";
+            more.innerHTML = "View Details";
+
+            more.onclick = function () {
+                //var url = DBHelper.urlForService(service);
+                window.location = url;
+            };
+
+            li.append(more);
+            return li;
+        };
+    </script>
+</body>
+
+</html>

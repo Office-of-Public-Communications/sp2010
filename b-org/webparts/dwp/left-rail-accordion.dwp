@@ -28,13 +28,13 @@
   <TypeName>Microsoft.SharePoint.WebPartPages.SimpleFormWebPart</TypeName>
   <Content xmlns="http://schemas.microsoft.com/WebPart/v2/SimpleForm"><![CDATA[<html>
 <head>
-<link rel="stylesheet" type="text/css" href="/Style Library/V7/WebParts/General/Left Rail Webpart/Searchable Accordion/searchableAccordion.css"/>
+<link rel="stylesheet" type="text/css" href="/Style Library/V7/WebParts/General/Left Rail Webpart/Accordion/Accordion.css"/>
 <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
 </head>
 <body>
 <div class="searchableAccordion"></div>
 <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
-<script defer src="/Style%20Library/V7/WebParts/General/Left Rail Webpart/Searchable Accordion/searchableAccordion.js"></script>
+<script defer src="/Style%20Library/V7/WebParts/General/Left Rail Webpart/Accordion/Accordion.js"></script>
 
 <script type="text/javascript">
 
