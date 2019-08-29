@@ -1,12 +1,12 @@
 var wpUrls = []
-var wpPage = '';
+var wpPage = ''
 
 function getWebPartInfo () {
   function asyncForEach (arr, cb, done) {
     (function next (i) {
       if (i >= arr.length) {
         if (done) done()
-        return;
+        return
       }
       const stop = i + 1000
       setTimeout(next, 0, stop) // a small trick to defer actions
@@ -15,6 +15,7 @@ function getWebPartInfo () {
   }
 
   function wpGet () {
+    // get root
     $.ajax({
       url:
         _spPageContextInfo.siteAbsoluteUrl +
@@ -28,6 +29,7 @@ function getWebPartInfo () {
       async: false
     })
 
+    // get array of subsites
     $.ajax({
       url:
         _spPageContextInfo.siteAbsoluteUrl +
@@ -64,9 +66,12 @@ function getWebPartInfo () {
       complete: function () {
         createUrls()
         function createUrls () {
+          // get count of PDFs in /Documents folders
           $.ajax({
             url:
-              "https://browardauthor/" + subs + "_api/web/Lists/getByTitle('Documents')/Items?$select=EncodedAbsUrl",
+              _spPageContextInfo.siteAbsoluteUrl +
+              SubSiteUrl +
+              "/_api/web/Lists/getByTitle('Documents')/Items?$select=EncodedAbsUrl",
             method: 'GET',
             headers: {
               Accept: 'application/json; odata=verbose'
@@ -76,8 +81,9 @@ function getWebPartInfo () {
               console.log(results)
               $.each(results, function (index, el) {
                 // $.each(results, function (index, result) {
-                if (el.EncodedAbsUrl.indexOf('.pdf') > 0) {
+                if (el.EncodedAbsUrl.toLowerCase().indexOf('.pdf') > 0) {
                   console.log('PDF')
+                  wpPage = el
                   wpUrls.push(wpPage)
                 }
               })
@@ -95,34 +101,11 @@ function getWebPartInfo () {
   }
   wpGet()
 }
-/*
-function wpList () {
-  $.each(wpUrls, function (index, url) {
-    $.ajax({
-      url: url,
-      method: 'GET',
-      headers: {
-        Accept: 'application/json; odata=verbose'
-      },
-      success: function (data) {
-        if (data.toString().indexOf('Masonry Gallery') > 0) {
-          var pgUrl = url.split('?')[0]
-          console.log(pgUrl)
-        } else {
-          console.log('~~' + pgUrl + '~~')
-        }
-      },
-      error: function (error) {
-        console.log(url, error)
-      },
-      async: false
-    })
-  })
-} */
 
 getWebPartInfo()
-/*
+
 $.when(getWebPartInfo)
   .promise()
-  .done(wpList)
-  */
+  .done(function () {
+    console.log(wpUrls.length)
+  })
