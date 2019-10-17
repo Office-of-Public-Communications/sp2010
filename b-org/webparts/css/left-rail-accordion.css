@@ -1,0 +1,109 @@
+#topicNav select {
+    display: none !important;
+}
+
+@media (max-width: 767px) {
+    #topicNav {
+        text-align: center;
+    }
+
+    #topicNav ul {
+        display: none;
+    }
+
+    #topicNav select {
+        display: inline-block !important;
+    }
+}
+
+#letterNav {
+    text-align: center;
+}
+
+#letterNav select {
+    display: inline-block !important;
+}
+
+#accordionEx .accordion .card {
+    border-bottom: 1px #81D4FA solid !important;
+}
+
+#accordionColumn span {
+    position: relative;
+    float: right;
+    margin-bottom: 2.5rem;
+
+}
+
+#benefitDetail {
+    font-weight: 300 !important;
+}
+
+#faqSearch {
+    border: none !important;
+}
+
+@media only screen and (min-width:768px) {
+    #accordionColumn .lastOne:after {
+        content: "\f0fe";
+        font-family: 'Font Awesome 5 Pro';
+        position: absolute;
+        right: 0;
+        top: -4px;
+        left: 75%;
+        color: #0277BD;
+        display: block;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        vertical-align: top;
+        text-align: center;
+        -webkit-transition: all .35s;
+        -o-transition: all .35s;
+        transition: all .35s;
+    }
+
+    .printableArea:before {
+        content: "\f02f";
+        font-family: 'Font Awesome 5 Pro';
+        position: relative;
+        color: #0277BD;
+        display: contents;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        vertical-align: top;
+        text-align: center;
+        -webkit-transition: all .35s;
+        -o-transition: all .35s;
+        transition: all .35s;
+    }
+}
+
+#accordionColumn span:after {
+    content: "\f067";
+    font-family: 'Font Awesome 5 Pro';
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 100%;
+    color: black;
+    display: block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    background: #4FC3F7;
+    border-radius: 50%;
+    vertical-align: middle;
+    text-align: center;
+    -webkit-transition: all .35s;
+    -o-transition: all .35s;
+    transition: all .35s;
+}
+
+#accordionColumn .rotate.down:after {
+    -ms-transform: rotate(135deg);
+    -moz-transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+}

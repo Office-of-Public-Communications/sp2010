@@ -1,0 +1,470 @@
+<html
+  dir="ltr"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:mso="urn:schemas-microsoft-com:office:office"
+  xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882"
+>
+  <head>
+    <style>
+      #filterOptions select {
+        border: none;
+        border-radius: 4px;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16),
+          0 2px 5px 0 rgba(0, 0, 0, 0.12);
+        font-family: Arquette;
+        padding: 12px;
+      }
+
+      #resultBtns .btn {
+        padding: 0.85rem 2rem;
+      }
+
+      .day {
+        font-size: 1.8rem;
+        font-weight: 400;
+      }
+
+      .eventImg {
+        max-height: 150px;
+        width: 100%;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div aria-label="OESBD Main Content" id="oesbdContent">
+      <div class="container">
+        <div class="row mb-5" id="filterOptions">
+          <div class="col-12 col-md-6">
+            <div class="d-md-block typeOption my-2">
+              <select
+                id="catSelect"
+                class="browser-default col-12 my-0 mdb-select termSelect"
+              >
+                <option value="0">All Categories</option>
+                <!-- Inject Categories here -->
+              </select>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="d-md-block typeOption my-2">
+              <select
+                id="dateSelect"
+                class="browser-default col-12 my-2 mdb-select secSelect"
+              >
+                <option value="0">Any Day</option>
+                <option value="1">Today</option>
+                <option value="2">Tomorrow</option>
+                <option value="3">This Weekend</option>
+                <option value="4">This Week</option>
+                <option value="5">Next Week</option>
+                <option value="6">This Month</option>
+                <option value="7">Next Month</option>
+                <!-- <option value="8">This Year</option>
+                <option value="9">Next Year</option>
+                <option value="">Pick a Date...</option>-->
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="mb-5 row">
+          <div id="featEvents" class="container"></div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      type="text/javascript"
+      src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="/Style%20Library/V7/js/vendor/moment/moment.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="/Style%20Library/V7/js/vendor/moment/moment-recur.js"
+    ></script>
+    <script type="text/javascript">
+      // Title case things - for use when delightful writers type things in all caps when they shouldn't ;)
+      String.prototype.toTitleCase = function() {
+        var i, j, str, lowers, uppers;
+        str = this.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
+          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+
+        // Certain minor words should be left lowercase unless
+        // they are the first or last words in the string
+        lowers = [
+          "A",
+          "An",
+          "The",
+          "And",
+          "But",
+          "Or",
+          "For",
+          "Nor",
+          "As",
+          "At",
+          "By",
+          "For",
+          "From",
+          "In",
+          "Into",
+          "Near",
+          "Of",
+          "On",
+          "Onto",
+          "To",
+          "With"
+        ];
+        for (i = 0, j = lowers.length; i < j; i++)
+          str = str.replace(
+            new RegExp("\\s" + lowers[i] + "\\s", "g"),
+            function(txt) {
+              return txt.toLowerCase();
+            }
+          );
+        // Certain words such as initialisms or acronyms should be left uppercase
+        uppers = ["Id", "Tv"];
+        for (i = 0, j = uppers.length; i < j; i++)
+          str = str.replace(
+            new RegExp("\\b" + uppers[i] + "\\b", "g"),
+            uppers[i].toUpperCase()
+          );
+        return str;
+      };
+
+      var todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      var todayStartISO = todayStart.toISOString();
+
+      // get list of categories & build dropdown
+      $.ajax({
+        url:
+          "/EconDev/_api/web/lists/GetByTitle('Events')/fields?$filter=EntityPropertyName eq 'Category'",
+        method: "GET",
+        headers: {
+          Accept: "application/json; odata=verbose"
+        },
+        success: function(data) {
+          cats = data.d.results;
+          categories = cats[0].Choices.results;
+
+          $.each(categories, function(index, category) {
+            $("#catSelect > option:last-child").after(
+              $(
+                '<option value="' +
+                  category +
+                  '">' +
+                  category +
+                  "</option>"
+              )
+            );
+          });
+        }
+      })
+        .then(function() {
+          // get event images
+          return $.ajax({
+            url:
+              "/EconDev/_api/web/lists/GetByTitle('EventImages')/items?$select=*,EncodedAbsUrl&$top=5000",
+            method: "GET",
+            headers: {
+              Accept: "application/json; odata=verbose"
+            },
+            success: function(data) {
+              imgResults = data.d.results;
+              imgResArr = [];
+              $.each(imgResults, function(index, img) {
+                imgResArr.push({ url: img.EncodedAbsUrl, id: img.Id });
+              });
+              // console.log(imgResArr);
+            }
+          });
+        })
+        .then(function() {
+          // get events
+          return $.ajax({
+            url:
+              "/EconDev/_api/web/lists/GetByTitle('EventImages')/items?$top=3000&$select=*,EncodedAbsUrl",
+            method: "GET",
+            headers: {
+              Accept: "application/json; odata=verbose"
+            },
+            success: function(data) {
+              eventImgResults = data.d.results;
+            }
+          });
+        })
+        .then(function() {
+          // get events
+          return $.ajax({
+            url:
+              "/EconDev/_api/web/lists/GetByTitle('Events')/items?$top=3000&$select=*,Image/Title&$expand=Image/Id&$orderby=Date asc",
+            method: "GET",
+            headers: {
+              Accept: "application/json; odata=verbose"
+            },
+            success: function(data) {
+              eventResults = data.d.results;
+              $fraggle = $('<div id="eventSearchResults" class="row"></div>');
+              // removed expired events
+              function isNotOld(i) {
+                return (
+                  i.EndDate >= todayStartISO ||
+                  !i.EndDate ||
+                  i.Date >= todayStartISO
+                );
+              }
+              var filteredResults = eventResults.filter(isNotOld);
+              var f1 = $.each(filteredResults, function(index, event) {
+                // console.log(event);
+                var imgId = event.ImageId;
+                var today = moment(new Date()).toIsoString;
+                var title = event.Title.toTitleCase();
+                var imgUrl = "";
+
+                if (event.Image == undefined) {
+                  eventImgUrl = "/EconDev/EventImages/oesbd-1.jpg";
+                }
+
+                // if image is selected, get it
+                if (imgId != null) {
+                  function f2() {
+                    // get selected image URL
+                    // if recurring, run recurring date generator & build there
+                    var filtrResults = eventImgResults.filter(function(e) {
+                      return e.Id == imgId;
+                    });
+                    eventImgUrl = filtrResults[0].EncodedAbsUrl;
+                  }
+                  f2();
+                  $.when(f2).done(function() {
+                    frag();
+                  });
+                }
+                // build fragment
+                function frag() {
+                  var date = moment(event.Date).format("ddd, MMM D");
+                  var deetIcon = "calendar";
+                  var day = moment(event.Date).format("D");
+                  var month = moment(event.Date).format("MMM");
+
+                  // console.log(event.Link.Url);
+
+                  $fraggle.append(
+                    $(
+                      '<div class="event col-12 col-md-6 col-lg-4 p-3 my-1" data-category="' +
+                        event.Category.results.join(" ") +
+                        '" data-date="' +
+                        moment(event.Date).format("LL") +
+                        '"><div class="container z-depth-1 px-3 pb-3 h-100 rounded"><div class="row"><div class="col px-0"><a href="/Parks/Pages/Event.aspx?event=' +
+                        event.Id +
+                        '"><img class="card-img-top eventImg lazyload" data-src="' +
+                        eventImgUrl +
+                        '" alt="Card image cap"></a></div></div><div class="container"><div class="row"><div class="col-3 px-0 pt-3 px-0 text-uppercase text-center">' +
+                        month +
+                        '<br/><span class="day">' +
+                        day +
+                        '</span></div><div class="col-9 pl-3"><a href="' +
+                        event.Link.Url +
+                        '"><h5 class="pt-3 eventTitle"><strong style="letter-spacing: -.25px;">' +
+                        title +
+                        ' <!--<div class="float-right"><i class="fal fa-angle-right"></i></div>--></strong></h5></a><small class="my-auto pr-3 text-muted d-block"><i class="fal fa-' +
+                        deetIcon +
+                        '"></i> ' +
+                        date +
+                        ", " +
+                        event.StartTime +
+                        "</small></div></div></div></div>"
+                    )
+                  );
+                }
+              });
+              // append fragment to DOM
+              $.when(f1).done(function() {
+                $fraggle.appendTo("#featEvents");
+
+                // sort array by date
+                var cardList = $(".event");
+                cardList.sort(function(a, b) {
+                  return moment($(a).data("date")) - moment($(b).data("date"));
+                });
+                cardList.appendTo("#eventSearchResults");
+              });
+            }
+          });
+        })
+        .then(function() {
+          // if url param contains park or date, sort
+          if (window.location.search.length > 0) {
+            $("#catSelect").val(window.location.search.split("=")[1]);
+          }
+        })
+        .then(function() {
+          $("#catSelect").change(sortEvents());
+          // console.log($("#catSelect").val());
+        });
+
+      //  dropdown sort functionality
+      $("#dateSelect, #catSelect").change(function() {
+        sortEvents();
+      });
+
+      function sortEvents() {
+        // console.log($("#catSelect").val());
+
+        var catValue = $("#catSelect").val();
+        var dateValue = $("#dateSelect").val();
+
+        $(".event").hide();
+        // if($('#eventSearchResults').children().css('display', '').length == 0){$('#featEvents').html('No events match your filters. Check out...')}
+
+        // if 'any' park & 'any' date -> show all
+        if (catValue === "0" && dateValue === "0") {
+          $(".event").show();
+        }
+
+        // if 'any' date -> filter by category
+        if (catValue !== "0" && dateValue === "0") {
+          $(".event").each(function(i, el) {
+            if ($(el).attr("data-category") == catValue) {
+              $(el).show();
+            }
+          });
+        }
+        // if 'any' park -> filter by date
+        if (catValue === "0" && dateValue !== "0") {
+          $(".event").each(function(i, el) {
+            dateSort(el);
+          });
+        }
+        // filter by park && date
+        if (catValue !== "0" && dateValue !== "0") {
+          // sort by event
+          $(".event").each(function(i, el) {
+            if ($(el).attr("data-park") === catValue) {
+              dateSort(el);
+            }
+          });
+        }
+
+        function dateSort(el) {
+          $(el).each(function(i, el) {
+            // filter by date
+            var dateValue = $("#dateSelect").val();
+            var td = moment().format("LL");
+            var tm = moment()
+              .add(1, "days")
+              .format("LL");
+            var tws = moment().startOf("isoWeek");
+            var twe = moment().endOf("isoWeek");
+
+            switch (dateValue) {
+              // any day
+              case "0":
+                $(el).show();
+                break;
+              // today
+              case "1":
+                $(el).each(function(i, el) {
+                  var dd = $(el).attr("data-date");
+                  if (dd == td) {
+                    $(el).show();
+                  }
+                });
+                break;
+              // tomorrow
+              case "2":
+                $(el).each(function(i, el) {
+                  var dd = $(el).attr("data-date");
+                  if (dd == tm) {
+                    $(el).show();
+                  }
+                });
+                break;
+              // this weekend
+              case "3":
+                $(el).each(function(i, el) {
+                  var dd = moment($(el).attr("data-date")).format("LL");
+                  var d = moment();
+                  var sun = d.endOf("isoWeek").format("LL");
+                  var sat = moment(sun)
+                    .subtract(1, "days")
+                    .format("LL");
+                  // console.log(dd, sat, sun);
+                  if (
+                    moment(dd).isSame(sat, "day") ||
+                    moment(dd).isSame(sun, "day")
+                  ) {
+                    // console.log(dd, sun, sat)
+                  }
+                  if (
+                    moment(dd).isSame(sat, "day") ||
+                    moment(dd).isSame(sun, "day")
+                  ) {
+                    $(el).show();
+                  }
+                });
+                break;
+              // this week
+              case "4":
+                $(el).each(function(i, el) {
+                  var dd = moment($(el).attr("data-date"));
+                  if (dd.isAfter(tws) && dd.isBefore(twe)) {
+                    $(el).show();
+                  }
+                });
+                break;
+              // next week
+              case "5":
+                $(el).each(function(i, el) {
+                  var dd = moment($(el).attr("data-date"));
+                  var nws = moment()
+                    .add(1, "weeks")
+                    .startOf("isoWeek");
+                  var nwe = moment()
+                    .add(1, "weeks")
+                    .endOf("isoWeek");
+                  if (dd.isAfter(nws) && dd.isBefore(nwe)) {
+                    $(el).show();
+                  }
+                });
+                break;
+              // this month
+              case "6":
+                $(el).each(function(i, el) {
+                  var dd = moment($(el).attr("data-date"));
+                  var tms = moment().startOf("month");
+                  var tme = moment().endOf("month");
+                  if (dd.isAfter(tms) && dd.isBefore(tme)) {
+                    $(el).show();
+                  }
+                });
+                break;
+              // next month
+              case "7":
+                $(el).each(function(i, el) {
+                  var dd = moment($(el).attr("data-date"));
+                  var nms = moment()
+                    .add(1, "months")
+                    .startOf("month");
+                  var nme = moment()
+                    .add(1, "months")
+                    .endOf("month");
+                  if (dd.isAfter(nms) && dd.isBefore(nme)) {
+                    $(el).show();
+                  }
+                });
+                break;
+              default:
+                $(el).show();
+            }
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

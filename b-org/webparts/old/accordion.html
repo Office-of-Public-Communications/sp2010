@@ -1,0 +1,258 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+    <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+    <style>
+        .ACCStyles a {
+            text-decoration: none;
+        }
+
+        .ACCStyles .card {
+            border-bottom: 1px #81D4FA solid !important;
+        }
+
+        .ACCStyles span {
+            position: relative;
+            float: right;
+            margin-bottom: 2.5rem;
+
+        }
+
+        .ACCStyles span:after {
+            content: "\f067";
+            font-family: 'Font Awesome 5 Pro';
+            position: absolute;
+            right: 0;
+            top: 0;
+            left: 100%;
+            color: black;
+            display: block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            background: #4FC3F7;
+            border-radius: 50%;
+            text-align: center;
+            -webkit-transition: all .35s;
+            -o-transition: all .35s;
+            transition: all .35s;
+        }
+
+        .ACCStyles span.down:after {
+            -ms-transform: rotate(135deg);
+            -moz-transform: rotate(135deg);
+            -webkit-transform: rotate(135deg);
+            transform: rotate(135deg);
+        }
+
+        .pageACC > div {
+            padding-left: 0px;
+        }
+
+        /* IE/Sharepoint Table fix*/
+        @media screen and (min-width: 540px) and (max-width: 589px) {
+            .pageACC {
+                max-width: 520px;
+            }
+
+            .pageACC card {
+                max-width: 520px;
+            }
+        }
+
+        @media screen and (min-width: 590px) and (max-width: 639px) {
+            .pageACC {
+                max-width: 570px;
+            }
+
+            .pageACC card {
+                max-width: 570px;
+            }
+        }
+
+        @media screen and (min-width: 620px) and (max-width: 689px) {
+            .pageACC {
+                max-width: 620px;
+            }
+
+            .pageACC card {
+                max-width: 620px;
+            }
+        }
+
+        @media screen and (min-width: 690px) and (max-width: 739px) {
+            .pageACC {
+                max-width: 670px;
+            }
+
+            .pageACC card {
+                max-width: 670px;
+            }
+        }
+
+        @media screen and (min-width: 740px) and (max-width: 789px) {
+            .pageACC {
+                max-width: 720px;
+            }
+
+            .pageACC card {
+                max-width: 720px;
+            }
+        }
+
+        @media screen and (min-width: 790px) and (max-width: 839px) {
+            .pageACC {
+                max-width: 770px;
+            }
+
+            .pageACC card {
+                max-width: 770px;
+            }
+        }
+
+        @media screen and (min-width: 840px) and (max-width: 889px) {
+            .pageACC {
+                max-width: 820px;
+            }
+
+            .pageACC card {
+                max-width: 820px;
+            }
+        }
+
+        @media screen and (min-width: 890px) and (max-width: 939px) {
+            .pageACC {
+                max-width: 870px;
+            }
+
+            .pageACC card {
+                max-width: 870px;
+            }
+        }
+
+        @media screen and (min-width: 940px) and (max-width: 989px) {
+            .pageACC {
+                max-width: 920px;
+            }
+
+            .pageACC card {
+                max-width: 920px;
+            }
+        }
+
+        @media screen and (min-width: 990px) and (max-width: 1039px) {
+            .pageACC {
+                max-width: 970px;
+            }
+
+            .pageACC card {
+                max-width: 970px;
+            }
+        }
+
+        @media screen and (min-width: 1040px) and (max-width: 1089px) {
+            .pageACC {
+                max-width: 1020px;
+            }
+
+            .pageACC card {
+                max-width: 1020px;
+            }
+        }
+
+        @media screen and (min-width: 1090px) and (max-width: 1139px) {
+            .pageACC {
+                max-width: 1070px;
+            }
+
+            .pageACC card {
+                max-width: 1070px;
+            }
+        }
+
+        @media screen and (min-width: 1140px) and (max-width: 1199px) {
+            .pageACC {
+                max-width: 1120px;
+            }
+
+            .pageACC card {
+                max-width: 1120px;
+            }
+        }
+
+        @media screen and (min-width: 1200px) {
+            .pageACC {
+                max-width: 1170px;
+            }
+
+            .pageACC card {
+                max-width: 1170px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form id="form1" runat="server">
+        <section id="pageAccordion" class="pageACC">
+            <div class="container">
+                <!--Accordion wrapper-->
+                <div class="accordion ACCStyles" id="accordionEx" role="tablist" aria-multiselectable="true"></div>
+                <!--/.Accordion wrapper-->
+            </div>
+        </section>
+    </form>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $().SPServices({
+                operation: "GetListItems",
+                async: false,
+                // CHANGE LIST NAME BELOW (CASE SENSITIVE)
+                listName: "InProgress",
+                // CHANGE LIST LOCATION BELOW IF REMOTE (CASE SENSITIVE)
+                WEBurl: "",
+                // CHANGE COLUMN NAMES BELOW (CASE SENSITIVE)
+                CAMLViewFields: "<ViewFields><FieldRef Name='Title' /><FieldRef Name='Question' /><FieldRef Name='ID' /></ViewFields>",
+                completefunc: function (xData, Status) {
+                    $(xData.responseXML).SPFilterNode("z:row").each(function () {
+                        // CHANGE COLUMN NAMES BELOW (CASE SENSITIVE)
+                        var ACCTitle = $(this).attr("ows_Title");
+                        var ACCInfo = $(this).attr("ows_Question");
+                        var ACCID = $(this).attr("ows_ID");
+                        // DO NOT CHANGE ANYTHING BELOW THIS LINE UNLESS ADDING MULTIPLE ACCORDIONS ON ONE PAGE- MUST ADD ID'S
+                        $('.ACCStyles')
+                            //CREATES HEADER OF EACH ACCORDION ENTRY
+                            .append($('<div class="card">')
+                                .append($('<div class="card-header pb-1 pl-0" role="tab">')
+                                    .attr("id", ACCID + "Title").attr("aria-labelledby",
+                                        "Title " + ACCID)
+                                    .append($(
+                                            '<a class="collapsed" data-toggle="collapse" data-parent=".ACCStyles" aria-expanded="false">'
+                                            ).attr("href", "#" + ACCID + "Info").attr(
+                                            "aria-controls", ACCID + "Info")
+                                        .append($('<h5 class="mr-2">').html(ACCTitle)
+                                            .append($('<span class="rotate">')))))
+                                //CREATES BODY OF EACH ACCORDION ENTRY
+                                .append($('<div class="collapse" role="tabpanel">').attr(
+                                        "id", ACCID + "Info").attr("aria-labelledby",
+                                        "Info " + ACCID)
+                                    .append($(' <div class="card-body pt-1 pl-2">').html(
+                                        ACCInfo))))
+                    });
+                }
+            });
+            //Accordion Icon Animation
+            $('#accordionEx .accordion').each(function () {
+                $('.ACCStyles > div').on('show.bs.collapse', function () {
+                    $(this).find(".rotate").addClass("down");
+                });
+                $('.ACCStyles > div').on('hide.bs.collapse', function () {
+                    $(this).find(".rotate").removeClass("down");
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

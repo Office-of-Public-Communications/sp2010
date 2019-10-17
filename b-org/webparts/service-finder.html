@@ -1,0 +1,510 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Service Finder</title>
+
+    <style>
+        .filter-label {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: #999999;
+        }
+        
+        .near {
+            text-transform: uppercase;
+            background-color: #1c2a48;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        .service-card-details {
+            border: none;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+        }
+        
+        .service-card-details hr {
+            margin: 0;
+        }
+        
+        #title.county:before {
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            bottom: 0.2rem;
+            content: "County\00A0Operated";
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: #ff9802;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+        
+        #title.partner:before {
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            bottom: 0.2rem;
+            content: "County-Funded\00A0Partner";
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: #999999;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+        
+        .icon {
+            color: white;
+        }
+        
+        .icon-bg {
+            color: #039be5;
+        }
+        
+        h5#title {
+            font-size: 1.6rem !important;
+            margin-top: 0.3rem !important;
+            margin-bottom: 1rem !important;
+            color: #039be5 !important;
+        }
+        
+        #categories {
+            margin-bottom: 4.5rem;
+        }
+        
+        #categories::-webkit-scrollbar {
+            display: none;
+        }
+        
+        #categories a {
+            font-size: 0.7rem !important;
+            text-transform: uppercase;
+            background-color: white;
+            border: 1px solid grey;
+        }
+        
+        #categories col {
+            display: inline-block;
+            float: none;
+            padding-right: 17px;
+            /* Increase/decrease this value for cross-browser compatibility */
+            box-sizing: content-box;
+            /* So the width will be 100% + 17px */
+        }
+        
+        .call-btn {
+            background-color: #039be5;
+            word-wrap: none;
+            word-break: keep-all;
+        }
+        
+        .near-btn {
+            background-color: #ff9802;
+            word-wrap: none;
+            word-break: keep-all;
+        }
+        
+        .chip {
+            text-transform: uppercase;
+            font-size: 10px;
+            height: auto;
+            line-height: 20px;
+            transition: none;
+        }
+        
+        .svcImg {
+            width: 100%;
+            object-fit: cover;
+            border-top-left-radius: calc(0.25rem - 1px);
+            border-bottom-left-radius: calc(0.25rem - 1px);
+            overflow: hidden;
+        }
+        
+        .fill {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .fill img {
+            flex-shrink: 0;
+            min-width: 100%;
+            min-height: 100%;
+        }
+        
+        .service-cta {
+            position: absolute;
+            right: 1rem;
+            bottom: 1rem;
+        }
+        
+        .title-link {
+            font-weight: 500;
+        }
+        
+        .filter-options {
+            margin-top: 10px;
+        }
+        
+        .cats {
+            border-top: 1px solid #eceff1;
+        }
+        
+        p.miles {
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+    </style>
+    <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/popper.min.js"></script>
+</head>
+
+<body>
+    <!--  Filter Dropdowns -->
+    <section id="find-a-service">
+        <div class="container px-0">
+            <div class="row mb-3">
+                <div class="filter-options col-6 col-md-4 px-2 px-md-3">
+                    <label id="service-label" class="mdb-main-label filter-label">Category</label
+            >
+            <select
+              id="serviceTypes-select"
+              class="md-form mdb-select cat-dd mt-0"
+              name="services"
+              aria-labelledby="service-label"
+            >
+            </select>
+          </div>
+          <div class="filter-options col-6 col-md-4 px-2 px-md-3">
+            <label id="location-label" class="filter-label">city</label>
+                    <select id="locations-select" class="md-form mdb-select loc-dd mt-0" name="locations" aria-labelledby="location-label">
+              <option value="All Cities">All Cities</option>
+            </select>
+                </div>
+                <div class="filter-options col-6 col-md-2 px-2 px-md-3">
+                    <label id="age-label" class="filter-label">age</label
+            ><select
+              id="ages-select"
+              class="md-form mdb-select age-dd mt-0"
+              name="ages"
+              aria-labelledby="age-label"
+            >
+            </select>
+          </div>
+          <div class="form-check col-6 col-md-2 px-2 pt-4 px-md-3">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="distanceCheck"
+            />
+            <label class="form-check-label" for="distanceCheck"
+              >Near Current Location</label
+            >
+          </div>
+        </div>
+        <ul id="services-list"></ul>
+      </div>
+    </section>
+    <!--  Service Cards -->
+    <section id="service-container" class="container px-0"></section>
+    <script type="text/javascript">
+      $(function() {
+        $.ajax({
+          url:
+            "/HumanServices/_api/web/lists/GetByTitle('Cities')/items?$top=5000&$orderby=Title asc",
+          method: "GET",
+          headers: {
+            Accept: "application/json; odata=verbose"
+          },
+          success: function(data) {
+            var cities = data.d.results;
+
+            $.each(cities, function(index, city) {
+              $("#locations-select").append(
+                $(
+                  '<option value="' +
+                    city.Title +
+                    '">' +
+                    city.Title +
+                    "</option>"
+                )
+              );
+            });
+          },
+          complete: function() {
+            $("select.mdb-select.loc-dd").materialSelect();
+            $(".mdb-select.loc-dd").on("click", function(event) {
+              event.stopPropagation();
+            });
+          }
+        })
+          .then(function() {
+            $.ajax({
+              url:
+                "/HumanServices/_api/web/lists/GetByTitle('Services')/fields?$filter=EntityPropertyName eq 'Category0'",
+              method: "GET",
+              headers: {
+                Accept: "application/json; odata=verbose"
+              },
+              success: function(data) {
+                var cats = data.d.results[0].Choices.results;
+
+                $.each(cats, function(index, cat) {
+                  $("#serviceTypes-select").append(
+                    $('<option value="' + cat + '">' + cat + "</option>")
+                  );
+                });
+              },
+              complete: function() {
+                $("select.mdb-select.cat-dd").materialSelect();
+                $(".mdb-select.cat-dd").on("click", function(event) {
+                  event.stopPropagation();
+                });
+              }
+            });
+          })
+          .then(function() {
+            $.ajax({
+              url:
+                "/HumanServices/_api/web/lists/GetByTitle('Services')/fields?$filter=EntityPropertyName eq 'Age'",
+              method: "GET",
+              headers: {
+                Accept: "application/json; odata=verbose"
+              },
+              success: function(data) {
+                var ages = data.d.results[0].Choices.results;
+
+                $.each(ages, function(index, age) {
+                  $("#ages-select").append(
+                    $('<option value="' + age + '">' + age + "</option>")
+                  );
+                });
+              },
+              complete: function() {
+                $("select.mdb-select.age-dd").materialSelect();
+                $(".mdb-select.age-dd").on("click", function(event) {
+                  event.stopPropagation();
+                });
+              }
+            });
+
+            $.ajax({
+              url:
+                "/HumanServices/_api/web/lists/GetByTitle('Services')/items?$select=*,City/Title&$expand=City/ID&$top=5000&$orderby=Title asc",
+              method: "GET",
+              headers: {
+                Accept: "application/json; odata=verbose"
+              },
+              success: function(data) {
+                var locations = data.d.results;
+
+                $serviceFrag = $('<div id="service-cards" class="row"></div>');
+                $.each(locations, function(index, location) {
+                  var cats = [];
+                  var countyOp = "county";
+                  var titleLink, link, elig;
+                  $.each(location.Category.results, function(i, category) {
+                    cats.push(
+                      '<div class="font-weight-normal z-depth-0 chip mr-1 mb-1">' +
+                        category +
+                        "</div>"
+                    );
+                  });
+
+                  if (location.Eligibility_x002d_Disclaimer) {
+                    var elig =
+                      ' <span data-toggle="modal" data-target=".elig-modal" style="color:#4FC3F7"><i class="fas fa-info-circle"></i></span><div class="elig-modal modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true"><div class="modal-dialog modal-sm"><div class="modal-content">' +
+                      location.Eligibility_x002d_Disclaimer +
+                      "</div></div></div>";
+                  } else {
+                    var elig = "";
+                  }
+
+                  if (!location.County_x002d_Operated) {
+                    var countyOp = "partner";
+                  }
+                  var link = "";
+                  if (location.Link) {
+                    var titleLink = 'href="' + location.Link.Url + '"';
+                    var link =
+                      '<a class="title-link" ' +
+                      titleLink +
+                      ' target="_blank">' +
+                      location.Title +
+                      "</a>";
+                  } else {
+                    var link = location.Title;
+                  }
+                  if (location.El) {
+                    var categories = location.Category0.results;
+                    var catz = categories.join(" ");
+                  }
+
+                  $serviceFrag.append(
+                    '<div class="col-12 col-md-6 col-lg-4 mb-4 service-card" data-loc="All Cities ' +
+                      location.City.Title +
+                      '" data-lat="' +
+                      location.Latitude +
+                      '" data-lon="' +
+                      location.Longitude +
+                      '" data-cat="All Categories ' +
+                      catz +
+                      '" data-age="All Ages ' +
+                      location.Age +
+                      '"><div class="card mt-3 mb-0 px-3 pt-3 pb-0 h-100" ><div class="container"><div class="row"><div class="col-9 px-0"><p id="title" class="' +
+                      countyOp +
+                      '">' +
+                      link +
+                      elig +
+                      '</p></div><div class="col-3 distance text-right pr-0"><i class="fal fa-map-marker-alt-slash" style="color:grey" data-toggle="tooltip" data-placement="left" title="Enable location services to view distance"></i></div></div></div><div class="row pb-4"><div class="col-7 px-3"><small>' +
+                      location.Address +
+                      "<br/>" +
+                      location.City.Title +
+                      ", FL " +
+                      location.ZIP +
+                      '<br/><br/><a href="https://www.google.com/maps/search/?api=1&query=' +
+                      location.Address.replace(" ", "+") +
+                      "+" +
+                      location.City.Title.replace(" ", "+") +
+                      "%2C+FL" +
+                      '" target="_blank"><span class="cta-btn more">Get Directions</span></a></small></div><div class="col-5 px-2"><a href="tel:1-' +
+                      location.Phone +
+                      '"><span class="btn btn-sm call-btn float-right">Call Now</span></a></div></div><div id="cat-' +
+                      location.ID +
+                      '" class="cats row pt-3 mx-0">' +
+                      cats.join("") +
+                      "</div></div></div>"
+                  );
+                });
+                $serviceFrag.appendTo("#service-container");
+              }
+            });
+          });
+        var geoPerm = false;
+        function nearMe() {
+          geoPerm = true;
+          dist = "";
+          function success(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            function updateDistances() {
+              $(".service-card").each(function(i, c) {
+                let lat = $(this).data("lat");
+                let lon = $(this).data("lon");
+                distance(latitude, longitude, lat, lon);
+                $(this).attr("data-distance", dist);
+                $(this)
+                  .find(".distance")
+                  .html(
+                    '<p class="miles"><i class="fal fa-map-marker-alt" style="color:#ff9802;"></i>&nbsp;' +
+                      dist.toFixed(1) +
+                      "&nbsp;mi</p>"
+                  );
+              });
+            }
+            updateDistances();
+            $.when(updateDistances).done(function() {
+              sortCards();
+            });
+          }
+
+          function error() {
+            status.textContent = "Unable to retrieve your location";
+          }
+
+          if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser");
+          } else {
+            navigator.geolocation.getCurrentPosition(success, error);
+          }
+
+          function distance(lat1, lon1, lat2, lon2, unit) {
+            if (lat1 == lat2 && lon1 == lon2) {
+              return 0;
+            } else {
+              var radlat1 = (Math.PI * lat1) / 180;
+              var radlat2 = (Math.PI * lat2) / 180;
+              var theta = lon1 - lon2;
+              var radtheta = (Math.PI * theta) / 180;
+              dist =
+                Math.sin(radlat1) * Math.sin(radlat2) +
+                Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+              if (dist > 1) {
+                dist = 1;
+              }
+              dist = Math.acos(dist);
+              dist = (dist * 180) / Math.PI;
+              dist = dist * 60 * 1.1515;
+              if (unit == "K") {
+                dist = dist * 1.609344;
+              }
+              if (unit == "N") {
+                dist = dist * 0.8684;
+              }
+              return dist;
+            }
+          }
+        }
+
+        function sortCards() {
+          var $container = $("#service-cards"),
+            $cards = $(".service-card").detach();
+          $cards
+            .sort(function(a, b) {
+              var valA = parseFloat($(a).data("distance")),
+                valB = parseFloat($(b).data("distance"));
+              return valA - valB;
+            })
+            .appendTo($container);
+        }
+
+        document
+          .querySelector("#distanceCheck")
+          .addEventListener("click", nearMe);
+
+        // dropdown sort functionality
+        $("#serviceTypes-select, #locations-select, #ages-select").change(
+          function() {
+            sortServices();
+          }
+        );
+
+        function sortServices() {
+          var serviceValue = $("#serviceTypes-select").val();
+          var locationValue = $("#locations-select").val();
+          var ageValue = $("#ages-select").val();
+
+          $(".service-card").hide();
+
+          // if other than 'any', sort like this
+          $(".service-card").each(function(i, el) {
+            var cat = $(el).attr("data-cat");
+            var loc = $(el).attr("data-loc");
+            var age = $(el).attr("data-age");
+
+            if (
+              cat.indexOf(serviceValue) !== -1 &&
+              loc.indexOf(locationValue) !== -1 &&
+              age.indexOf(ageValue) !== -1
+            ) {
+              $(el).show();
+              if ((geoPerm = true)) {
+                sortCards();
+              }
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,258 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
+    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+    <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+    <style>
+        .ACCStyles2 a {
+            text-decoration: none;
+        }
+
+        .ACCStyles2 .card {
+            border-bottom: 1px #81D4FA solid !important;
+        }
+
+        .ACCStyles2 span {
+            position: relative;
+            float: right;
+            margin-bottom: 2.5rem;
+
+        }
+
+        .ACCStyles2 span:after {
+            content: "\f067";
+            font-family: 'Font Awesome 5 Pro';
+            position: absolute;
+            right: 0;
+            top: 0;
+            left: 100%;
+            color: black;
+            display: block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            background: #4FC3F7;
+            border-radius: 50%;
+            text-align: center;
+            -webkit-transition: all .35s;
+            -o-transition: all .35s;
+            transition: all .35s;
+        }
+
+        .ACCStyles2 span.down:after {
+            -ms-transform: rotate(135deg);
+            -moz-transform: rotate(135deg);
+            -webkit-transform: rotate(135deg);
+            transform: rotate(135deg);
+        }
+
+        .pageACC2 > div {
+            padding-left: 0px;
+        }
+
+        /* IE/Sharepoint Table fix*/
+        @media screen and (min-width: 540px) and (max-width: 589px) {
+            .pageACC2 {
+                max-width: 520px;
+            }
+
+            .pageACC2 card {
+                max-width: 520px;
+            }
+        }
+
+        @media screen and (min-width: 590px) and (max-width: 639px) {
+            .pageACC2 {
+                max-width: 570px;
+            }
+
+            .pageACC2 card {
+                max-width: 570px;
+            }
+        }
+
+        @media screen and (min-width: 620px) and (max-width: 689px) {
+            .pageACC2 {
+                max-width: 620px;
+            }
+
+            .pageACC2 card {
+                max-width: 620px;
+            }
+        }
+
+        @media screen and (min-width: 690px) and (max-width: 739px) {
+            .pageACC2 {
+                max-width: 670px;
+            }
+
+            .pageACC2 card {
+                max-width: 670px;
+            }
+        }
+
+        @media screen and (min-width: 740px) and (max-width: 789px) {
+            .pageACC2 {
+                max-width: 720px;
+            }
+
+            .pageACC2 card {
+                max-width: 720px;
+            }
+        }
+
+        @media screen and (min-width: 790px) and (max-width: 839px) {
+            .pageACC2 {
+                max-width: 770px;
+            }
+
+            .pageACC2 card {
+                max-width: 770px;
+            }
+        }
+
+        @media screen and (min-width: 840px) and (max-width: 889px) {
+            .pageACC2 {
+                max-width: 820px;
+            }
+
+            .pageACC2 card {
+                max-width: 820px;
+            }
+        }
+
+        @media screen and (min-width: 890px) and (max-width: 939px) {
+            .pageACC2 {
+                max-width: 870px;
+            }
+
+            .pageACC2 card {
+                max-width: 870px;
+            }
+        }
+
+        @media screen and (min-width: 940px) and (max-width: 989px) {
+            .pageACC2 {
+                max-width: 920px;
+            }
+
+            .pageACC2 card {
+                max-width: 920px;
+            }
+        }
+
+        @media screen and (min-width: 990px) and (max-width: 1039px) {
+            .pageACC2 {
+                max-width: 970px;
+            }
+
+            .pageACC2 card {
+                max-width: 970px;
+            }
+        }
+
+        @media screen and (min-width: 1040px) and (max-width: 1089px) {
+            .pageACC2 {
+                max-width: 1020px;
+            }
+
+            .pageACC2 card {
+                max-width: 1020px;
+            }
+        }
+
+        @media screen and (min-width: 1090px) and (max-width: 1139px) {
+            .pageACC2 {
+                max-width: 1070px;
+            }
+
+            .pageACC2 card {
+                max-width: 1070px;
+            }
+        }
+
+        @media screen and (min-width: 1140px) and (max-width: 1199px) {
+            .pageACC2 {
+                max-width: 1120px;
+            }
+
+            .pageACC2 card {
+                max-width: 1120px;
+            }
+        }
+
+        @media screen and (min-width: 1200px) {
+            .pageACC2 {
+                max-width: 1170px;
+            }
+
+            .pageACC2 card {
+                max-width: 1170px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form id="form2" runat="server">
+        <section id="pageAccordion2" class="pageACC2">
+            <div class="container">
+                <!--Accordion wrapper-->
+                <div class="accordion ACCStyles2" id="accordionEx2" role="tablist" aria-multiselectable="true"></div>
+                <!--/.Accordion wrapper-->
+            </div>
+        </section>
+    </form>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $().SPServices({
+                operation: "GetListItems",
+                //async: false,
+                // CHANGE LIST NAME BELOW (CASE SENSITIVE)
+                listName: "Completed",
+                // CHANGE LIST LOCATION BELOW IF REMOTE (CASE SENSITIVE)
+                WEBurl: "",
+                // CHANGE COLUMN NAMES BELOW (CASE SENSITIVE)
+                CAMLViewFields: "<ViewFields><FieldRef Name='Title' /><FieldRef Name='Question' /><FieldRef Name='ID' /></ViewFields>",
+                completefunc: function (xData, Status) {
+                    $(xData.responseXML).SPFilterNode("z:row").each(function () {
+                        // CHANGE COLUMN NAMES BELOW (CASE SENSITIVE)
+                        var ACCTitle = $(this).attr("ows_Title");
+                        var ACCInfo = $(this).attr("ows_Question");
+                        var ACCID = $(this).attr("ows_ID");
+                        // DO NOT CHANGE ANYTHING BELOW THIS LINE UNLESS ADDING MULTIPLE ACCORDIONS ON ONE PAGE- MUST ADD ID'S
+                        $('.ACCStyles2')
+                            //CREATES HEADER OF EACH ACCORDION ENTRY
+                            .append($('<div class="card">')
+                                .append($('<div class="card-header pb-1 pl-0" role="tab">')
+                                    .attr("id", ACCID + "Title2").attr("aria-labelledby",
+                                        "Title2 " + ACCID)
+                                    .append($(
+                                            '<a data-toggle="collapse" data-parent=".ACCStyles2" aria-expanded="false">'
+                                        ).attr("href", "#" + ACCID + "Info2").attr(
+                                            "aria-controls", ACCID + "Info2")
+                                        .append($('<h5 class="mr-2">').html(ACCTitle)
+                                            .append($('<span class="rotate2">')))))
+                                //CREATES BODY OF EACH ACCORDION ENTRY
+                                .append($('<div class="collapse" role="tabpanel">').attr(
+                                        "id", ACCID + "Info2").attr("aria-labelledby",
+                                        "Info2 " + ACCID)
+                                    .append($(' <div class="card-body pt-1 pl-2">').html(
+                                        ACCInfo))))
+                    });
+                }
+            });
+            //Accordion Icon Animation
+            $('#accordionEx2 .accordion').each(function () {
+                $('.ACCStyles2 > div').on('show.bs.collapse', function () {
+                    $(this).find(".rotate2").addClass("down");
+                });
+                $('.ACCStyles2 > div').on('hide.bs.collapse', function () {
+                    $(this).find(".rotate2").removeClass("down");
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

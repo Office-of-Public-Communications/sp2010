@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WebPart xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/WebPart/v2">
+  <Title>Accordion New</Title>
+  <FrameType>Default</FrameType>
+  <Description>Accordion New</Description>
+  <IsIncluded>true</IsIncluded>
+  <ZoneID>wpz</ZoneID>
+  <PartOrder>1</PartOrder>
+  <FrameState>Normal</FrameState>
+  <Height />
+  <Width />
+  <AllowRemove>true</AllowRemove>
+  <AllowZoneChange>true</AllowZoneChange>
+  <AllowMinimize>true</AllowMinimize>
+  <AllowConnect>true</AllowConnect>
+  <AllowEdit>true</AllowEdit>
+  <AllowHide>true</AllowHide>
+  <IsVisible>true</IsVisible>
+  <DetailLink />
+  <HelpLink />
+  <HelpMode>Modeless</HelpMode>
+  <Dir>Default</Dir>
+  <PartImageSmall />
+  <MissingAssembly>Cannot import this Web Part.</MissingAssembly>
+  <PartImageLarge>/_layouts/images/mssfwp.gif</PartImageLarge>
+  <IsIncludedFilter />
+  <Assembly>Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c</Assembly>
+  <TypeName>Microsoft.SharePoint.WebPartPages.SimpleFormWebPart</TypeName>
+  <Content xmlns="http://schemas.microsoft.com/WebPart/v2/SimpleForm"><![CDATA[<html>
+<head>
+<link rel="stylesheet" type="text/css" href="/Style Library/V7/WebParts/General/Accordion Webpart/accordionNew.css"/>
+<script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<div class="accordionMain"></div>
+<script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
+<script defer src="/Style%20Library/V7/WebParts/General/Accordion Webpart/accordionNew.js"></script>
+
+<script type="text/javascript">
+
+/*
+* INSTRUCTIONS:
+* You may use up to 3 accordions per page. Set the variable *useApi* to *true* if you are using the corresponding accordion (i.e. 1, 2, 3). Set the rest of the *useApi* variables to *false*.
+* Enter a corresponding Title AND apiUrl for the Accordion/s you choose. A correct Url will look like: "/printshop/_api/web/lists/GetByTitle('FAQs')/items";
+*
+*/
+
+// Accordion 1
+var useApi1 = true,
+	title1 = 'ENTER ACCORDION TITLE 1',
+	apiUrl1 = "/*AGENCY URL*/_api/web/lists/GetByTitle('*LIST NAME HERE*')/items";
+
+// Accordion 2
+var useApi2 = false,
+    title2 = 'ENTER ACCORDION TITLE 2',
+    apiUrl2 = "/*AGENCY URL*/_api/web/lists/GetByTitle('*LIST NAME HERE*')/items";
+
+// Accordion 3
+var useApi3 = false,
+    title3 = 'ENTER ACCORDION TITLE 3',
+	apiUrl3 = "/*AGENCY URL*/_api/web/lists/GetByTitle('*LIST NAME HERE*')/items";
+
+</script>
+</body>
+</html>]]></Content>
+</WebPart>
