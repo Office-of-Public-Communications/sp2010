@@ -1,18 +1,12 @@
-<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office"
-    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 
 <head>
     <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
-    <link href="/Style%20Library/Haylee-Dev/Library/css/LibraryLocations_styles.css" rel="stylesheet">
+    <link href="/Style%20Library/Haylee-Dev/Library/css/LibraryLocations_styles.css" rel="stylesheet" />
     <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
-        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-        crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
-        integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
-        crossorigin=""></script>
-    <!-- Mapbox styles -->
-    <!-- <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' /> -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+
     <style>
         p,
         h1,
@@ -24,17 +18,17 @@
             color: black;
             font-size: 1rem;
         }
-
+        
         #locationList .ms-WPBody a:link,
         #locationList .ms-WPBody a:visited,
         #locationList a:active,
         #locationList a:link,
         #locationList a:visited {
-            color: #0277BD;
+            color: #0277bd;
         }
-
+        
         #locationList h5 {
-            color: #0277BD;
+            color: #0277bd;
         }
     </style>
 </head>
@@ -45,29 +39,26 @@
             <div id="map"></div>
         </div>
         <div class="col-md-5 col-12 pr-0 mt-5 mt-md-0">
-            <div id="locationList" class="scrollbar scrollbar-morpheus-den">
-            </div>
+            <div id="locationList" class="scrollbar scrollbar-morpheus-den"></div>
         </div>
     </div>
     <script src="/Style%20Library/Haylee-Dev/js/broward/Library/moment.min.js"></script>
-    <!-- <script src="/Style%20Library/V7/js/broward/Library/js/libraryLocations_script.js"></script> -->
-    <!-- <script src="/Style%20Library/V7/js/broward/Library/libraryLocations_map.js"></script> -->
+
     <script src="/Style%20Library/V7/js/broward/Parks/initMap-locator.js"></script>
-    <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByVibsaiiXYvyTkywDbK5Yciy_JPJ3Spc&callback=initMap"></script> -->
+
     <!-- Load Esri Leaflet from CDN -->
     <script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
-    <!-- Mapbox -->
-    <!-- <script src='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js'></script> -->
+
     <script type="text/javascript">
         // Get Todays Day of the week
         var days = [
-            'Sunday', //Sunday starts at 0
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday'
+            "Sunday", //Sunday starts at 0
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
         ];
 
         d = new Date();
@@ -76,175 +67,144 @@
 
         var locations = [];
 
-        $(document).ready(function () {
-
-        $.ajax({
-            url:
-            "/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,City/Title,Title&$expand=City/Title&$orderby=Title%20asc",
-            method: "GET",
-            async: false,
-            headers: {
-            "Accept": "application/json; odata=verbose"
-            },
-            success: function (data) {
-                newData = data.d.results;
-                //console.log(newData);
-                // if park is not 'TBD', map it
-
-        //     }
-        // });
-
-        // $(document).ready(function () {
-        //     $().SPServices({
-        //         operation: "GetListItems",
-        //         async: false,
-        //         listName: "Parks",
-        //         webURL: "/Parks/",
-        //         CAMLViewFields: "<ViewFields><FieldRef Name='ID' /><OrderBy><FieldRef Name='Title' /></OrderBy><FieldRef Name='Address' /><FieldRef Name='City' /><FieldRef Name='Zip' /><FieldRef Name='DirectionsLink' /><FieldRef Name='Longitude' /><FieldRef Name='Latitude' /><FieldRef Name='Phone' /><FieldRef Name='Monday' /><FieldRef Name='Tuesday' /><FieldRef Name='Wednesday' /><FieldRef Name='Thursday' /><FieldRef Name='Friday' /><FieldRef Name='Saturday' /><FieldRef Name='Sunday' /></ViewFields>",
-        //         completefunc: function (xData, Status) {
-        //             $(xData.responseXML).SPFilterNode("z:row").each(function () {
-
-        //                 newData = $(xData.responseXML).SPFilterNode("z:row").SPXmlToJson({
-        //                     mapping: {
-        //                         ows_ID: {
-        //                             mappedName: "LocationID",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Title: {
-        //                             mappedName: "Location",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Address: {
-        //                             mappedName: "AddressLine1",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_City: {
-        //                             mappedName: "City",
-        //                             objectType: "Lookup"
-        //                         },
-        //                         ows_Zip: {
-        //                             mappedName: "Zip",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_DirectionsLink: {
-        //                             mappedName: "DirectionsLink",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Phone: {
-        //                             mappedName: "Telephone",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Longitude: {
-        //                             mappedName: "Longitude",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Latitude: {
-        //                             mappedName: "Latitude",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Monday: {
-        //                             mappedName: "Monday",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Tuesday: {
-        //                             mappedName: "Tuesday",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Wednesday: {
-        //                             mappedName: "Wednesday",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Thursday: {
-        //                             mappedName: "Thursday",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Friday: {
-        //                             mappedName: "Friday",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Saturday: {
-        //                             mappedName: "Saturday",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Sunday: {
-        //                             mappedName: "Sunday",
-        //                             objectType: "Text"
-        //                         },
-        //                         ows_Closed: {
-        //                             mappedName: "Closed",
-        //                             objectType: "Text"
-        //                         },
-
-        //                     }, // name, mappedName, objectType
-        //                 })
-        //             })
+        $(document).ready(function() {
+            $.ajax({
+                url: "/Parks/_api/web/lists/GetByTitle('Parks')/items?$top=5000&$select=*,City/Title,Title&$expand=City/Title&$orderby=Title%20asc",
+                method: "GET",
+                async: false,
+                headers: {
+                    Accept: "application/json; odata=verbose"
+                },
+                success: function(data) {
+                    newData = data.d.results;
                     for (i = 0; i < newData.length; i++) {
                         locationInfo = newData[i];
-                        console.log(locationInfo.Title)
-                        if(locationInfo.Title != 'TBD'){
+                        // console.log(locationInfo.Title)
+                        if (locationInfo.Title != "TBD") {
                             //console.log(locationInfo[todaysDate])
-                            timeNow = moment().format('h:mmA');
+                            timeNow = moment().format("h:mmA");
 
                             //Closing Time
-                            closeTime = locationInfo[todaysDate].split('-')[1];
+                            closeTime = locationInfo[todaysDate].split("-")[1];
+
                             if (closeTime == "NOON") {
                                 closeTime = "12:00PM";
-                            };
-                            closeTimeFull = moment(closeTime, 'h:mmA');
+                            }
+                            closeTimeFull = moment(closeTime, "h:mmA");
 
                             //Opening Time
-                            openTime = locationInfo[todaysDate].split('-')[0].toUpperCase();
+                            openTime = locationInfo[todaysDate].split("-")[0].toUpperCase();
                             if (openTime == "NOON") {
                                 openTime = "12:00PM";
-                            };
-                            openTimeFull = moment(openTime, 'h:mmA');
+                            }
+                            openTimeFull = moment(openTime, "h:mmA");
 
-                            if ((moment(timeNow, 'hh:mmA').isBetween(openTimeFull, closeTimeFull,
-                                'minute', '[)')) && (locationInfo.Closed !== "1")) {
-                                branchOpenClose = $(
-                                    '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px">  Open Today Until ' +
-                                    '<span class="notranslate">' + closeTime + '</span></p>')
-                            } else if (moment(moment(timeNow, 'hh:mmA').isBetween(closeTimeFull,
-                                openTimeFull, 'minute', '[)')) || (locationInfo.Closed == "1")) {
+                            if (
+                                moment(timeNow, "hh:mmA").isBetween(
+                                    openTimeFull,
+                                    closeTimeFull,
+                                    "minute",
+                                    "[)"
+                                ) &&
+                                locationInfo.Closed !== "1"
+                            ) {
+                                if (locationInfo[todaysDate] == "12:00AM-11:59PM") {
+                                    branchOpenClose = $(
+                                        '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px">Open 24 hours</span></p>'
+                                    );
+                                } else {
+                                    branchOpenClose = $(
+                                        '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px">  Open Today Until ' +
+                                        '<span class="notranslate">' +
+                                        closeTime +
+                                        "</span></p>"
+                                    );
+                                }
+                            } else if (
+                                moment(
+                                    moment(timeNow, "hh:mmA").isBetween(
+                                        closeTimeFull,
+                                        openTimeFull,
+                                        "minute",
+                                        "[)"
+                                    )
+                                ) ||
+                                locationInfo.Closed == "1"
+                            ) {
                                 branchOpenClose = $(
                                     '<p style="font-size:1rem; font-weight:700; padding-bottom: 10px"> CLOSED NOW </p>'
-                                )
+                                );
                             }
 
-                            console.log(locationInfo)
-
-                            branchInfo = "/Parks/Pages/park.aspx?=" + locationInfo.ID;
+                            branchInfo = "/Parks/Pages/park.aspx?park=" + locationInfo.ID;
                             DirectionsLink = locationInfo.DirectionsLink;
-                            getDirections = 'https://www.google.com/maps/dir//' + locationInfo.Address + '+' + locationInfo.City.Title + '+' + locationInfo.Zip;
+                            getDirections =
+                                "https://www.google.com/maps/dir//" +
+                                locationInfo.Address +
+                                "+" +
+                                locationInfo.City.Title +
+                                "+" +
+                                locationInfo.Zip;
                             $("#locationList")
-                                .append($('<a href=""><h5 style="font-size:1.25rem; font-weight:700;text-transform: uppercase;">' +
-                                    locationInfo.Title + '</h5></a>').attr("href", branchInfo))
-                                .append($('<p style="line-height:1.3rem;">' + locationInfo.Address + '<br>' + locationInfo
-                                    .City.Title + ', FL ' + locationInfo.Zip +
-                                    '<br><br><a href="tel:1-' + locationInfo.Phone + '">' + locationInfo.Phone + '</a><br><br></p>')
+                                .append(
+                                    $(
+                                        '<a href=""><h5 style="font-size:1.25rem; font-weight:700;text-transform: uppercase;">' +
+                                        locationInfo.Title +
+                                        "</h5></a>"
+                                    ).attr("href", branchInfo)
+                                )
+                                .append(
+                                    $(
+                                        '<p style="line-height:1.3rem;">' +
+                                        locationInfo.Address +
+                                        "<br>" +
+                                        locationInfo.City.Title +
+                                        ", FL " +
+                                        locationInfo.Zip +
+                                        '<br><br><a href="tel:1-' +
+                                        locationInfo.Phone +
+                                        '">' +
+                                        locationInfo.Phone +
+                                        "</a><br><br></p>"
+                                    )
                                     .append($(branchOpenClose))
-                                    .append($('<a>').html('Get Directions').attr({
-                                        href: getDirections,
-                                        target: "_blank"
-                                    })))
-                                .append($('<hr>'));
+                                    .append(
+                                        $("<a>")
+                                        .html("Get Directions")
+                                        .attr({
+                                            href: getDirections,
+                                            target: "_blank"
+                                        })
+                                    )
+                                )
+                                .append($("<hr>"));
 
                             locations.push({
-                                info: '<h5 style="font-size:1.1rem;font-weight:700;text-transform: uppercase;">' + locationInfo.Title +
-                                    '</h5><p style="line-height:1.3rem;">' + locationInfo.Address + '<br>' + locationInfo.City.Title + ', FL ' + locationInfo.Zip + '<br><br><a href="tel:1-' + locationInfo.Phone + '">' + locationInfo.Phone + '</a><br><br><a href="' + getDirections +
+                                info: '<h5 style="font-size:1.1rem;font-weight:700;text-transform: uppercase;">' +
+                                    locationInfo.Title +
+                                    '</h5><p style="line-height:1.3rem;">' +
+                                    locationInfo.Address +
+                                    "<br>" +
+                                    locationInfo.City.Title +
+                                    ", FL " +
+                                    locationInfo.Zip +
+                                    '<br><br><a href="tel:1-' +
+                                    locationInfo.Phone +
+                                    '">' +
+                                    locationInfo.Phone +
+                                    '</a><br><br><a href="' +
+                                    getDirections +
                                     '" target="_blank">Get Directions</a></p>',
                                 lt: locationInfo.Latitude,
                                 lg: locationInfo.Longitude
-                            })
+                            });
                         }
                     }
                     initMap();
                 }
-            })
+            });
         });
-        //});
     </script>
 </body>
-
 
 </html>
