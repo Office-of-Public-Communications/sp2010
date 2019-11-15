@@ -32,6 +32,7 @@
             display: inline-block;
             font-style: normal;
             font-variant: normal;
+            font-weight: 400;
             text-rendering: auto;
             -webkit-font-smoothing: antialiased;
             position: relative;
@@ -48,6 +49,7 @@
             display: inline-block;
             font-style: normal;
             font-variant: normal;
+            font-weight: 400;
             text-rendering: auto;
             -webkit-font-smoothing: antialiased;
             position: relative;
@@ -55,7 +57,7 @@
             content: "County-Funded\00A0Partner";
             font-size: 0.65rem;
             text-transform: uppercase;
-            color: #999999;
+            color: #777777;
             display: block;
             letter-spacing: 0.5px;
         }
@@ -117,6 +119,8 @@
             height: auto;
             line-height: 20px;
             transition: none;
+            color: rgba(0, 0, 0, 0.7);
+            background-color: #f3f3f3;
         }
         
         .svcImg {
@@ -150,6 +154,11 @@
             font-weight: 500;
         }
         
+        .title-link:hover:after {
+            content: " \f08e";
+            font-family: "Font Awesome 5 Pro";
+        }
+        
         .filter-options {
             margin-top: 10px;
         }
@@ -162,6 +171,25 @@
             color: #333;
             font-weight: 500;
             font-size: 0.9rem;
+        }
+        
+        .eligibility {
+            color: #0277bd;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        #serviceTypes-select,
+        #locations-select,
+        #ages-select {
+            border: none;
+            border-radius: 3px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.12);
+            font-family: Arquette;
+            padding: 12px;
+            display: block;
+            width: 100%;
         }
     </style>
     <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb/jquery-3.3.1.min.js"></script>
@@ -178,7 +206,7 @@
             >
             <select
               id="serviceTypes-select"
-              class="md-form mdb-select cat-dd mt-0"
+              class="browser-default mdb-select cat-dd mt-0"
               name="services"
               aria-labelledby="service-label"
             >
@@ -186,21 +214,21 @@
           </div>
           <div class="filter-options col-6 col-md-4 px-2 px-md-3">
             <label id="location-label" class="filter-label">city</label>
-                    <select id="locations-select" class="md-form mdb-select loc-dd mt-0" name="locations" aria-labelledby="location-label">
+                    <select id="locations-select" class="browser-default mdb-select loc-dd mt-0" name="locations" aria-labelledby="location-label">
               <option value="All Cities">All Cities</option>
             </select>
                 </div>
-                <div class="filter-options col-6 col-md-2 px-2 px-md-3">
+                <div class="filter-options col-6 col-md-4 px-2 px-md-3">
                     <label id="age-label" class="filter-label">age</label
             ><select
               id="ages-select"
-              class="md-form mdb-select age-dd mt-0"
+              class="browser-default mdb-select age-dd mt-0"
               name="ages"
               aria-labelledby="age-label"
             >
             </select>
           </div>
-          <div class="form-check col-6 col-md-2 px-2 pt-4 px-md-3">
+          <!--<div class="form-check col-6 col-md-2 px-2 pt-4 px-md-3">
             <input
               type="checkbox"
               class="form-check-input"
@@ -209,7 +237,7 @@
             <label class="form-check-label" for="distanceCheck"
               >Near Current Location</label
             >
-          </div>
+          </div>-->
         </div>
         <ul id="services-list"></ul>
       </div>
@@ -322,9 +350,13 @@
 
                   if (location.Eligibility_x002d_Disclaimer) {
                     var elig =
-                      ' <span data-toggle="modal" data-target=".elig-modal" style="color:#4FC3F7"><i class="fas fa-info-circle"></i></span><div class="elig-modal modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true"><div class="modal-dialog modal-sm"><div class="modal-content">' +
+                      ' <div class="eligibility" data-toggle="modal" data-target="#elig-modal-' +
+                      location.ID +
+                      '"><i class="fal fa-info-circle"></i> Eligibility/Disclaimer</div><div id="elig-modal-' +
+                      location.ID +
+                      '" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-body">' +
                       location.Eligibility_x002d_Disclaimer +
-                      "</div></div></div>";
+                      "</div></div></div></div>";
                   } else {
                     var elig = "";
                   }
@@ -344,11 +376,10 @@
                   } else {
                     var link = location.Title;
                   }
-                  if (location.El) {
+                  if (location.Category0) {
                     var categories = location.Category0.results;
                     var catz = categories.join(" ");
                   }
-
                   $serviceFrag.append(
                     '<div class="col-12 col-md-6 col-lg-4 mb-4 service-card" data-loc="All Cities ' +
                       location.City.Title +
@@ -376,9 +407,11 @@
                       "+" +
                       location.City.Title.replace(" ", "+") +
                       "%2C+FL" +
-                      '" target="_blank"><span class="cta-btn more">Get Directions</span></a></small></div><div class="col-5 px-2"><a href="tel:1-' +
+                      '" target="_blank"><span class="cta-btn more">Get Directions</span></a></small></div><div class="col-5 px-2 text-center"><small class="text-center">' +
                       location.Phone +
-                      '"><span class="btn btn-sm call-btn float-right">Call Now</span></a></div></div><div id="cat-' +
+                      '</small><a href="tel:1-' +
+                      location.Phone +
+                      '"><span class="btn btn-sm call-btn">Call Now</span></a></div></div><div id="cat-' +
                       location.ID +
                       '" class="cats row pt-3 mx-0">' +
                       cats.join("") +
@@ -388,19 +421,23 @@
                 $serviceFrag.appendTo("#service-container");
               }
             });
+          })
+          .then(function() {
+            nearMe();
           });
+
         var geoPerm = false;
         function nearMe() {
           geoPerm = true;
           dist = "";
           function success(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
 
             function updateDistances() {
               $(".service-card").each(function(i, c) {
-                let lat = $(this).data("lat");
-                let lon = $(this).data("lon");
+                var lat = $(this).data("lat");
+                var lon = $(this).data("lon");
                 distance(latitude, longitude, lat, lon);
                 $(this).attr("data-distance", dist);
                 $(this)
@@ -468,9 +505,7 @@
             .appendTo($container);
         }
 
-        document
-          .querySelector("#distanceCheck")
-          .addEventListener("click", nearMe);
+        // nearMe();
 
         // dropdown sort functionality
         $("#serviceTypes-select, #locations-select, #ages-select").change(
