@@ -1,0 +1,591 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+
+<head>
+  <script type="text/javascript" src="/Style%20Library/V6/js/vendor/mdb/jquery-3.2.1.min.js"></script>
+  <style>
+    h1,
+    h3,
+    h5 {
+      font-family: Arquette;
+      color: black;
+      font-weight: 700;
+    }
+    
+    .byLetter {
+      overflow-x: scroll;
+      white-space: nowrap;
+    }
+    
+    .byLetter a {
+      display: inline-block;
+      text-align: center;
+      padding: 14px;
+      text-decoration: none;
+    }
+    
+    #description h1 {
+      font-weight: 700;
+    }
+    
+    #dir-statement {
+      white-space: pre-wrap;
+    }
+    
+    h2#dir-artist {
+      font-size: 1.35rem;
+      font-weight: 400;
+      /*color: #0277BD;*/
+    }
+    
+    span#dir-year {
+      margin-right: 20px;
+    }
+    
+    img#dir-img.contactImg {
+      width: 100%;
+      border-radius: 2px;
+    }
+    
+    .contactInfoButton {
+      text-align: center;
+      border: 1px solid #eaeaea;
+      background-color: #eaeaea;
+      display: block;
+      border-radius: 2px;
+    }
+    
+    .infos {
+      padding: 0;
+    }
+    
+    .infos li {
+      list-style: none;
+    }
+    
+    #dir-description-title,
+    .infos strong {
+      font-style: normal;
+      font-variant: normal;
+      font-weight: 400;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+      bottom: 0.2rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #777777;
+      display: block;
+      letter-spacing: 0.5px;
+    }
+    
+    .tags {
+      padding: 4px 10px;
+      background-color: #f4f4f4;
+      border-radius: 2px;
+      margin: 4px;
+      display: inline-block;
+    }
+    
+    #mapid {
+      height: 150px;
+      width: 100%;
+      border-radius: 2px;
+    }
+    
+    #infoTabs {
+      border-radius: 6px;
+      padding-top: 5px;
+      background-color: #f5f5f5;
+    }
+    
+    #infoTabs li {
+      width: 120px;
+      text-align: center;
+    }
+    
+    #Attractions-tab.active,
+    #Events-tab.active,
+    #Rentals-tab.active {
+      background-color: #fff;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+    }
+    
+    .today {
+      font-weight: 600;
+      color: #00c853;
+    }
+    
+    div#directoryItem {
+      font-family: Arquette;
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+    
+    #filterOptions select {
+      border: none;
+      border-radius: 4px;
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.12);
+      font-family: Arquette;
+      padding: 12px;
+    }
+    
+    #resultBtns .btn {
+      padding: 0.85rem 2rem;
+    }
+    
+    .day {
+      font-size: 1.8rem;
+      font-weight: 400;
+    }
+    
+    .eventImg {
+      height: auto;
+      max-height: 400px;
+      width: 100%;
+      object-fit: cover;
+    }
+    
+    .img-row.cultural:before {
+      content: "CULTURAL DIVISION EVENT";
+      position: absolute;
+      font-size: 0.7rem;
+      top: 30px;
+      left: 30px;
+      padding: 6px 10px 7px 10px;
+      /* border: 1px solid #039be5; */
+      background-color: white;
+      border-radius: 19px;
+      z-index: 100;
+      /* color: #039be5; */
+      font-weight: 400;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .cta-block {
+      border-top: 1px solid #eaeaea;
+      border-bottom: 1px solid #eaeaea;
+    }
+    
+    #location a p {
+      color: #0277BD;
+    }
+    /* share */
+    
+    #dialog-title {
+      font-weight: 500;
+      color: #0277BD;
+    }
+    
+    .share-button,
+    .share-dialog {
+      position: absolute;
+      /* top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); */
+    }
+    
+    .share-dialog {
+      display: none;
+      width: 95%;
+      max-width: 500px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, .15);
+      z-index: -1;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 4px;
+      background-color: #fff;
+      font-size: 80%;
+    }
+    
+    .share-dialog.is-open {
+      display: block;
+      z-index: 2;
+    }
+    
+    .share-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    
+    .share-header p {
+      text-align: center;
+    }
+    
+    .targets {
+      display: grid;
+      grid-template-rows: 1fr;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .copy-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-radius: 4px;
+      background-color: #eaeaea;
+    }
+    
+    #copy-link-btn {
+      background-color: white;
+      padding: 5px;
+      border-radius: 2px;
+    }
+    
+    .close-button {
+      margin-right: 0;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="directoryItem" class="container z-depth-1 rounded mb-0"></div>
+
+  <!--Moment.js for neat date writing-->
+  <script type="text/javascript" src="/Style%20Library/Haylee-Dev/js/broward/Library/moment.min.js"></script>
+
+  <!-- directory item webpart -->
+  <script type="text/javascript">
+    var todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    var todayStartISO = todayStart.toISOString();
+
+    URL = location.href.toLowerCase();
+    newID = URL.split("=")[1].replace("#", "");
+
+    gallery = [];
+
+    lt = "";
+    lg = "";
+
+    $(document).ready(function() {
+      $.ajax({
+        url: "/arts/_api/web/lists/GetByTitle('Events')/items?$select=*,EventImage/Title,City/Title&$expand=EventImage/Id,City/Id&$filter=ID eq " +
+          newID,
+        method: "GET",
+        headers: {
+          Accept: "application/json; odata=verbose"
+        },
+        success: function(data) {
+          var items = data.d.results;
+          console.log(items);
+
+          var recurringDates = [];
+          var item = items[0];
+
+          var title, description, link, info, date, phone, location;
+
+          // build title & description
+          if (item.Title) {
+            var title = item.Title;
+          }
+          if (item.Description) {
+            var description = item.Description;
+          }
+          if (item.Link != undefined) {
+            var link = item.Link.Url;
+          }
+          if (item.Info) {
+            var info = item.Info;
+          }
+
+          // title
+          $(".broward-titles-bg-white").html(
+            '<h1 class="broward-titles">' + title + "</h1>"
+          );
+          $(".layoutCrumb").html(title);
+          document.title = title;
+          $(".divider-broward")
+            .removeClass("py-3")
+            .addClass("pt-3 pb-2");
+          $(".divider-broward")
+            .next()
+            .removeClass("pt-3");
+          // recurring
+          if (item.Recurring != null && item.Recurring.results.length < 1) {
+            var date = moment(item.Date).format("LL");
+          }
+          // if date, add date
+          if (item.Recurring != null && item.Recurring.results.length > 0) {
+            for (i = 0; i < item.Recurring.results.length; i++) {
+              recurringDates.push(item.Recurring.results[i].Title);
+              var date = recurringDates.join("<br />");
+            }
+          }
+          if (date != "Everyday") {
+            $("#date").html(date);
+          }
+          console.log(date);
+          console.log(
+            moment(item.Date)
+            .format("LL")
+            .split(",")[0]
+          );
+          if (date == "Everyday") {
+            var recurDeet = [];
+            var endDate = moment(item.EndDate).format("LL");
+            var startDate = moment(item.Date).format("LL");
+            if (startDate.split(",")[1] == endDate.split(",")[1]) {
+              if (startDate.split(" ")[0] == endDate.split(" ")[0]) {
+                var range =
+                  moment(event.Date)
+                  .format("LL")
+                  .split(",")[0] +
+                  "-" +
+                  endDate.split(" ")[1] +
+                  " " +
+                  endDate.split(" ")[2];
+                //console.log(range)
+                recurDeet.push("Everyday, " + range);
+                console.log(recurDeet);
+              }
+              if (startDate.split(" ")[0] != endDate.split(" ")[0]) {
+                var range = startDate + "-" + endDate;
+                //console.log(range)
+                recurDeet.push("Everyday, " + range);
+                console.log(recurDeet);
+              }
+            }
+            if (startDate.split(",")[1] != endDate.split(",")[1]) {
+              var range = startDate + "-" + endDate;
+              //console.log(range)
+              recurDeet.push("Everyday, " + range);
+              console.log(recurDeet);
+            }
+            $("#date").html(recurDeet.toString());
+          }
+          // console.log(date);
+          $("#time").html(item.Time);
+
+          $fraggle = $('<div id="eventSearchResults" class="row"></div>');
+
+          var f1 = function() {
+            console.log(item);
+            var imgId = item.EventImageId;
+            var today = moment(new Date()).toIsoString;
+            var title = item.Title; //.toTitleCase();
+            var imgUrl = "";
+
+            if (item.EventImage == undefined) {
+              eventImgUrl = "/techproto/v6/MattDEV/PublishingImages/art-event.jpg";
+            }
+
+            // if image is selected, get it
+            if (imgId != null) {
+              function f2() {
+                // get selected image URL
+                eventImgUrl = item.Image.Url; //filtrResults[0].EncodedAbsUrl;
+              }
+              f2();
+              $.when(f2).done(function() {
+                frag();
+              });
+            }
+            // build fragment
+            function frag() {
+              var date = moment(item.Date).format("ddd, MMM D");
+              var deetIcon = "calendar";
+              var day = moment(item.Date).format("D");
+              var month = moment(item.Date).format("MMM");
+
+              console.log(item);
+
+              var cult = "";
+              if (item.Cultural) {
+                var cult = "cultural";
+              }
+
+              var gMapInfo = 'https://maps.google.com/?q=' + item.Address1 + item.Address2 + item.City.Title +
+                ', FL ' + item.ZIP;
+
+              gMapLink = gMapInfo.split('undefined').join('')
+                .split(' ').join('+').split(
+                  '++').join('+').toLowerCase();
+
+              var shareContent = '<div class="share-dialog"><header class="share-header"><p class="dialog-title">Share this Event</p><a class="close-button"><i class="fal fa-times"></i></a></header><div class="targets"><a class="button"><span><i class="fab fa-facebook-f"></i> Facebook</span></a><a class="button"><span><i class="fab fa-twitter"></i> Twitter</span></a><a class="button"><span><i class="fab fa-linkedin-in"></i> LinkedIn</span></a><a class="button"><span><i class="fal fa-paper-plane"></i> Email</span></a></div><div class="copy-link"><div id="share-url">https://codepen.io/ayoisaiah/pen/YbNazJ</div><a id="copy-link-btn"><i class="fal fa-clipboard"></i> Copy Link</a> </div></div>'
+
+              $fraggle.append(
+                $('<div class="container">' +
+                  '<div class="row img-row">' +
+                  '<div class="col-12 col-lg-8 px-0">' +
+                  '<a href="' +
+                  item.Website.Url +
+                  '">' +
+                  '<img class="card-img-top eventImg lazyload" data-src="' +
+                  eventImgUrl +
+                  '" alt="Card image cap">' +
+                  '</a>' +
+                  '</div>' +
+                  '<div class="col-12 col-lg-4">' +
+                  '<div class="container">' +
+                  '<div class="row">' +
+                  '<div class="col-3 px-0 py-5 text-uppercase text-center">' +
+                  month +
+                  '<br/>' +
+                  '<span class="day">' +
+                  day +
+                  '</span>' +
+                  '</div>' +
+                  '<div class="col-9 py-5">' +
+                  '<a href="' +
+                  item.Website.Url +
+                  '">' +
+                  '<h5 class="eventTitle">' +
+                  '<strong style="letter-spacing: -.25px;">' +
+                  title +
+                  '</strong>' +
+                  '</h5>' +
+                  '</a>' +
+                  '<small class="my-auto pr-3 text-muted d-block">' +
+                  '<i class="fal fa-' +
+                  deetIcon +
+                  '">' +
+                  '</i> ' +
+                  date +
+                  ', ' +
+                  item.StartTime +
+                  '</small>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '<div id="container eventInfo">' +
+                  '<ul class="infos px-4">' +
+                  '<li>' +
+                  '<strong>' +
+                  'Date' +
+                  '</strong>' +
+                  '<p>' +
+                  moment(item.Date).format('LL') +
+                  '</p>' +
+                  '</li>' +
+                  '<li>' +
+                  '<strong>' +
+                  'Time' +
+                  '</strong>' +
+                  '<p id="time">' +
+                  item.StartTime +
+                  '</p>' +
+                  '</li>' +
+                  '<li id="location" class="">' +
+                  '<strong>' +
+                  'Location' +
+                  '</strong>' +
+                  '<a href="' +
+                  gMapLink +
+                  '" target="_blank">' +
+                  '<p id="locationText">' +
+                  item.Address1 +
+                  '<br/>' +
+                  item.Address2 +
+                  '<br/>' +
+                  item.City.Title +
+                  ', FL ' +
+                  item.ZIP +
+                  '</p>' +
+                  '</a>' +
+                  '</li>' +
+                  '</ul>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '<div class="container cta-block">' +
+                  '<div class="row">' +
+                  '<div class="col-lg-8">' +
+                  '<div class="container">' +
+                  '<div class="row px-3 py-4">' +
+                  '<a class="share-button" type="button" title="Share this article"><span>' +
+                  '<i class="fal fa-share-alt fa-1x"></i>' +
+                  '</span>' +
+                  '</a>' +
+                  shareContent +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '<div class="col-lg-4">' +
+                  '<div class="container">' +
+                  '<div class="row">' +
+                  '<div class="col px-4">' +
+                  '<a href="' +
+                  item.Website.Url +
+                  '" id="register" class="btn btn-block btn-outline light-blue darken-1 waves-effect py-2 my-3 " target="_blank">' +
+                  'Register' +
+                  '</a>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '<div class="container">' +
+                  '<div class="row">' +
+                  '<div class="col-md-8 px-4 py-4"><section id="description" class="mb-3">' +
+                  '<strong id="dir-description-title" class="">Description</strong>' +
+                  '<p id="dir-description" class="">' +
+                  item.Description +
+                  '</p>' +
+                  '<ul id="dir-statement" class="mt-2" style="list-style: none; padding-inline-start:0px;">' +
+                  '</ul>' +
+                  '</section>' +
+                  '<section id="dir-tags" class= "mb-4">' +
+                  '</section>' +
+                  '</div>' +
+                  '<div id="dir-map" class="col-lg-4">' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>'
+                )
+              );
+              console.log("append done");
+            }
+          };
+          f1();
+          // append fragment to DOM
+          $.when(f1).done(function() {
+            console.log("f1 done");
+            $fraggle.appendTo("#directoryItem");
+          });
+          const shareButton = document.querySelector('.share-button');
+          const shareDialog = document.querySelector('.share-dialog');
+          const closeButton = document.querySelector('.close-button');
+
+          shareButton.addEventListener('click', event => {
+            if (navigator.share) {
+              navigator.share({
+                  title: 'WebShare API Demo',
+                  url: 'https://codepen.io/ayoisaiah/pen/YbNazJ'
+                }).then(() => {
+                  console.log('Thanks for sharing!');
+                })
+                .catch(console.error);
+            } else {
+              shareDialog.classList.add('is-open');
+            }
+          });
+
+          closeButton.addEventListener('click', event => {
+            shareDialog.classList.remove('is-open');
+          });
+
+          $('a#copy-link-btn').addEventListener('click', function() {
+            var copyText = $('#share-url');
+            copyText.select();
+            document.execCommand("copy");
+            console.log(copyText.select())
+          });
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

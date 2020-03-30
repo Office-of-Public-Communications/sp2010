@@ -254,6 +254,7 @@
             Accept: "application/json; odata=verbose"
           },
           success: function(data) {
+            // console.log("1");
             var cities = data.d.results;
 
             $.each(cities, function(index, city) {
@@ -269,6 +270,7 @@
             });
           },
           complete: function() {
+            // console.log("2");
             $("select.mdb-select.loc-dd").materialSelect();
             $(".mdb-select.loc-dd").on("click", function(event) {
               event.stopPropagation();
@@ -284,6 +286,7 @@
                 Accept: "application/json; odata=verbose"
               },
               success: function(data) {
+                // console.log("3");
                 var cats = data.d.results[0].Choices.results;
 
                 $.each(cats, function(index, cat) {
@@ -293,6 +296,7 @@
                 });
               },
               complete: function() {
+                // console.log("4");
                 $("select.mdb-select.cat-dd").materialSelect();
                 $(".mdb-select.cat-dd").on("click", function(event) {
                   event.stopPropagation();
@@ -309,6 +313,7 @@
                 Accept: "application/json; odata=verbose"
               },
               success: function(data) {
+                // console.log("5");
                 var ages = data.d.results[0].Choices.results;
 
                 $.each(ages, function(index, age) {
@@ -318,6 +323,7 @@
                 });
               },
               complete: function() {
+                // console.log("6");
                 $("select.mdb-select.age-dd").materialSelect();
                 $(".mdb-select.age-dd").on("click", function(event) {
                   event.stopPropagation();
@@ -333,11 +339,13 @@
                 Accept: "application/json; odata=verbose"
               },
               success: function(data) {
+                // console.log("7");
                 var locations = data.d.results;
 
                 $serviceFrag = $('<div id="service-cards" class="row"></div>');
                 $.each(locations, function(index, location) {
                   var cats = [];
+                  var ages = [];
                   var countyOp = "county";
                   var titleLink, link, elig;
                   $.each(location.Category.results, function(i, category) {
@@ -347,12 +355,15 @@
                         "</div>"
                     );
                   });
+                  $.each(location.Age.results, function(i, age) {
+                    ages.push(age);
+                  });
 
                   if (location.Eligibility_x002d_Disclaimer) {
                     var elig =
                       ' <div class="eligibility" data-toggle="modal" data-target="#elig-modal-' +
                       location.ID +
-                      '"><i class="fal fa-info-circle"></i> Eligibility/Disclaimer</div><div id="elig-modal-' +
+                      '"><i class="fal fa-info-circle"></i> View Eligibility/Disclaimer</div><div id="elig-modal-' +
                       location.ID +
                       '" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-body">' +
                       location.Eligibility_x002d_Disclaimer +
@@ -380,6 +391,7 @@
                     var categories = location.Category0.results;
                     var catz = categories.join(" ");
                   }
+                  // console.log(ages);
                   $serviceFrag.append(
                     '<div class="col-12 col-md-6 col-lg-4 mb-4 service-card" data-loc="All Cities ' +
                       location.City.Title +
@@ -390,7 +402,7 @@
                       '" data-cat="All Categories ' +
                       catz +
                       '" data-age="All Ages ' +
-                      location.Age +
+                      ages.join(" ") +
                       '"><div class="card mt-3 mb-0 px-3 pt-3 pb-0 h-100" ><div class="container"><div class="row"><div class="col-9 px-0"><p id="title" class="' +
                       countyOp +
                       '">' +
@@ -419,11 +431,13 @@
                   );
                 });
                 $serviceFrag.appendTo("#service-container");
+              },
+              complete: function() {
+                // console.log("8");
+                nearMe();
+                // console.log("near me ran");
               }
             });
-          })
-          .then(function() {
-            nearMe();
           });
 
         var geoPerm = false;

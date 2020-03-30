@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>webpart finder</title>
+  <script type="text/javascript" src="/Style%20Library/V7/js/vendor/mdb_update/js/jquery-3.4.0.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="md-form md-outline">
+      <input type="text" class="form-control" id="webpart-input" aria-describedby="wp-Help" />
+      <label for="webpart-input">Enter Web Part Title Here</label>
+      <a type="submit" class="btn btn-primary" id="submit-button">Submit</a>
+    </div>
+  </div>
+  <div id="wp-list-container">
+    <h1 id="wp-title"></h1>
+    <ul id="wp-list"></ul>
+  </div>
+  <script type="text/javascript">
+    $("#submit-button").on("click", function() {
+      var wpTitle = $("input#webpart-input").val();
+
+      // replace the following variable string with the webpart you are trying to find
+
+      //var wpTitle = "Tiles";
+
+      var subsites = [
+        "/AdministratorMessageA",
+        "/Agencies",
+        "/Agencies/accounting",
+        "/Agencies/administrator",
+        "/Agencies/administrator/ich",
+        "/Agencies/air",
+        "/Agencies/aviation",
+        "/Agencies/bct",
+        "/Agencies/budget",
+        "/Agencies/budget/budget2009",
+        "/Agencies/budget/ics",
+        "/Agencies/callcenter",
+        "/Agencies/callcenter/Hurricane",
+        "/Agencies/callcenter/Hurricane/Messages",
+        "/Agencies/children",
+        "/Agencies/construction",
+        "/Agencies/EAP",
+        "/Agencies/econdev",
+        "/Agencies/eldervets",
+        "/Agencies/EmergencyManagement",
+        "/Agencies/environment",
+        "/Agencies/EnvironmentalEngineering",
+        "/Agencies/EnvironmentalPlanningandCommunityResilienceDivision",
+        "/Agencies/EOC",
+        "/Agencies/ets",
+        "/Agencies/ets/erp",
+        "/Agencies/ets/erp/About",
+        "/Agencies/ets/erp/Contact",
+        "/Agencies/ets/erp/faq",
+        "/Agencies/ets/erp/faq/PeopleSoft",
+        "/Agencies/ets/erp/insider",
+        "/Agencies/ets/erp/News",
+        "/Agencies/ets/erp/News/eNewsletters",
+        "/Agencies/ets/erp/ORSApplicantGuide",
+        "/Agencies/ets/erp/Resources",
+        "/Agencies/ets/erp/Rollout",
+        "/Agencies/ets/erp/Training",
+        "/Agencies/ets/projectoffice",
+        "/Agencies/facilities",
+        "/Agencies/family",
+        "/Agencies/finance",
+        "/Agencies/FleetServices",
+        "/Agencies/GrantsAdministration",
+        "/Agencies/GrantsAdministration/Newsletter",
+        "/Agencies/healthcare",
+        "/Agencies/housing",
+        "/Agencies/humanresources",
+        "/Agencies/humanresources/CustomerServiceProfessional",
+        "/Agencies/humanresources/elp",
+        "/Agencies/humanresources/policies",
+        "/Agencies/humanresources/RecognitionResources",
+        "/Agencies/humanresources/ServiceAnniversaries",
+        "/Agencies/humanresources/ServiceAnniversaries/Gallery",
+        "/Agencies/humanresources/sunsational",
+        "/Agencies/humanservices",
+        "/Agencies/humanservices/Highlights",
+        "/Agencies/Intergovernmental",
+        "/Agencies/port",
+        "/Agencies/port/news",
+        "/Agencies/printshop",
+        "/Agencies/projectmgt",
+        "/Agencies/publicinfo",
+        "/Agencies/publicinfo/AdvantageMarketing",
+        "/Agencies/publicinfo/AudioVideoSupport",
+        "/Agencies/publicinfo/BusinessCardOrder",
+        "/Agencies/publicinfo/charts",
+        "/Agencies/publicinfo/PennySurtax",
+        "/Agencies/publicinfo/PublicRecordRequestProgramUpdates",
+        "/Agencies/publicinfo/SocialMedia",
+        "/Agencies/publicinfo/WebShare",
+        "/Agencies/publicinfo/WebShare/Advisories",
+        "/Agencies/publicinfo/WebShare/eNewsletter",
+        "/Agencies/pubworks",
+        "/Agencies/purchasing",
+        "/Agencies/purchasing/Procurement",
+        "/Agencies/purchasing/PurchasingCardProgram",
+        "/Agencies/records",
+        "/Agencies/records/ArchivalRecordsProcedures",
+        "/Agencies/records/contracts",
+        "/Agencies/riskmanagement",
+        "/Agencies/waste",
+        "/Agencies/ZArchive",
+        "/agendaquick",
+        "/bctv",
+        "/BrowardPics",
+        "/CallCenterSupport",
+        "/capp",
+        "/CommissionResources",
+        "/customersatisfaction",
+        "/CyberSecurity",
+        "/CyberSecurity/Articles",
+        "/DigitalClique",
+        "/ecountyline",
+        "/employees",
+        "/EmployeeSafety",
+        "/etstraining",
+        "/etstraining/Test2010",
+        "/FeedbackSays",
+        "/forms",
+        "/FunZone",
+        "/Learning",
+        "/Learning/eLearning",
+        "/Learning/EmployeeEducationalBenefits",
+        "/Learning/ERP",
+        "/Learning/Leadership",
+        "/Learning/ManagementDevelopmentKit",
+        "/Learning/OSCAR",
+        "/Learning/Resources",
+        "/ManagersMoments",
+        "/NACo-NACIO",
+        "/offers",
+        "/Reports",
+        "/resources",
+        "/Sandbox",
+        "/Sandbox/JuanDev",
+        "/Sandbox/Playground",
+        "/Sandbox/VoterResources",
+        "/searchcenter2",
+        "/SiteDirectory",
+        "/SiteDirectory/WebShare",
+        "/SiteDirectory/WebShare/Advisory",
+        "/SiteDirectory/WebShare/eNewsletter",
+        "/SuneNews",
+        "/SuneNews/archive",
+        "/SuneNews/SuneNews2",
+        "/swapmeet",
+        "/unitedway"
+      ];
+      var wpUrls = [];
+
+      // $.ajax({
+      //     url: "/_api/site/rootWeb/webinfos",
+      //     method: "GET",
+      //     headers: {
+      //         Accept: "application/json; odata=verbose"
+      //     },
+      //     success: function(data) {
+      //         var results = data.d.results;
+      //         console.log(results);
+      //         $.each(results, function(index, result) {
+      //             console.log(result);
+      //             subsites.push(result.ServerRelativeUrl);
+      //         });
+      //     },
+      //     complete: function() {
+      // console.log(subsites)
+
+      $.when(
+        $.each(subsites, function(index, subsite) {
+          console.log(subsite);
+          $.ajax({
+            // use page paths from previous function in url here
+            url: subsite +
+              "/_api/web/Lists/getByTitle('Pages')/Items?$select=EncodedAbsUrl",
+            method: "GET",
+            async: false,
+            headers: {
+              Accept: "application/json; odata=verbose"
+            },
+            success: function(data) {
+              var results = data.d.results;
+              $.each(results, function(index, result) {
+                var wpPage = result.EncodedAbsUrl + "?contents=1";
+                wpUrls.push(wpPage);
+              });
+              console.log(wpUrls);
+            }
+          });
+        })
+      ).then(function() {
+        $.each(wpUrls, function(index, url) {
+          console.log(url);
+          $.ajax({
+            url: url,
+            method: "GET",
+            headers: {
+              Accept: "application/json; odata=verbose"
+            },
+            success: function(data) {
+              $("#wp-title").html(wpTitle);
+              if (
+                typeof data == "string" &&
+                data.indexOf('title="' + wpTitle + '"') > 0
+              ) {
+                var pgUrl = url.split("?")[0];
+                console.log(">> " + pgUrl);
+                $("#wp-list").append(
+                  '<li><a href="' +
+                  pgUrl +
+                  '" target="_blank"><p>' +
+                  pgUrl +
+                  ' <i class="fal fa-external-link" style="margin-left:8px;font-size:.8rem;"></i></p></a></li>'
+                );
+              }
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
